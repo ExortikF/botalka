@@ -1,0 +1,24 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Sidebar from "./Sidebar";
+import { getMe, type User } from "@/lib/api";
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    getMe()
+      .then(setUser)
+      .catch(() => setUser(null));
+  }, []);
+
+  return (
+    <div className="flex min-h-screen" style={{ background: "var(--surface)" }}>
+      <Sidebar user={user} />
+      <main className="min-w-0 flex-1 p-8">
+        <div className="mx-auto max-w-4xl">{children}</div>
+      </main>
+    </div>
+  );
+}

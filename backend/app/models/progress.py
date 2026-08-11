@@ -56,6 +56,8 @@ class Attempt(Base):
 
     answer_raw: Mapped[str] = mapped_column(String(512))
     is_correct: Mapped[bool] = mapped_column(Boolean)
+    # подсказка не отменяет зачёт, но задача помечается «решено с подсказкой»
+    used_hint: Mapped[bool] = mapped_column(Boolean, default=False)
     time_spent_ms: Mapped[int] = mapped_column(Integer, default=0)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

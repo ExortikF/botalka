@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
@@ -13,6 +14,10 @@ from app.models import Attempt, Quiz, QuizMode, Task, TaskStatus, TaskType, User
 router = APIRouter(prefix="/api", tags=["quiz"])
 
 QUIZ_LENGTH = 10
+
+# «Сегодня» для серии дней — по Москве. По UTC день заканчивался бы в 03:00 МСК,
+# и вечернее занятие засчитывалось бы следующим днём.
+STREAK_TZ = ZoneInfo("Europe/Moscow")
 
 
 class TaskTypeOut(BaseModel):
@@ -44,10 +49,12 @@ class AnswerIn(BaseModel):
     task_id: int
     answer: str = Field(max_length=512)
     time_spent_ms: int = 0
+    used_hint: bool = False
 
 
 class AnswerOut(BaseModel):
     is_correct: bool
+    used_hint: bool
     correct_answer: str
     solution: str | None
     score: int
@@ -60,6 +67,7 @@ class QuizResultItem(BaseModel):
     your_answer: str
     correct_answer: str
     is_correct: bool
+    used_hint: bool
     solution: str | None
 
 
@@ -142,7 +150,7 @@ async def start_quiz(
 
 
 def _bump_streak(user: User) -> None:
-    today = datetime.now(UTC).date()
+    today = datetime.now(STREAK_TZ).date()
     if user.streak_last_date == today:
         return
     yesterday = today - timedelta(days=1)
@@ -179,6 +187,7 @@ async def submit_answer(
             quiz_id=quiz.id,
             answer_raw=payload.answer[:512],
             is_correct=is_correct,
+            used_hint=payload.used_hint,
             time_spent_ms=max(0, payload.time_spent_ms),
         )
     )
@@ -197,6 +206,7 @@ async def submit_answer(
 
     return AnswerOut(
         is_correct=is_correct,
+        used_hint=payload.used_hint,
         correct_answer=_correct_answer_text(task),
         solution=task.solution,
         score=quiz.score,
@@ -229,6 +239,7 @@ async def quiz_result(quiz_id: int, session: DbSession, user: PlayerUser) -> Qui
                 your_answer=attempt.answer_raw if attempt else "",
                 correct_answer=_correct_answer_text(task),
                 is_correct=bool(attempt and attempt.is_correct),
+                used_hint=bool(attempt and attempt.used_hint),
                 solution=task.solution,
             )
         )

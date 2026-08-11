@@ -25,6 +25,7 @@ export type Quiz = { id: number; mode: string; tasks: Task[] };
 
 export type AnswerResult = {
   is_correct: boolean;
+  used_hint: boolean;
   correct_answer: string;
   solution: string | null;
   score: number;
@@ -52,6 +53,7 @@ export type QuizResult = {
     your_answer: string;
     correct_answer: string;
     is_correct: boolean;
+    used_hint: boolean;
     solution: string | null;
   }[];
 };
@@ -82,10 +84,21 @@ export const startQuiz = (taskType?: number, length = 10) =>
     { method: "POST" },
   );
 
-export const sendAnswer = (quizId: number, taskId: number, answer: string, timeSpentMs: number) =>
+export const sendAnswer = (
+  quizId: number,
+  taskId: number,
+  answer: string,
+  timeSpentMs: number,
+  usedHint: boolean,
+) =>
   api<AnswerResult>(`/api/quiz/${quizId}/answer`, {
     method: "POST",
-    body: JSON.stringify({ task_id: taskId, answer, time_spent_ms: timeSpentMs }),
+    body: JSON.stringify({
+      task_id: taskId,
+      answer,
+      time_spent_ms: timeSpentMs,
+      used_hint: usedHint,
+    }),
   });
 
 export const getQuizResult = (quizId: number) => api<QuizResult>(`/api/quiz/${quizId}/result`);

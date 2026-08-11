@@ -2,83 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Токены из макетов, см. docs/DESIGN.md. Менять только осознанно. */
 :root {
-  --bg: #f8fafc;
-  --fg: #0f172a;
+  --bg: #fbfcfd;
+  --surface: #f2f5f8;
   --card: #ffffff;
-  --muted: #64748b;
-  --border: #e2e8f0;
-}
+  --text: #14171c;
+  --divider: rgba(20, 23, 28, 0.1);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0b1120;
-    --fg: #e2e8f0;
-    --card: #131c31;
-    --muted: #94a3b8;
-    --border: #1e293b;
-  }
+  --accent: #0088b0;
+  --accent-100: #e9f8ff;
+  --accent-200: #cbeeff;
+  --accent-300: #99e0ff;
+  --accent-600: #1186ac;
+  --accent-700: #006786;
+
+  --accent-2: #d6006c;
+  --accent-2-100: #fff1f4;
+  --accent-2-200: #ffdee6;
+  --accent-2-600: #d82071;
+
+  --n-400: #bab6b6;
+  --n-500: #9b9797;
+  --n-600: #7d7979;
+  --n-700: #605d5d;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 2px rgba(45, 43, 43, 0.14);
+  --shadow-md: 0 3px 10px rgba(45, 43, 43, 0.16);
+  --shadow-lg: 0 12px 32px rgba(45, 43, 43, 0.22);
 }
 
 body {
   background: var(--bg);
-  color: var(--fg);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: "tnum" 1; /* цифры одной ширины — таблицы и таймеры не прыгают */
+}
+
+h1,
+h2,
+h3,
+.h {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.muted {
+  color: var(--n-600);
 }
 
 .card {
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-lg);
 }
 
-.muted {
-  color: var(--muted);
+/* Надпись-рубрика над блоком: «ДУЭЛИ», «НАВИГАТОР» */
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--n-600);
 }
 
 .btn {
-  display: inline-block;
-  background: #6366f1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--accent);
   color: #fff;
-  border-radius: 12px;
-  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.25rem;
   font-weight: 600;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
 }
 
-.btn:hover {
-  opacity: 0.9;
+.btn:hover:not(:disabled) {
+  background: var(--accent-600);
 }
 
 .btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-.btn-outline {
-  display: inline-block;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.6rem 1.2rem;
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--divider);
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.25rem;
   font-weight: 500;
+  transition: border-color 0.15s;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent-300);
+}
+
+/* Магента — только для редких акцентов: вызов на дуэль, слабая тема */
+.btn-accent2 {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+.btn-accent2:hover:not(:disabled) {
+  background: var(--accent-2-600);
 }
 
 .input {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.6rem 0.9rem;
-  color: var(--fg);
+  background: var(--card);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+  color: var(--text);
   font-size: 1rem;
+  width: 100%;
 }
 
 .input:focus {
-  outline: 2px solid #6366f1;
+  outline: 2px solid var(--accent-300);
   outline-offset: 1px;
+  border-color: var(--accent);
 }
 
-/* формулы не должны ломать вёрстку на телефоне */
+/* Капсульные фильтры из макета 1e */
+.pill {
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.875rem;
+  transition: background 0.15s;
+}
+
+.pill-active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.pill-idle:hover {
+  background: var(--surface);
+}
+
 .katex {
-  font-size: 1.05em;
+  font-size: 1.02em;
 }
