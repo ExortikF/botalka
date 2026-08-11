@@ -3,14 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Layers, Swords, Zap } from "lucide-react";
+import { Layers, Swords, User as UserIcon, Zap } from "lucide-react";
 import TelegramLogin from "./TelegramLogin";
+import { initials } from "@/lib/format";
 import { getMe, getTaskTypes, type User } from "@/lib/api";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
 
 export default function Landing() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [me, setMe] = useState<User | null>(null);
   const [tasksCount, setTasksCount] = useState<number | null>(null);
   // считаем после монтирования: на сервере и в браузере «сейчас» разное,
   // а расхождение ломает гидратацию
@@ -21,9 +23,10 @@ export default function Landing() {
     // уже вошёл — незачем показывать лендинг
     getMe()
       .then((u: User) => {
-        if (!u.is_guest) router.replace("/app");
+        setMe(u);
+        if (!u.is_guest) router.replace("/app/profile");
       })
-      .catch(() => {});
+      .catch(() => setMe(null));
 
     getTaskTypes()
       .then((types) => setTasksCount(types.reduce((s, t) => s + t.tasks_count, 0)))
@@ -38,10 +41,34 @@ export default function Landing() {
         <span className="h text-xl">
           Боталка<span style={{ color: "var(--accent)" }}>.</span>
         </span>
-        <nav className="muted hidden gap-6 text-sm md:flex">
-          <a href="#how">Как это работает</a>
-          <a href="#duels">Дуэли</a>
-          <Link href="/app">Тренажёр</Link>
+        <nav className="flex items-center gap-6 text-sm">
+          <a className="muted hidden md:inline" href="#how">
+            Как это работает
+          </a>
+          <a className="muted hidden md:inline" href="#duels">
+            Дуэли
+          </a>
+          <Link className="muted hidden md:inline" href="/app/quiz">
+            Тренажёр
+          </Link>
+
+          <Link
+            href="/app/profile"
+            title="Профиль и статистика"
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition hover:bg-[var(--surface)]"
+          >
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-full"
+              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+            >
+              {me ? (
+                <span className="text-xs font-semibold">{initials(me.display_name)}</span>
+              ) : (
+                <UserIcon size={17} />
+              )}
+            </span>
+            <span className="hidden sm:inline">{me ? me.display_name : "Профиль"}</span>
+          </Link>
         </nav>
       </header>
 
@@ -77,7 +104,7 @@ export default function Landing() {
 
             <p className="mt-4 text-sm opacity-80">
               Или{" "}
-              <Link href="/app" className="underline underline-offset-4">
+              <Link href="/app/quiz" className="underline underline-offset-4">
                 попробовать без регистрации
               </Link>
             </p>

@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Flame, Lock, Swords } from "lucide-react";
+import { Flame, Lock, Swords, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { plural } from "@/lib/exam";
-import { initials } from "../TopBar";
+import { initials } from "@/lib/format";
 
 type Achievement = {
   code: string;
@@ -28,6 +29,8 @@ type Profile = {
   best_correct_run: number;
   perfect_quizzes: number;
   numbers_covered: number;
+  tasks_total: number;
+  unsolved: number;
   activity: { day: string; solved: number }[];
   achievements: Achievement[];
 };
@@ -38,12 +41,28 @@ const RARITY: Record<Achievement["rarity"], { label: string; color: string; bg: 
   gold: { label: "золото", color: "#8a6d0b", bg: "#fbf1cf" },
 };
 
+type DayStats = {
+  day: string;
+  total: number;
+  correct: number;
+  wrong: number;
+  with_hint: number;
+  minutes: number;
+  quizzes: number;
+  by_type: { number: number; title: string; total: number; correct: number }[];
+};
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [day, setDay] = useState<DayStats | null>(null);
 
   useEffect(() => {
     api<Profile>("/api/profile").then(setProfile).catch(() => setProfile(null));
   }, []);
+
+  function openDay(iso: string) {
+    api<DayStats>(`/api/profile/day?day=${iso}`).then(setDay).catch(() => setDay(null));
+  }
 
   if (!profile) return <p className="muted">Загрузка…</p>;
 
@@ -86,12 +105,33 @@ export default function ProfilePage() {
         />
       </section>
 
+      <section className="card flex flex-wrap items-center gap-7 p-7">
+        <Ring
+          done={profile.tasks_total - profile.unsolved}
+          total={profile.tasks_total}
+          value={profile.unsolved}
+        />
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl">Нерешённые задачи</h2>
+          <p className="muted mt-1 text-sm leading-relaxed">
+            {profile.unsolved > 0
+              ? `Из ${profile.tasks_total} задач банка ты ещё не решил верно ${profile.unsolved}. Кольцо показывает, сколько закрыто.`
+              : "Весь банк пройден — задачи закончились. Пора добавлять новые."}
+          </p>
+          {profile.unsolved > 0 && (
+            <Link className="btn mt-4" href="/app/quiz/run?preset=unsolved&length=10">
+              Решить
+            </Link>
+          )}
+        </div>
+      </section>
+
       <section className="card p-6">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-xl">Активность за 30 дней</h2>
           <span className="muted text-sm">насыщенность — число решённых задач</span>
         </div>
-        <Activity days={profile.activity} />
+        <Activity days={profile.activity} onPick={openDay} />
       </section>
 
       <section className="card p-6">
@@ -121,6 +161,126 @@ export default function ProfilePage() {
           ))}
         </ul>
       </section>
+
+      {day && <DayModal stats={day} onClose={() => setDay(null)} />}
+    </div>
+  );
+}
+
+function Ring({ done, total, value }: { done: number; total: number; value: number }) {
+  const size = 116;
+  const stroke = 12;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const ratio = total > 0 ? done / total : 0;
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--surface)"
+          strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - ratio)}
+          style={{ transition: "stroke-dashoffset .6s ease" }}
+        />
+      </svg>
+      <span className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="h text-3xl">{value}</span>
+        <span className="muted text-[11px]">осталось</span>
+      </span>
+    </div>
+  );
+}
+
+function DayModal({ stats, onClose }: { stats: DayStats; onClose: () => void }) {
+  const title = new Date(stats.day).toLocaleDateString("ru", {
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  });
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      style={{ background: "rgba(20,23,28,.4)" }}
+      onClick={onClose}
+    >
+      <div
+        className="card w-full max-w-md p-6"
+        style={{ boxShadow: "var(--shadow-lg)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-xl">{title}</h3>
+            <p className="muted mt-0.5 text-sm">
+              {stats.total > 0
+                ? `${stats.quizzes} ${plural(stats.quizzes, "квиз", "квиза", "квизов")} · ${stats.minutes} мин`
+                : "в этот день ты не занимался"}
+            </p>
+          </div>
+          <button className="muted" onClick={onClose} aria-label="Закрыть">
+            <X size={18} />
+          </button>
+        </div>
+
+        {stats.total > 0 && (
+          <>
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <DayMetric value={stats.total} label="попыток" />
+              <DayMetric value={stats.correct} label="верно" color="var(--accent)" />
+              <DayMetric value={stats.wrong} label="ошибок" color="var(--accent-2)" />
+            </div>
+
+            {stats.with_hint > 0 && (
+              <p className="muted mt-3 text-sm">С подсказкой: {stats.with_hint}</p>
+            )}
+
+            <ul className="mt-5 space-y-2">
+              {stats.by_type.map((row) => (
+                <li key={row.number} className="flex items-center justify-between gap-3 text-sm">
+                  <span className="min-w-0 truncate">
+                    <span className="muted mr-2">№{row.number}</span>
+                    {row.title}
+                  </span>
+                  <span
+                    style={{
+                      color: row.correct === row.total ? "var(--accent)" : "var(--accent-2)",
+                    }}
+                  >
+                    {row.correct}/{row.total}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DayMetric({ value, label, color }: { value: number; label: string; color?: string }) {
+  return (
+    <div className="rounded-xl p-3" style={{ background: "var(--surface)" }}>
+      <p className="h text-2xl" style={{ color }}>
+        {value}
+      </p>
+      <p className="muted text-xs">{label}</p>
     </div>
   );
 }
@@ -148,7 +308,13 @@ function Metric({
   );
 }
 
-function Activity({ days }: { days: { day: string; solved: number }[] }) {
+function Activity({
+  days,
+  onPick,
+}: {
+  days: { day: string; solved: number }[];
+  onPick: (day: string) => void;
+}) {
   const max = Math.max(1, ...days.map((d) => d.solved));
 
   return (
@@ -159,15 +325,16 @@ function Activity({ days }: { days: { day: string; solved: number }[] }) {
           level
         ];
         return (
-          <span
+          <button
             key={d.day}
+            onClick={() => onPick(d.day)}
             title={`${new Date(d.day).toLocaleDateString("ru", {
               day: "numeric",
               month: "long",
               timeZone: "UTC",
             })} — решено ${d.solved}`}
-            className="aspect-square w-full rounded-md"
-            style={{ background: bg }}
+            className="aspect-square w-full rounded-md transition hover:ring-2"
+            style={{ background: bg, ["--tw-ring-color" as string]: "var(--accent)" }}
           />
         );
       })}

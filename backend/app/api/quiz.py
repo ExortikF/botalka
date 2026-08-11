@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -114,12 +115,20 @@ async def list_task_types(session: DbSession, subject: str = "math_prof") -> lis
     ]
 
 
+class TypeSelection(BaseModel):
+    """Сколько задач взять из конкретного номера."""
+
+    task_type_id: int
+    count: int = Field(default=5, ge=1, le=20)
+
+
 class QuizStartIn(BaseModel):
-    """Конструктор квиза: либо явный список номеров, либо пресет."""
+    """Конструктор квиза: пресет, список номеров или номера с количествами."""
 
     subject: str = "math_prof"
     task_type_ids: list[int] = Field(default_factory=list)
-    preset: str | None = None  # part1 | weak | mistakes
+    selection: list[TypeSelection] = Field(default_factory=list)
+    preset: str | None = None  # weak | mistakes | unsolved
     length: int = QUIZ_LENGTH
 
 
@@ -142,6 +151,23 @@ async def _weak_type_ids(session: DbSession, user: User, subject: str) -> list[i
     ).all()
     ranked = sorted(rows, key=lambda r: r.correct / r.total)
     return [r.id for r in ranked if r.correct < r.total][:4]
+
+
+async def _unsolved_task_ids(session: DbSession, user: User, subject: str) -> list[int]:
+    """Задачи, которые пользователь ни разу не решил верно (включая нетронутые)."""
+    solved = select(func.distinct(Attempt.task_id)).where(
+        Attempt.user_id == user.id, Attempt.is_correct.is_(True)
+    )
+    rows = await session.scalars(
+        select(Task.id)
+        .join(TaskType, TaskType.id == Task.task_type_id)
+        .where(
+            Task.id.not_in(solved),
+            Task.status == TaskStatus.LIVE,
+            TaskType.subject.has(slug=subject),
+        )
+    )
+    return list(rows)
 
 
 async def _mistake_task_ids(session: DbSession, user: User, subject: str) -> list[int]:
@@ -186,6 +212,14 @@ async def start_quiz(payload: QuizStartIn, session: DbSession, user: PlayerUser)
                 status.HTTP_404_NOT_FOUND,
                 "слабых тем пока нет — порешай обычный квиз, и они появятся",
             )
+    elif payload.preset == "unsolved":
+        task_ids = await _unsolved_task_ids(session, user, payload.subject)
+        if not task_ids:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                "нерешённых задач не осталось — весь банк пройден",
+            )
+        stmt = stmt.where(Task.id.in_(task_ids))
     elif payload.preset == "mistakes":
         task_ids = await _mistake_task_ids(session, user, payload.subject)
         if not task_ids:
@@ -195,10 +229,21 @@ async def start_quiz(payload: QuizStartIn, session: DbSession, user: PlayerUser)
             )
         stmt = stmt.where(Task.id.in_(task_ids))
 
-    if type_ids:
-        stmt = stmt.where(Task.task_type_id.in_(type_ids))
-
-    tasks = list((await session.scalars(stmt.order_by(func.random()).limit(length))).all())
+    if payload.selection and not payload.preset:
+        # по каждому номеру берём ровно столько, сколько попросили
+        tasks = []
+        for item in payload.selection:
+            chunk = await session.scalars(
+                stmt.where(Task.task_type_id == item.task_type_id)
+                .order_by(func.random())
+                .limit(item.count)
+            )
+            tasks.extend(chunk.all())
+        random.shuffle(tasks)
+    else:
+        if type_ids:
+            stmt = stmt.where(Task.task_type_id.in_(type_ids))
+        tasks = list((await session.scalars(stmt.order_by(func.random()).limit(length))).all())
 
     if not tasks:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "по такому набору задач не нашлось")

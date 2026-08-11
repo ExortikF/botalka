@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Flame, Home, Swords, Trophy, User as UserIcon, Zap } from "lucide-react";
+import { BookOpen, Flame, Swords, Trophy, User as UserIcon, Zap } from "lucide-react";
 import type { User } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
+import { initials } from "@/lib/format";
 
 const NAV = [
-  { href: "/app", label: "Главная", icon: Home },
+  { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords, soon: true },
   { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
-  { href: "/app/profile", label: "Профиль", icon: UserIcon },
 ];
 
 export default function Sidebar({ user }: { user: User | null }) {
@@ -97,12 +97,4 @@ export default function Sidebar({ user }: { user: User | null }) {
       </div>
     </aside>
   );
-}
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
 }

@@ -89,13 +89,15 @@ export type Subject = {
   available: boolean;
 };
 
-export type QuizPreset = "weak" | "mistakes";
+export type QuizPreset = "weak" | "mistakes" | "unsolved";
 
 export const getSubjects = () => api<Subject[]>("/api/subjects");
 
 export const startQuiz = (params: {
   subject?: string;
   taskTypeIds?: number[];
+  /** Сколько задач взять из каждого номера — задаётся стрелочками в плитке темы. */
+  selection?: { task_type_id: number; count: number }[];
   preset?: QuizPreset | null;
   length?: number;
 }) =>
@@ -104,6 +106,7 @@ export const startQuiz = (params: {
     body: JSON.stringify({
       subject: params.subject ?? "math_prof",
       task_type_ids: params.taskTypeIds ?? [],
+      selection: params.selection ?? [],
       preset: params.preset ?? null,
       length: params.length ?? 10,
     }),

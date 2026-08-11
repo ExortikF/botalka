@@ -26,11 +26,12 @@ type Slot = {
 type Props = {
   subject: string;
   taskTypeIds: number[];
+  selection: { task_type_id: number; count: number }[];
   preset: QuizPreset | null;
   length: number;
 };
 
-export default function QuizRunner({ subject, taskTypeIds, preset, length }: Props) {
+export default function QuizRunner({ subject, taskTypeIds, selection, preset, length }: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState("");
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -43,7 +44,7 @@ export default function QuizRunner({ subject, taskTypeIds, preset, length }: Pro
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    startQuiz({ subject, taskTypeIds, preset, length })
+    startQuiz({ subject, taskTypeIds, selection, preset, length })
       .then((q) => {
         setQuiz(q);
         setSlots(
@@ -59,7 +60,7 @@ export default function QuizRunner({ subject, taskTypeIds, preset, length }: Pro
     // taskTypeIds приходит новым массивом на каждый рендер — сравниваем по строке,
     // иначе эффект перезапускается и создаёт новый квиз
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, taskTypeIds.join(","), preset, length]);
+  }, [subject, taskTypeIds.join(","), JSON.stringify(selection), preset, length]);
 
   const task = quiz?.tasks[index];
   const slot = task ? slots[task.id] : undefined;

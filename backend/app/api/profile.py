@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
-from app.models import Attempt, Quiz, Task, TaskType, User
+from app.models import Attempt, Quiz, Task, TaskStatus, TaskType, User
 
 router = APIRouter(prefix="/api", tags=["profile"])
 
@@ -38,6 +38,24 @@ class ActivityDay(BaseModel):
     solved: int
 
 
+class DayTypeRow(BaseModel):
+    number: int
+    title: str
+    total: int
+    correct: int
+
+
+class DayStatsOut(BaseModel):
+    day: date
+    total: int
+    correct: int
+    wrong: int
+    with_hint: int
+    minutes: int
+    quizzes: int
+    by_type: list[DayTypeRow]
+
+
 class ProfileOut(BaseModel):
     display_name: str
     is_guest: bool
@@ -52,6 +70,9 @@ class ProfileOut(BaseModel):
     best_correct_run: int
     perfect_quizzes: int
     numbers_covered: int
+
+    tasks_total: int
+    unsolved: int
 
     activity: list[ActivityDay]
     achievements: list[Achievement]
@@ -165,6 +186,12 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         for offset in reversed(range(ACTIVITY_DAYS))
     ]
 
+    tasks_total = (
+        await session.scalar(
+            select(func.count(Task.id)).where(Task.status == TaskStatus.LIVE)
+        )
+    ) or 0
+
     return ProfileOut(
         display_name=user.display_name,
         is_guest=user.is_guest,
@@ -178,8 +205,50 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         best_correct_run=best_run,
         perfect_quizzes=perfect,
         numbers_covered=numbers_covered,
+        tasks_total=tasks_total,
+        unsolved=max(0, tasks_total - correct_total),
         activity=activity,
         achievements=_build_achievements(
             solved_total, streak_record, best_run, perfect, numbers_covered, fixed
         ),
+    )
+
+
+@router.get("/profile/day", response_model=DayStatsOut)
+async def day_stats(day: date, session: DbSession, user: PlayerUser) -> DayStatsOut:
+    """Подробности одного дня — открывается кликом по квадратику активности."""
+    attempts = list(
+        await session.scalars(
+            select(Attempt).where(Attempt.user_id == user.id).order_by(Attempt.id)
+        )
+    )
+    todays = [a for a in attempts if a.created_at.astimezone(TZ).date() == day]
+
+    by_type: dict[int, DayTypeRow] = {}
+    for attempt in todays:
+        row = (
+            await session.execute(
+                select(TaskType.number, TaskType.title)
+                .join(Task, Task.task_type_id == TaskType.id)
+                .where(Task.id == attempt.task_id)
+            )
+        ).first()
+        if row is None:
+            continue
+        number, title = row
+        entry = by_type.setdefault(
+            number, DayTypeRow(number=number, title=title, total=0, correct=0)
+        )
+        entry.total += 1
+        entry.correct += int(attempt.is_correct)
+
+    return DayStatsOut(
+        day=day,
+        total=len(todays),
+        correct=sum(a.is_correct for a in todays),
+        wrong=sum(not a.is_correct for a in todays),
+        with_hint=sum(a.used_hint for a in todays),
+        minutes=round(sum(a.time_spent_ms for a in todays) / 60000),
+        quizzes=len({a.quiz_id for a in todays if a.quiz_id}),
+        by_type=sorted(by_type.values(), key=lambda r: r.number),
     )
