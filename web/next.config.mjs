@@ -10,6 +10,8 @@ const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN ?? "http://backend:8000";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // dev-сервер открывается через туннель (cloudflared) — иначе Next ругается на чужой origin
+  allowedDevOrigins: ["*.trycloudflare.com", "*.ngrok-free.app"],
   async rewrites() {
     return [
       { source: "/api/:path*", destination: `${BACKEND_ORIGIN}/api/:path*` },
