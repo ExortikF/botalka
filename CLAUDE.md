@@ -1,4 +1,4 @@
-# EGE Arena — инструкции для Claude Code
+# Botalka — инструкции для Claude Code
 
 ## О проекте
 
@@ -13,7 +13,7 @@
 
 ## Стек
 
-Backend — Python 3.12 + FastAPI + Postgres + Redis. Frontend — Next.js 15 (App Router) +
+Backend — Python 3.12 + FastAPI + Postgres + Redis. Frontend — Next.js 16 (App Router) +
 TypeScript + Tailwind. Бот — aiogram 3. Всё в docker compose, деплой на один VPS.
 
 ## Правила, которые легко нарушить

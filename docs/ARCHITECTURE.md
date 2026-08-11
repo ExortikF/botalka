@@ -7,7 +7,7 @@
 | Backend | Python 3.12 + FastAPI | нативные WebSocket для дуэлей; ИИ-проверка и OCR потом всё равно на Python |
 | БД | PostgreSQL 16 | ничего экзотичного не нужно |
 | Кеш/очереди | Redis | подбор соперника, состояние матчей, rate limit, pub/sub между процессами |
-| Frontend | Next.js 15 (App Router) + TypeScript | одна кодовая база на сайт и Telegram Mini App |
+| Frontend | Next.js 16 (App Router) + TypeScript | одна кодовая база на сайт и Telegram Mini App |
 | Формулы | KaTeX | быстрее MathJax, для школьной математики хватает |
 | Стили | Tailwind | скорость; дизайн-система на CSS-переменных |
 | Бот | aiogram 3 | стандарт для ТГ на Python |
