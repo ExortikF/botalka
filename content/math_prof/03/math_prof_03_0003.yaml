@@ -1,0 +1,13 @@
+id: math_prof_03_0003
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Объём куба равен $27$. Найдите длину его ребра.
+answer:
+  type: number
+  value: '3'
+solution: |
+  Если ребро равно $a$, то $a^3=27$, откуда $a=3$.
+source: "собственная"
+status: live

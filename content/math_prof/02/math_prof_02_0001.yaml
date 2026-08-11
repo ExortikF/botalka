@@ -1,0 +1,15 @@
+id: math_prof_02_0001
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите длину вектора $\vec{a}\,(3;\,4)$.
+answer:
+  type: number
+  value: '5'
+solution: |
+  $|\vec{a}|=\sqrt{3^2+4^2}=\sqrt{25}=5$.
+hints:
+  - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
+source: "собственная"
+status: live

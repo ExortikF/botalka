@@ -1,0 +1,13 @@
+id: math_prof_08_0001
+subject: math_prof
+task_type: 8
+difficulty: 2
+statement: |
+  Функция задана формулой $f(x)=x^{3}-3x^{2}$. Найдите $f'(2)$.
+answer:
+  type: number
+  value: '0'
+solution: |
+  $f'(x)=3x^{2}-6x$, тогда $f'(2)=3\cdot 4-6\cdot 2=12-12=0$.
+source: "собственная"
+status: live

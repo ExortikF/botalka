@@ -1,0 +1,15 @@
+id: math_prof_01_0001
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $90^\circ$, $AC = 6$, $BC = 8$. Найдите $AB$.
+answer:
+  type: number
+  value: '10'
+solution: |
+  По теореме Пифагора $AB=\sqrt{6^2+8^2}=\sqrt{36+64}=\sqrt{100}=10$.
+hints:
+  - 'Теорема Пифагора: квадрат гипотенузы равен сумме квадратов катетов.'
+source: "собственная"
+status: live

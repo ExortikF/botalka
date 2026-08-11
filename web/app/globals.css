@@ -35,3 +35,50 @@ body {
 .muted {
   color: var(--muted);
 }
+
+.btn {
+  display: inline-block;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+}
+
+.input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+}
+
+/* формулы не должны ломать вёрстку на телефоне */
+.katex {
+  font-size: 1.05em;
+}

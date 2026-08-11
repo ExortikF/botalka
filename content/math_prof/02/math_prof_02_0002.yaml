@@ -1,0 +1,13 @@
+id: math_prof_02_0002
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите скалярное произведение векторов $\vec{a}\,(2;\,-3)$ и $\vec{b}\,(4;\,1)$.
+answer:
+  type: number
+  value: '5'
+solution: |
+  $\vec{a}\cdot\vec{b}=2\cdot 4+(-3)\cdot 1=8-3=5$.
+source: "собственная"
+status: live

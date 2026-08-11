@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import auth
+from app.api import auth, quiz
 from app.core.config import settings
 from app.core.db import engine
 
@@ -31,6 +31,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(quiz.router)
 
 
 @app.get("/health")

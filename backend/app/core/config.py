@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     session_days: int = 30
 
     cors_origins: str = "http://localhost:3000"
+    # включать на любом публичном адресе (туннель, прод) — там всегда https
+    cookie_secure: bool = False
 
     @property
     def cors_origin_list(self) -> list[str]:

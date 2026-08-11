@@ -1,0 +1,15 @@
+id: math_prof_11_0001
+subject: math_prof
+task_type: 11
+difficulty: 1
+statement: |
+  График функции $y=\dfrac{k}{x}$ проходит через точку $(2;\,6)$. Найдите $k$.
+answer:
+  type: number
+  value: '12'
+solution: |
+  Подставим точку: $6=\dfrac{k}{2}$, откуда $k=12$.
+hints:
+  - 'Подставьте координаты точки в формулу функции.'
+source: "собственная"
+status: live

@@ -1,0 +1,15 @@
+id: math_prof_11_0002
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  Парабола $y=x^{2}+bx+c$ проходит через точки $(0;\,5)$ и $(1;\,2)$. Найдите $b$.
+answer:
+  type: number
+  value: '-4'
+solution: |
+  Из точки $(0;5)$: $c=5$. Из точки $(1;2)$: $1+b+5=2$, откуда $b=-4$.
+hints:
+  - 'Начните с точки, у которой $x=0$ — она сразу даёт $c$.'
+source: "собственная"
+status: live

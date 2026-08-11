@@ -1,0 +1,13 @@
+id: math_prof_01_0003
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $28$, а одна из его сторон равна $5$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '45'
+solution: |
+  Полупериметр равен $14$, значит вторая сторона равна $14-5=9$. Площадь: $5\cdot 9=45$.
+source: "собственная"
+status: live

@@ -1,0 +1,13 @@
+id: math_prof_06_0003
+subject: math_prof
+task_type: 6
+difficulty: 2
+statement: |
+  Найдите корень уравнения $\sqrt{3x+4}=5$.
+answer:
+  type: number
+  value: '7'
+solution: |
+  Возведём обе части в квадрат: $3x+4=25$, откуда $3x=21$ и $x=7$.
+source: "собственная"
+status: live

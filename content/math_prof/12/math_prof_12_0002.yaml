@@ -1,0 +1,13 @@
+id: math_prof_12_0002
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x+\dfrac{9}{x}$ при $x>0$.
+answer:
+  type: number
+  value: '6'
+solution: |
+  $y'=1-\dfrac{9}{x^{2}}=0$ при $x=3$ (берём положительный корень). При переходе через $x=3$ производная меняет знак с минуса на плюс, значит это минимум: $y(3)=3+3=6$.
+source: "собственная"
+status: live

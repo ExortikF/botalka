@@ -1,0 +1,13 @@
+id: math_prof_07_0003
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $\dfrac{7^{\,2{,}5}}{7^{\,0{,}5}}$.
+answer:
+  type: number
+  value: '49'
+solution: |
+  $7^{2{,}5-0{,}5}=7^{2}=49$.
+source: "собственная"
+status: live
