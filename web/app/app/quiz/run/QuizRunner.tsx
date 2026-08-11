@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Lightbulb, X } from "lucide-react";
-import MathText from "../../Math";
+import MathText from "../../../Math";
 import {
   getQuizResult,
   sendAnswer,
   startQuiz,
   type AnswerResult,
   type Quiz,
+  type QuizPreset,
   type QuizResult,
 } from "@/lib/api";
 
@@ -22,7 +23,14 @@ type Slot = {
   result: AnswerResult | null;
 };
 
-export default function QuizRunner({ taskType, length }: { taskType?: number; length: number }) {
+type Props = {
+  subject: string;
+  taskTypeIds: number[];
+  preset: QuizPreset | null;
+  length: number;
+};
+
+export default function QuizRunner({ subject, taskTypeIds, preset, length }: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState("");
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -35,7 +43,7 @@ export default function QuizRunner({ taskType, length }: { taskType?: number; le
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    startQuiz(taskType, length)
+    startQuiz({ subject, taskTypeIds, preset, length })
       .then((q) => {
         setQuiz(q);
         setSlots(
@@ -48,7 +56,10 @@ export default function QuizRunner({ taskType, length }: { taskType?: number; le
         setError(e.message);
         setPhase("error");
       });
-  }, [taskType, length]);
+    // taskTypeIds приходит новым массивом на каждый рендер — сравниваем по строке,
+    // иначе эффект перезапускается и создаёт новый квиз
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subject, taskTypeIds.join(","), preset, length]);
 
   const task = quiz?.tasks[index];
   const slot = task ? slots[task.id] : undefined;
@@ -353,7 +364,7 @@ function Result({ result }: { result: QuizResult }) {
         </div>
         <div className="flex gap-3">
           <Link className="btn" href="/app/quiz">
-            Ещё квиз
+            Собрать ещё
           </Link>
           <Link className="btn-ghost" href="/app">
             На главную

@@ -138,7 +138,7 @@ export default function Landing() {
             привяжется к аккаунту, если потом войдёшь.
           </p>
           <div className="mt-7 flex justify-center">
-            <Link className="btn" href="/app/quiz">
+            <Link className="btn" href="/app/quiz/run">
               Решить квиз
             </Link>
           </div>

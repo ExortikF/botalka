@@ -114,35 +114,100 @@ async def list_task_types(session: DbSession, subject: str = "math_prof") -> lis
     ]
 
 
+class QuizStartIn(BaseModel):
+    """Конструктор квиза: либо явный список номеров, либо пресет."""
+
+    subject: str = "math_prof"
+    task_type_ids: list[int] = Field(default_factory=list)
+    preset: str | None = None  # part1 | weak | mistakes
+    length: int = QUIZ_LENGTH
+
+
+async def _weak_type_ids(session: DbSession, user: User, subject: str) -> list[int]:
+    """Номера, где процент верных ниже всего. Нужно хотя бы две попытки —
+    иначе одна случайная ошибка объявляет тему слабой."""
+    rows = (
+        await session.execute(
+            select(
+                TaskType.id,
+                func.count(Attempt.id).label("total"),
+                func.count(Attempt.id).filter(Attempt.is_correct).label("correct"),
+            )
+            .join(Task, Task.task_type_id == TaskType.id)
+            .join(Attempt, Attempt.task_id == Task.id)
+            .where(Attempt.user_id == user.id, TaskType.subject.has(slug=subject))
+            .group_by(TaskType.id)
+            .having(func.count(Attempt.id) >= 2)
+        )
+    ).all()
+    ranked = sorted(rows, key=lambda r: r.correct / r.total)
+    return [r.id for r in ranked if r.correct < r.total][:4]
+
+
+async def _mistake_task_ids(session: DbSession, user: User, subject: str) -> list[int]:
+    """Задачи, где пользователь уже ошибался и с тех пор не решил верно."""
+    wrong = select(func.distinct(Attempt.task_id)).where(
+        Attempt.user_id == user.id, Attempt.is_correct.is_(False)
+    )
+    fixed = select(func.distinct(Attempt.task_id)).where(
+        Attempt.user_id == user.id, Attempt.is_correct.is_(True)
+    )
+    rows = await session.scalars(
+        select(Task.id)
+        .join(TaskType, TaskType.id == Task.task_type_id)
+        .where(
+            Task.id.in_(wrong),
+            Task.id.not_in(fixed),
+            Task.status == TaskStatus.LIVE,
+            TaskType.subject.has(slug=subject),
+        )
+    )
+    return list(rows)
+
+
 @router.post("/quiz/start", response_model=QuizOut)
-async def start_quiz(
-    session: DbSession,
-    user: PlayerUser,
-    task_type: int | None = None,
-    length: int = QUIZ_LENGTH,
-) -> QuizOut:
-    """Собирает квиз. `task_type` — тренировка одного номера, иначе микс."""
-    length = max(1, min(length, 20))
+async def start_quiz(payload: QuizStartIn, session: DbSession, user: PlayerUser) -> QuizOut:
+    length = max(1, min(payload.length, 30))
 
     stmt = (
         select(Task)
-        .where(Task.status == TaskStatus.LIVE)
-        .order_by(func.random())
-        .limit(length)
+        .join(TaskType, TaskType.id == Task.task_type_id)
+        .where(Task.status == TaskStatus.LIVE, TaskType.subject.has(slug=payload.subject))
     )
-    if task_type is not None:
-        stmt = stmt.where(Task.task_type_id == task_type)
 
-    tasks = list((await session.scalars(stmt)).all())
+    type_ids = list(payload.task_type_ids)
+
+    # Пустой пресет — это не повод молча подсунуть обычный квиз: пользователь
+    # просил конкретный набор и должен понять, почему его нет.
+    if payload.preset == "weak":
+        type_ids = await _weak_type_ids(session, user, payload.subject)
+        if not type_ids:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                "слабых тем пока нет — порешай обычный квиз, и они появятся",
+            )
+    elif payload.preset == "mistakes":
+        task_ids = await _mistake_task_ids(session, user, payload.subject)
+        if not task_ids:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                "нерешённых ошибок нет — все прошлые ошибки уже разобраны",
+            )
+        stmt = stmt.where(Task.id.in_(task_ids))
+
+    if type_ids:
+        stmt = stmt.where(Task.task_type_id.in_(type_ids))
+
+    tasks = list((await session.scalars(stmt.order_by(func.random()).limit(length))).all())
+
     if not tasks:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "нет задач — банк ещё не наполнен")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "по такому набору задач не нашлось")
 
     quiz = Quiz(user_id=user.id, mode=QuizMode.SOLO, task_ids=[t.id for t in tasks])
     session.add(quiz)
     await session.commit()
     await session.refresh(quiz)
 
-    # порядок задач фиксируем тем, что записали в quiz.task_ids
     for task in tasks:
         await session.refresh(task, ["task_type"])
 

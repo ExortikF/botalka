@@ -75,14 +75,39 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const getMe = () => api<User>("/api/auth/me");
 export const logout = () => api<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
-export const getTaskTypes = () => api<TaskType[]>("/api/task-types");
+export const getTaskTypes = (subject = "math_prof") =>
+  api<TaskType[]>(`/api/task-types?subject=${subject}`);
 export const getStats = () => api<StatsRow[]>("/api/stats");
 
-export const startQuiz = (taskType?: number, length = 10) =>
-  api<Quiz>(
-    `/api/quiz/start?length=${length}` + (taskType ? `&task_type=${taskType}` : ""),
-    { method: "POST" },
-  );
+export type Subject = {
+  id: number | null;
+  slug: string;
+  title: string;
+  tasks_count: number;
+  types_count: number;
+  solved: number;
+  available: boolean;
+};
+
+export type QuizPreset = "weak" | "mistakes";
+
+export const getSubjects = () => api<Subject[]>("/api/subjects");
+
+export const startQuiz = (params: {
+  subject?: string;
+  taskTypeIds?: number[];
+  preset?: QuizPreset | null;
+  length?: number;
+}) =>
+  api<Quiz>("/api/quiz/start", {
+    method: "POST",
+    body: JSON.stringify({
+      subject: params.subject ?? "math_prof",
+      task_type_ids: params.taskTypeIds ?? [],
+      preset: params.preset ?? null,
+      length: params.length ?? 10,
+    }),
+  });
 
 export const sendAnswer = (
   quizId: number,

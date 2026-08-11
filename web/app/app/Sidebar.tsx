@@ -13,7 +13,7 @@ const NAV = [
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords, soon: true },
   { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
-  { href: "/app/profile", label: "Профиль", icon: UserIcon, soon: true },
+  { href: "/app/profile", label: "Профиль", icon: UserIcon },
 ];
 
 export default function Sidebar({ user }: { user: User | null }) {

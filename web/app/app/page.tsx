@@ -74,7 +74,7 @@ export default function Dashboard() {
             <Link
               className="rounded-xl bg-white px-5 py-3 font-semibold"
               style={{ color: "var(--accent-700)" }}
-              href="/app/quiz"
+              href="/app/quiz/run"
             >
               Начать день
             </Link>
@@ -93,7 +93,7 @@ export default function Dashboard() {
             n="01"
             title="Случайный квиз"
             meta="10 вопросов · около 8 минут · номера 1–12"
-            href="/app/quiz"
+            href="/app/quiz/run"
             cta="Начать"
           />
           <PlanRow
@@ -108,8 +108,8 @@ export default function Dashboard() {
             }
             href={
               weakest
-                ? `/app/quiz?type=${types.find((t) => t.number === weakest.task_type_number)?.id ?? ""}&length=5`
-                : "/app/quiz?length=5"
+                ? `/app/quiz/run?types=${types.find((t) => t.number === weakest.task_type_number)?.id ?? ""}&length=5`
+                : "/app/quiz/run?length=5"
             }
             cta="Начать"
           />
@@ -166,7 +166,7 @@ export default function Dashboard() {
               return (
                 <li key={type.id}>
                   <Link
-                    href={`/app/quiz?type=${type.id}&length=5`}
+                    href={`/app/quiz/run?types=${type.id}&length=5`}
                     className="card flex items-center justify-between gap-3 p-4 transition hover:shadow-[var(--shadow-sm)]"
                   >
                     <span className="min-w-0">
