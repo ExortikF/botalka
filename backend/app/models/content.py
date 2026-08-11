@@ -27,6 +27,17 @@ class AnswerType(str, enum.Enum):
     MULTI = "multi"
 
 
+class SourceKind(str, enum.Enum):
+    """Откуда задача. Показывается ученику мелким шрифтом под условием."""
+
+    OWN = "own"          # собственная
+    FIPI_BANK = "fipi"   # открытый банк ФИПИ
+    EXAM = "exam"        # реальный вариант прошлых лет
+    DEMO = "demo"        # демоверсия ФИПИ
+    BOOK = "book"        # сборник, учебник
+    OTHER = "other"
+
+
 class TaskStatus(str, enum.Enum):
     DRAFT = "draft"
     LIVE = "live"
@@ -78,7 +89,15 @@ class Task(Base):
     hints: Mapped[list] = mapped_column(JSON, default=list)
 
     difficulty: Mapped[int] = mapped_column(Integer, default=3)
-    source: Mapped[str | None] = mapped_column(String(256))
+
+    # Источник задачи. Ученику важно видеть, что задача не выдумана, а реально была.
+    source: Mapped[str | None] = mapped_column(String(256))  # человекочитаемая подпись
+    source_kind: Mapped[SourceKind] = mapped_column(
+        Enum(SourceKind, native_enum=False), default=SourceKind.OWN
+    )
+    source_year: Mapped[int | None] = mapped_column(Integer)
+    source_ref: Mapped[str | None] = mapped_column(String(128))  # номер в источнике
+    source_url: Mapped[str | None] = mapped_column(String(512))
     status: Mapped[TaskStatus] = mapped_column(
         Enum(TaskStatus, native_enum=False), default=TaskStatus.DRAFT, index=True
     )

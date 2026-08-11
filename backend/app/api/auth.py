@@ -19,6 +19,7 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 class UserOut(BaseModel):
     id: int
     is_guest: bool
+    is_admin: bool
     username: str | None
     display_name: str
     avatar_url: str | None

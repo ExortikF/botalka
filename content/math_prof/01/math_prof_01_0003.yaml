@@ -9,5 +9,6 @@ answer:
   value: '45'
 solution: |
   Полупериметр равен $14$, значит вторая сторона равна $14-5=9$. Площадь: $5\cdot 9=45$.
-source: "собственная"
+source:
+  kind: own
 status: live

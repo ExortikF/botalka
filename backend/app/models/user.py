@@ -18,6 +18,7 @@ class User(Base):
     # Вход через Telegram потом привязывается к этому же пользователю.
     tg_id: Mapped[int | None] = mapped_column(BigInteger, unique=True, index=True)
     is_guest: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     username: Mapped[str | None] = mapped_column(String(64))
     display_name: Mapped[str] = mapped_column(String(128))
     avatar_url: Mapped[str | None] = mapped_column(String(512))

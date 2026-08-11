@@ -9,5 +9,6 @@ answer:
   value: '24'
 solution: |
   Объём параллелепипеда равен произведению измерений: $2\cdot 3\cdot 4=24$.
-source: "собственная"
+source:
+  kind: own
 status: live

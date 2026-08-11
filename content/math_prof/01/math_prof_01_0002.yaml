@@ -12,5 +12,6 @@ solution: |
 hints:
   - 'Сначала найдите гипотенузу.'
   - 'Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}$.'
-source: "собственная"
+source:
+  kind: own
 status: live

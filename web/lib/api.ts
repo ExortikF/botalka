@@ -4,6 +4,7 @@ export const API_URL = "";
 export type User = {
   id: number;
   is_guest: boolean;
+  is_admin: boolean;
   username: string | null;
   display_name: string;
   avatar_url: string | null;
@@ -19,6 +20,7 @@ export type Task = {
   image_url: string | null;
   answer_type: string;
   hints: string[];
+  source: string | null;
 };
 
 export type Quiz = { id: number; mode: string; tasks: Task[] };

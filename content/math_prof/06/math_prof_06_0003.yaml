@@ -9,5 +9,6 @@ answer:
   value: '7'
 solution: |
   Возведём обе части в квадрат: $3x+4=25$, откуда $3x=21$ и $x=7$.
-source: "собственная"
+source:
+  kind: own
 status: live

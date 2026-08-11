@@ -38,6 +38,7 @@ class TaskOut(BaseModel):
     image_url: str | None
     answer_type: str
     hints: list[str]
+    source: str | None
 
 
 class QuizOut(BaseModel):
@@ -90,7 +91,31 @@ def _to_task_out(task: Task) -> TaskOut:
         image_url=task.image_url,
         answer_type=task.answer_type.value,
         hints=task.hints or [],
+        source=_source_label(task),
     )
+
+
+SOURCE_LABELS = {
+    "fipi": "Открытый банк ФИПИ",
+    "exam": "Реальный ЕГЭ",
+    "demo": "Демоверсия ФИПИ",
+    "book": "Сборник",
+}
+
+
+def _source_label(task: Task) -> str | None:
+    """Короткая подпись под условием: ученику важно знать, что задача настоящая."""
+    if task.source:
+        return task.source
+    kind = task.source_kind.value
+    if kind == "own":
+        return None
+    parts = [SOURCE_LABELS.get(kind, "Источник")]
+    if task.source_year:
+        parts.append(str(task.source_year))
+    if task.source_ref:
+        parts.append(f"№ {task.source_ref}")
+    return ", ".join(parts)
 
 
 def _correct_answer_text(task: Task) -> str:

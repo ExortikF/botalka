@@ -9,5 +9,6 @@ answer:
   value: '5'
 solution: |
   $\vec{a}\cdot\vec{b}=2\cdot 4+(-3)\cdot 1=8-3=5$.
-source: "собственная"
+source:
+  kind: own
 status: live

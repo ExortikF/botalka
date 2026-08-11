@@ -9,5 +9,6 @@ answer:
   value: '4'
 solution: |
   $\dfrac{2^{5+3}}{2^{6}}=2^{8-6}=2^{2}=4$.
-source: "собственная"
+source:
+  kind: own
 status: live

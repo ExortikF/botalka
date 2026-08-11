@@ -9,5 +9,6 @@ answer:
   value: '0'
 solution: |
   $f'(x)=3x^{2}-6x$, тогда $f'(2)=3\cdot 4-6\cdot 2=12-12=0$.
-source: "собственная"
+source:
+  kind: own
 status: live

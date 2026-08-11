@@ -11,5 +11,6 @@ solution: |
   $|\vec{a}|=\sqrt{3^2+4^2}=\sqrt{25}=5$.
 hints:
   - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
-source: "собственная"
+source:
+  kind: own
 status: live

@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import auth, catalog, profile, quiz
+from app.api import admin, auth, catalog, profile, quiz
 from app.core.config import settings
 from app.core.db import engine
 
@@ -34,6 +34,7 @@ app.include_router(auth.router)
 app.include_router(quiz.router)
 app.include_router(catalog.router)
 app.include_router(profile.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")

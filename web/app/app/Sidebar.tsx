@@ -2,19 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Flame, Swords, Trophy, User as UserIcon, Zap } from "lucide-react";
+import { BookOpen, Flame, Shield, Swords, Trophy, User as UserIcon, Zap } from "lucide-react";
 import type { User } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
 import { initials } from "@/lib/format";
 
-const NAV = [
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof UserIcon;
+  soon?: boolean;
+};
+
+const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords, soon: true },
   { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
 ];
+
+const ADMIN_ITEM: NavItem = { href: "/app/admin", label: "Админка", icon: Shield };
 
 export default function Sidebar({ user }: { user: User | null }) {
   const pathname = usePathname();
@@ -32,7 +41,7 @@ export default function Sidebar({ user }: { user: User | null }) {
         </Link>
 
         <nav className="space-y-1">
-          {NAV.map(({ href, label, icon: Icon, soon }) => {
+          {(user?.is_admin ? [...NAV, ADMIN_ITEM] : NAV).map(({ href, label, icon: Icon, soon }) => {
             const active = pathname === href;
             return (
               <Link

@@ -11,5 +11,6 @@ solution: |
   $32=2^5$, значит $x+3=5$ и $x=2$.
 hints:
   - 'Приведите обе части к одному основанию.'
-source: "собственная"
+source:
+  kind: own
 status: live

@@ -175,6 +175,10 @@ export default function QuizRunner({ subject, taskTypeIds, selection, preset, le
 
           <MathText className="block text-lg leading-relaxed" text={task.statement} />
 
+          {task.source && (
+            <p className="muted text-xs">Источник: {task.source}</p>
+          )}
+
           {task.hints.slice(0, slot.hintsShown).map((hint, i) => (
             <p
               key={i}

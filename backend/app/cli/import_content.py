@@ -17,7 +17,7 @@ from sqlalchemy import select
 
 from app.core.answers import check_answer
 from app.core.db import SessionLocal
-from app.models import AnswerType, Subject, Task, TaskStatus, TaskType
+from app.models import AnswerType, SourceKind, Subject, Task, TaskStatus, TaskType
 
 CONTENT_DIR = Path("/content")
 
@@ -115,7 +115,20 @@ async def _upsert(data: dict, types_meta: dict) -> str:
         task.solution = (data.get("solution") or "").strip() or None
         task.hints = data.get("hints") or []
         task.difficulty = int(data.get("difficulty", 3))
-        task.source = data.get("source")
+        source = data.get("source") or {}
+        if isinstance(source, str):
+            # старый формат: просто строка. «собственная» подписью не считается
+            task.source = None if source.strip().lower() == "собственная" else source
+            task.source_kind = SourceKind.OWN
+            task.source_year = None
+            task.source_ref = None
+            task.source_url = None
+        else:
+            task.source = source.get("label")
+            task.source_kind = SourceKind(source.get("kind", "own"))
+            task.source_year = source.get("year")
+            task.source_ref = str(source["ref"]) if source.get("ref") else None
+            task.source_url = source.get("url")
         task.status = TaskStatus(data.get("status", "draft"))
 
         await session.commit()

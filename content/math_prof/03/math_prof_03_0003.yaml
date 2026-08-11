@@ -9,5 +9,6 @@ answer:
   value: '3'
 solution: |
   Если ребро равно $a$, то $a^3=27$, откуда $a=3$.
-source: "собственная"
+source:
+  kind: own
 status: live

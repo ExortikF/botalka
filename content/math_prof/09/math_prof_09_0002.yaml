@@ -9,5 +9,6 @@ answer:
   value: '72'
 solution: |
   $P=3^{2}\cdot 8=9\cdot 8=72$.
-source: "собственная"
+source:
+  kind: own
 status: live

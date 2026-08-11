@@ -11,5 +11,6 @@ solution: |
   $\log_{2}40-\log_{2}5=\log_{2}\dfrac{40}{5}=\log_{2}8=3$.
 hints:
   - 'Разность логарифмов с одним основанием — логарифм частного.'
-source: "собственная"
+source:
+  kind: own
 status: live

@@ -9,5 +9,6 @@ answer:
   value: '0.6'
 solution: |
   Мальчиков $25-10=15$. Вероятность: $\dfrac{15}{25}=0{,}6$.
-source: "собственная"
+source:
+  kind: own
 status: live
