@@ -27,6 +27,7 @@ cp .env.example .env && make up && make migrate
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | стек, сервисы, схема БД, как устроены дуэли |
 | [docs/CONTENT.md](docs/CONTENT.md) | формат банка задач, откуда берём контент, проверка ответов |
 | [docs/MONETIZATION.md](docs/MONETIZATION.md) | донаты сейчас, платные ИИ-проверки потом, экономика |
+| [docs/DESIGN.md](docs/DESIGN.md) | дизайн-токены, экраны, продуктовые решения из макетов |
 
 ## Структура репозитория
 

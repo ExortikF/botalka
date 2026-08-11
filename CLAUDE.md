@@ -10,6 +10,8 @@
 - **Архитектура и схема БД:** `docs/ARCHITECTURE.md`
 - **Формат задач:** `docs/CONTENT.md`
 - **Деньги:** `docs/MONETIZATION.md`
+- **Дизайн:** `docs/DESIGN.md` — токены и правила. Макеты: `docs/reference/screens-v1.html`
+  (в референсе продукт называется «Балл» — у нас везде «Боталка»)
 
 ## Стек
 
