@@ -46,7 +46,11 @@ export default function TelegramLogin({ onLogin, onError }: Props) {
       return;
     }
 
-    if (!botUsername || !holder.current) return;
+    const mount = holder.current;
+    if (!botUsername || !mount) return;
+
+    // StrictMode в dev монтирует эффект дважды — иначе получаем два виджета
+    mount.innerHTML = "";
 
     window.onTelegramAuth = (user) => {
       send("/api/auth/telegram/widget", user)
@@ -62,9 +66,10 @@ export default function TelegramLogin({ onLogin, onError }: Props) {
     script.setAttribute("data-radius", "12");
     script.setAttribute("data-onauth", "onTelegramAuth(user)");
     script.setAttribute("data-request-access", "write");
-    holder.current.appendChild(script);
+    mount.appendChild(script);
 
     return () => {
+      mount.innerHTML = "";
       delete window.onTelegramAuth;
     };
   }, [botUsername, onLogin, onError]);
