@@ -1,0 +1,17 @@
+id: math_prof_08_0004
+subject: math_prof
+task_type: 8
+difficulty: 2
+statement: |
+  Функция задана формулой $f(x)=4x^{3}+0x^{2}+7x$. Найдите $f'(0)$.
+answer:
+  type: number
+  value: '7'
+solution: |
+  $f'(x)=12x^{2}+0x+7$, тогда $f'(0)=12\cdot0+0+7=7$.
+hints:
+  - 'Производная $x^n$ равна $nx^{n-1}$.'
+source:
+  kind: own
+  ref: 'tpl:derivative_value'
+status: live

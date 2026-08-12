@@ -1,0 +1,15 @@
+id: math_prof_03_0005
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Найдите объём прямоугольного параллелепипеда с измерениями $3$, $10$ и $4$.
+answer:
+  type: number
+  value: '120'
+solution: |
+  Объём равен произведению измерений: $3\cdot 10\cdot 4=120$.
+source:
+  kind: own
+  ref: 'tpl:box_volume'
+status: live

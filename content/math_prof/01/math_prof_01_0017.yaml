@@ -1,0 +1,18 @@
+id: math_prof_01_0017
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Катеты прямоугольного треугольника равны $16$ и $30$. Найдите радиус вписанной в него окружности.
+answer:
+  type: number
+  value: '6'
+solution: |
+  Гипотенуза $c=\sqrt{16^2+30^2}=34$. Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}=\dfrac{16+30-34}{2}=6$.
+hints:
+  - 'Сначала найдите гипотенузу.'
+  - 'Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}$.'
+source:
+  kind: own
+  ref: 'tpl:right_triangle_inradius'
+status: live

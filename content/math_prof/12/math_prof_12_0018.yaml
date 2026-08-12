@@ -1,0 +1,17 @@
+id: math_prof_12_0018
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x+\dfrac{16}{x}$ при $x>0$.
+answer:
+  type: number
+  value: '8'
+solution: |
+  $y'=1-\dfrac{16}{x^{2}}=0$ при $x=4$. Производная меняет знак с минуса на плюс — это минимум: $y(4)=4+4=8$.
+hints:
+  - 'Приравняйте производную к нулю; берём положительный корень.'
+source:
+  kind: own
+  ref: 'tpl:min_hyperbola'
+status: live

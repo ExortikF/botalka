@@ -3,12 +3,15 @@ subject: math_prof
 task_type: 2
 difficulty: 1
 statement: |
-  Найдите скалярное произведение векторов $\vec{a}\,(2;\,-3)$ и $\vec{b}\,(4;\,1)$.
+  Найдите длину вектора $\vec{a}\,(-6;\,-8)$.
 answer:
   type: number
-  value: '5'
+  value: '10'
 solution: |
-  $\vec{a}\cdot\vec{b}=2\cdot 4+(-3)\cdot 1=8-3=5$.
+  $|\vec{a}|=\sqrt{(-6)^2+(-8)^2}=\sqrt{36+64}=\sqrt{100}=10$.
+hints:
+  - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
 source:
   kind: own
+  ref: 'tpl:vector_length'
 status: live

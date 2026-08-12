@@ -1,0 +1,17 @@
+id: math_prof_07_0011
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $\log_{2}224-\log_{2}7$.
+answer:
+  type: number
+  value: '5'
+solution: |
+  $\log_{2}224-\log_{2}7=\log_{2}\dfrac{224}{7}=\log_{2}32=5$.
+hints:
+  - 'Разность логарифмов с одним основанием — логарифм частного.'
+source:
+  kind: own
+  ref: 'tpl:calc_log_diff'
+status: live

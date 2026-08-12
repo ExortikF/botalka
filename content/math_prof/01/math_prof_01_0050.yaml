@@ -1,0 +1,17 @@
+id: math_prof_01_0050
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Основания трапеции равны $14$ и $18$, а высота равна $4$. Найдите её площадь.
+answer:
+  type: number
+  value: '64'
+solution: |
+  $S=\dfrac{a+b}{2}\cdot h=\dfrac{14+18}{2}\cdot 4=16\cdot 4=64$.
+hints:
+  - 'Площадь трапеции — полусумма оснований, умноженная на высоту.'
+source:
+  kind: own
+  ref: 'tpl:trapezoid_area'
+status: live

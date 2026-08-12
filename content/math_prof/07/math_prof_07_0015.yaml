@@ -1,0 +1,17 @@
+id: math_prof_07_0015
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\dfrac{5^{7}\cdot 5^{2}}{5^{5}}$.
+answer:
+  type: number
+  value: '625'
+solution: |
+  $\dfrac{5^{7+2}}{5^{5}}=5^{9-5}=5^{4}=625$.
+hints:
+  - 'При умножении степени складываются, при делении вычитаются.'
+source:
+  kind: own
+  ref: 'tpl:calc_powers'
+status: live

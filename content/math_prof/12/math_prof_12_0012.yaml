@@ -1,0 +1,17 @@
+id: math_prof_12_0012
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x^{3}-27x+4$ на отрезке $[0;\,5]$.
+answer:
+  type: number
+  value: '-50'
+solution: |
+  $y'=3x^{2}-27=0$ при $x=\pm3$; отрезку принадлежит $x=3$. Сравниваем: $y(0)=4$, $y(3)=-50$, $y(5)=-6$. Наименьшее — $-50$.
+hints:
+  - 'Найдите критические точки и сравните значения на концах отрезка и в них.'
+source:
+  kind: own
+  ref: 'tpl:min_cubic'
+status: live

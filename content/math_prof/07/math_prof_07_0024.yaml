@@ -1,0 +1,17 @@
+id: math_prof_07_0024
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\dfrac{2^{5}\cdot 2^{3}}{2^{3}}$.
+answer:
+  type: number
+  value: '32'
+solution: |
+  $\dfrac{2^{5+3}}{2^{3}}=2^{8-3}=2^{5}=32$.
+hints:
+  - 'При умножении степени складываются, при делении вычитаются.'
+source:
+  kind: own
+  ref: 'tpl:calc_powers'
+status: live

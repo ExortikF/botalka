@@ -1,0 +1,17 @@
+id: math_prof_03_0041
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Основание прямой призмы — прямоугольный треугольник с катетами $6$ и $8$, боковое ребро равно $4$. Найдите объём призмы.
+answer:
+  type: number
+  value: '96'
+solution: |
+  Площадь основания $S=\dfrac{6\cdot 8}{2}=24$, объём $V=S\cdot h=24\cdot 4=96$.
+hints:
+  - 'Объём призмы — площадь основания на высоту.'
+source:
+  kind: own
+  ref: 'tpl:prism_volume'
+status: live

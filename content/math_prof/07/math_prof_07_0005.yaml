@@ -1,0 +1,17 @@
+id: math_prof_07_0005
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $\log_{2}16-\log_{2}4$.
+answer:
+  type: number
+  value: '2'
+solution: |
+  $\log_{2}16-\log_{2}4=\log_{2}\dfrac{16}{4}=\log_{2}4=2$.
+hints:
+  - 'Разность логарифмов с одним основанием — логарифм частного.'
+source:
+  kind: own
+  ref: 'tpl:calc_log_diff'
+status: live

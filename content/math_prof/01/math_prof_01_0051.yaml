@@ -1,0 +1,17 @@
+id: math_prof_01_0051
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Основания трапеции равны $18$ и $26$, а высота равна $11$. Найдите её площадь.
+answer:
+  type: number
+  value: '242'
+solution: |
+  $S=\dfrac{a+b}{2}\cdot h=\dfrac{18+26}{2}\cdot 11=22\cdot 11=242$.
+hints:
+  - 'Площадь трапеции — полусумма оснований, умноженная на высоту.'
+source:
+  kind: own
+  ref: 'tpl:trapezoid_area'
+status: live

@@ -3,12 +3,13 @@ subject: math_prof
 task_type: 3
 difficulty: 1
 statement: |
-  Найдите объём прямоугольного параллелепипеда с измерениями $2$, $3$ и $4$.
+  Найдите объём прямоугольного параллелепипеда с измерениями $8$, $2$ и $7$.
 answer:
   type: number
-  value: '24'
+  value: '112'
 solution: |
-  Объём параллелепипеда равен произведению измерений: $2\cdot 3\cdot 4=24$.
+  Объём равен произведению измерений: $8\cdot 2\cdot 7=112$.
 source:
   kind: own
+  ref: 'tpl:box_volume'
 status: live

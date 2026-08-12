@@ -1,0 +1,17 @@
+id: math_prof_01_0043
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $34$, а одна из его сторон равна $6$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '66'
+solution: |
+  Полупериметр равен $17$, значит вторая сторона равна $17-6=11$. Площадь: $6\cdot 11=66$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

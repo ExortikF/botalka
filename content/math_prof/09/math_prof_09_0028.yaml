@@ -1,0 +1,17 @@
+id: math_prof_09_0028
+subject: math_prof
+task_type: 9
+difficulty: 2
+statement: |
+  Два резистора соединены параллельно, их сопротивления равны $12$ Ом и $6$ Ом. Общее сопротивление находится по формуле $\dfrac{1}{R}=\dfrac{1}{R_1}+\dfrac{1}{R_2}$. Найдите $R$ (в омах).
+answer:
+  type: number
+  value: '4'
+solution: |
+  $\dfrac{1}{R}=\dfrac{1}{12}+\dfrac{1}{6}=\dfrac{18}{72}$, откуда $R=\dfrac{72}{18}=4$.
+hints:
+  - 'Сначала найдите $\dfrac{1}{R}$, потом переверните дробь.'
+source:
+  kind: own
+  ref: 'tpl:applied_ohm'
+status: live

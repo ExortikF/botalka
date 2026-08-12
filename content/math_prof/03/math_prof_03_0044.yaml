@@ -1,0 +1,17 @@
+id: math_prof_03_0044
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Основание прямой призмы — прямоугольный треугольник с катетами $10$ и $24$, боковое ребро равно $7$. Найдите объём призмы.
+answer:
+  type: number
+  value: '840'
+solution: |
+  Площадь основания $S=\dfrac{10\cdot 24}{2}=120$, объём $V=S\cdot h=120\cdot 7=840$.
+hints:
+  - 'Объём призмы — площадь основания на высоту.'
+source:
+  kind: own
+  ref: 'tpl:prism_volume'
+status: live

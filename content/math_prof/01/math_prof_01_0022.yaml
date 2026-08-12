@@ -1,0 +1,18 @@
+id: math_prof_01_0022
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Катеты прямоугольного треугольника равны $7$ и $24$. Найдите радиус вписанной в него окружности.
+answer:
+  type: number
+  value: '3'
+solution: |
+  Гипотенуза $c=\sqrt{7^2+24^2}=25$. Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}=\dfrac{7+24-25}{2}=3$.
+hints:
+  - 'Сначала найдите гипотенузу.'
+  - 'Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}$.'
+source:
+  kind: own
+  ref: 'tpl:right_triangle_inradius'
+status: live

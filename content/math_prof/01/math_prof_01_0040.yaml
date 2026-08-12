@@ -1,0 +1,17 @@
+id: math_prof_01_0040
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $48$, а одна из его сторон равна $13$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '143'
+solution: |
+  Полупериметр равен $24$, значит вторая сторона равна $24-13=11$. Площадь: $13\cdot 11=143$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

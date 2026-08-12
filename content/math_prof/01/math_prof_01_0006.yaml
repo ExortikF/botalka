@@ -1,0 +1,17 @@
+id: math_prof_01_0006
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $90^\circ$, $AC = 9$, $BC = 40$. Найдите $AB$.
+answer:
+  type: number
+  value: '41'
+solution: |
+  По теореме Пифагора $AB=\sqrt{9^2+40^2}=\sqrt{81+1600}=\sqrt{1681}=41$.
+hints:
+  - 'Теорема Пифагора: квадрат гипотенузы равен сумме квадратов катетов.'
+source:
+  kind: own
+  ref: 'tpl:right_triangle_hyp'
+status: live

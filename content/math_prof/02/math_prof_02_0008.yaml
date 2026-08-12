@@ -1,0 +1,17 @@
+id: math_prof_02_0008
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите длину вектора $\vec{a}\,(-40;\,42)$.
+answer:
+  type: number
+  value: '58'
+solution: |
+  $|\vec{a}|=\sqrt{(-40)^2+(42)^2}=\sqrt{1600+1764}=\sqrt{3364}=58$.
+hints:
+  - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
+source:
+  kind: own
+  ref: 'tpl:vector_length'
+status: live

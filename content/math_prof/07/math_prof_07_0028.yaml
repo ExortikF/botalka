@@ -1,0 +1,17 @@
+id: math_prof_07_0028
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $\dfrac{3^{\,3,5}}{3^{\,0,5}}$.
+answer:
+  type: number
+  value: '27'
+solution: |
+  $3^{3,5-0,5}=3^{3}=27$.
+hints:
+  - 'При делении степеней с одинаковым основанием показатели вычитаются.'
+source:
+  kind: own
+  ref: 'tpl:calc_frac_power'
+status: live

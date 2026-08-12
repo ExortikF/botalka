@@ -1,0 +1,17 @@
+id: math_prof_08_0010
+subject: math_prof
+task_type: 8
+difficulty: 2
+statement: |
+  Функция задана формулой $f(x)=2x^{3}+5x^{2}+0x$. Найдите $f'(2)$.
+answer:
+  type: number
+  value: '44'
+solution: |
+  $f'(x)=6x^{2}+10x+0$, тогда $f'(2)=6\cdot4+20+0=44$.
+hints:
+  - 'Производная $x^n$ равна $nx^{n-1}$.'
+source:
+  kind: own
+  ref: 'tpl:derivative_value'
+status: live

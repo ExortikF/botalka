@@ -3,12 +3,13 @@ subject: math_prof
 task_type: 3
 difficulty: 1
 statement: |
-  Объём куба равен $27$. Найдите длину его ребра.
+  Найдите объём прямоугольного параллелепипеда с измерениями $2$, $2$ и $7$.
 answer:
   type: number
-  value: '3'
+  value: '28'
 solution: |
-  Если ребро равно $a$, то $a^3=27$, откуда $a=3$.
+  Объём равен произведению измерений: $2\cdot 2\cdot 7=28$.
 source:
   kind: own
+  ref: 'tpl:box_volume'
 status: live

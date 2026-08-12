@@ -1,0 +1,15 @@
+id: math_prof_09_0009
+subject: math_prof
+task_type: 9
+difficulty: 1
+statement: |
+  Мощность постоянного тока вычисляется по формуле $P=I^{2}R$. Найдите мощность (в ваттах), если сила тока $I=8$ А, а сопротивление $R=9$ Ом.
+answer:
+  type: number
+  value: '576'
+solution: |
+  $P=8^{2}\cdot 9=64\cdot 9=576$.
+source:
+  kind: own
+  ref: 'tpl:applied_power'
+status: live

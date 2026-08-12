@@ -1,0 +1,17 @@
+id: math_prof_12_0013
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x+\dfrac{64}{x}$ при $x>0$.
+answer:
+  type: number
+  value: '16'
+solution: |
+  $y'=1-\dfrac{64}{x^{2}}=0$ при $x=8$. Производная меняет знак с минуса на плюс — это минимум: $y(8)=8+8=16$.
+hints:
+  - 'Приравняйте производную к нулю; берём положительный корень.'
+source:
+  kind: own
+  ref: 'tpl:min_hyperbola'
+status: live

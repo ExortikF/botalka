@@ -1,0 +1,15 @@
+id: math_prof_06_0056
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $5x + (10) = 7x + (22)$.
+answer:
+  type: number
+  value: '-6'
+solution: |
+  Переносим: $(5-7)x = 22 - (10)$, то есть $-2x=12$, откуда $x=-6$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

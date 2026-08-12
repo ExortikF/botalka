@@ -1,0 +1,18 @@
+id: math_prof_06_0007
+subject: math_prof
+task_type: 6
+difficulty: 2
+statement: |
+  Найдите корень уравнения $\log_{2}(5x - 11)=2$.
+answer:
+  type: number
+  value: '3'
+solution: |
+  По определению логарифма $5x - 11=2^{2}=4$, откуда $x=3$. Под логарифмом $4>0$ — ОДЗ выполнено.
+hints:
+  - 'Перейдите от логарифма к показательному виду.'
+  - 'Проверьте ОДЗ: под логарифмом должно быть положительное число.'
+source:
+  kind: own
+  ref: 'tpl:eq_log'
+status: live

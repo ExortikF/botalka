@@ -1,0 +1,17 @@
+id: math_prof_02_0018
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите скалярное произведение векторов $\vec{a}\,(-4;\,-2)$ и $\vec{b}\,(-2;\,6)$.
+answer:
+  type: number
+  value: '-4'
+solution: |
+  $\vec{a}\cdot\vec{b}=-4\cdot-2+-2\cdot6=8+-12=-4$.
+hints:
+  - 'Скалярное произведение по координатам: $x_1x_2+y_1y_2$.'
+source:
+  kind: own
+  ref: 'tpl:vector_dot'
+status: live

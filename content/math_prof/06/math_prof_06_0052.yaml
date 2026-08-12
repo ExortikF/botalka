@@ -1,0 +1,15 @@
+id: math_prof_06_0052
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $4x + (-9) = 8x + (-13)$.
+answer:
+  type: number
+  value: '1'
+solution: |
+  Переносим: $(4-8)x = -13 - (-9)$, то есть $-4x=-4$, откуда $x=1$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

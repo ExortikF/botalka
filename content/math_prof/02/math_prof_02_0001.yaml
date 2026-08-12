@@ -3,14 +3,15 @@ subject: math_prof
 task_type: 2
 difficulty: 1
 statement: |
-  Найдите длину вектора $\vec{a}\,(3;\,4)$.
+  Найдите длину вектора $\vec{a}\,(10;\,-24)$.
 answer:
   type: number
-  value: '5'
+  value: '26'
 solution: |
-  $|\vec{a}|=\sqrt{3^2+4^2}=\sqrt{25}=5$.
+  $|\vec{a}|=\sqrt{(10)^2+(-24)^2}=\sqrt{100+576}=\sqrt{676}=26$.
 hints:
   - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
 source:
   kind: own
+  ref: 'tpl:vector_length'
 status: live

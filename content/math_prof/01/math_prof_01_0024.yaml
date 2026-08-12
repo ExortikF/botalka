@@ -1,0 +1,18 @@
+id: math_prof_01_0024
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Катеты прямоугольного треугольника равны $3$ и $4$. Найдите радиус вписанной в него окружности.
+answer:
+  type: number
+  value: '1'
+solution: |
+  Гипотенуза $c=\sqrt{3^2+4^2}=5$. Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}=\dfrac{3+4-5}{2}=1$.
+hints:
+  - 'Сначала найдите гипотенузу.'
+  - 'Для прямоугольного треугольника $r=\dfrac{a+b-c}{2}$.'
+source:
+  kind: own
+  ref: 'tpl:right_triangle_inradius'
+status: live

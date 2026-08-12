@@ -1,0 +1,17 @@
+id: math_prof_01_0052
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Основания трапеции равны $12$ и $16$, а высота равна $7$. Найдите её площадь.
+answer:
+  type: number
+  value: '98'
+solution: |
+  $S=\dfrac{a+b}{2}\cdot h=\dfrac{12+16}{2}\cdot 7=14\cdot 7=98$.
+hints:
+  - 'Площадь трапеции — полусумма оснований, умноженная на высоту.'
+source:
+  kind: own
+  ref: 'tpl:trapezoid_area'
+status: live

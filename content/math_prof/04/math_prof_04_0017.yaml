@@ -1,0 +1,17 @@
+id: math_prof_04_0017
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  Игральную кость бросают один раз. Найдите вероятность того, что выпадет не меньше $4$.
+answer:
+  type: number
+  value: '0.5'
+solution: |
+  Подходят исходы 4, 5, 6 — всего $3$ из $6$. $P=\dfrac{3}{6}=0,5$.
+hints:
+  - 'Всего у кости шесть равновозможных исходов.'
+source:
+  kind: own
+  ref: 'tpl:prob_dice'
+status: live

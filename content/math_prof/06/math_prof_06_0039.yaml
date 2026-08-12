@@ -1,0 +1,17 @@
+id: math_prof_06_0039
+subject: math_prof
+task_type: 6
+difficulty: 2
+statement: |
+  Найдите корень уравнения $\dfrac{x-3}{x+13}=0$.
+answer:
+  type: number
+  value: '3'
+solution: |
+  Дробь равна нулю, когда числитель равен нулю, а знаменатель — нет. $x-3=0$ даёт $x=3$; при этом $x+13=16\neq 0$.
+hints:
+  - 'Дробь равна нулю только при нулевом числителе.'
+source:
+  kind: own
+  ref: 'tpl:eq_fraction'
+status: live

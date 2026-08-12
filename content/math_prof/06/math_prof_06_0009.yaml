@@ -1,0 +1,18 @@
+id: math_prof_06_0009
+subject: math_prof
+task_type: 6
+difficulty: 2
+statement: |
+  Найдите корень уравнения $\log_{3}(4x + 19)=3$.
+answer:
+  type: number
+  value: '2'
+solution: |
+  По определению логарифма $4x + 19=3^{3}=27$, откуда $x=2$. Под логарифмом $27>0$ — ОДЗ выполнено.
+hints:
+  - 'Перейдите от логарифма к показательному виду.'
+  - 'Проверьте ОДЗ: под логарифмом должно быть положительное число.'
+source:
+  kind: own
+  ref: 'tpl:eq_log'
+status: live

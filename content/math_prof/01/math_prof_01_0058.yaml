@@ -1,0 +1,17 @@
+id: math_prof_01_0058
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Основания трапеции равны $6$ и $8$, а высота равна $8$. Найдите её площадь.
+answer:
+  type: number
+  value: '56'
+solution: |
+  $S=\dfrac{a+b}{2}\cdot h=\dfrac{6+8}{2}\cdot 8=7\cdot 8=56$.
+hints:
+  - 'Площадь трапеции — полусумма оснований, умноженная на высоту.'
+source:
+  kind: own
+  ref: 'tpl:trapezoid_area'
+status: live

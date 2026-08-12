@@ -3,14 +3,15 @@ subject: math_prof
 task_type: 7
 difficulty: 2
 statement: |
-  Найдите значение выражения $\log_{2}40-\log_{2}5$.
+  Найдите значение выражения $\log_{3}45-\log_{3}5$.
 answer:
   type: number
-  value: '3'
+  value: '2'
 solution: |
-  $\log_{2}40-\log_{2}5=\log_{2}\dfrac{40}{5}=\log_{2}8=3$.
+  $\log_{3}45-\log_{3}5=\log_{3}\dfrac{45}{5}=\log_{3}9=2$.
 hints:
   - 'Разность логарифмов с одним основанием — логарифм частного.'
 source:
   kind: own
+  ref: 'tpl:calc_log_diff'
 status: live

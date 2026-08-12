@@ -1,0 +1,17 @@
+id: math_prof_02_0003
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите длину вектора $\vec{a}\,(-60;\,63)$.
+answer:
+  type: number
+  value: '87'
+solution: |
+  $|\vec{a}|=\sqrt{(-60)^2+(63)^2}=\sqrt{3600+3969}=\sqrt{7569}=87$.
+hints:
+  - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
+source:
+  kind: own
+  ref: 'tpl:vector_length'
+status: live

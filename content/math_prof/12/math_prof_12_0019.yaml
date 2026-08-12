@@ -1,0 +1,17 @@
+id: math_prof_12_0019
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x+\dfrac{121}{x}$ при $x>0$.
+answer:
+  type: number
+  value: '22'
+solution: |
+  $y'=1-\dfrac{121}{x^{2}}=0$ при $x=11$. Производная меняет знак с минуса на плюс — это минимум: $y(11)=11+11=22$.
+hints:
+  - 'Приравняйте производную к нулю; берём положительный корень.'
+source:
+  kind: own
+  ref: 'tpl:min_hyperbola'
+status: live

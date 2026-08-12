@@ -1,0 +1,15 @@
+id: math_prof_06_0053
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $8x + (-3) = 3x + (7)$.
+answer:
+  type: number
+  value: '2'
+solution: |
+  Переносим: $(8-3)x = 7 - (-3)$, то есть $5x=10$, откуда $x=2$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

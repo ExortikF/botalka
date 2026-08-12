@@ -1,0 +1,17 @@
+id: math_prof_01_0049
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Основания трапеции равны $14$ и $22$, а высота равна $3$. Найдите её площадь.
+answer:
+  type: number
+  value: '54'
+solution: |
+  $S=\dfrac{a+b}{2}\cdot h=\dfrac{14+22}{2}\cdot 3=18\cdot 3=54$.
+hints:
+  - 'Площадь трапеции — полусумма оснований, умноженная на высоту.'
+source:
+  kind: own
+  ref: 'tpl:trapezoid_area'
+status: live

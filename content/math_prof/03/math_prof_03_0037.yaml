@@ -1,0 +1,17 @@
+id: math_prof_03_0037
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Основание прямой призмы — прямоугольный треугольник с катетами $9$ и $40$, боковое ребро равно $3$. Найдите объём призмы.
+answer:
+  type: number
+  value: '540'
+solution: |
+  Площадь основания $S=\dfrac{9\cdot 40}{2}=180$, объём $V=S\cdot h=180\cdot 3=540$.
+hints:
+  - 'Объём призмы — площадь основания на высоту.'
+source:
+  kind: own
+  ref: 'tpl:prism_volume'
+status: live

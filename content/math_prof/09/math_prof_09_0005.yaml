@@ -1,0 +1,15 @@
+id: math_prof_09_0005
+subject: math_prof
+task_type: 9
+difficulty: 1
+statement: |
+  Мощность постоянного тока вычисляется по формуле $P=I^{2}R$. Найдите мощность (в ваттах), если сила тока $I=7$ А, а сопротивление $R=3$ Ом.
+answer:
+  type: number
+  value: '147'
+solution: |
+  $P=7^{2}\cdot 3=49\cdot 3=147$.
+source:
+  kind: own
+  ref: 'tpl:applied_power'
+status: live

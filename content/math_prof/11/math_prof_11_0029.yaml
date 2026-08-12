@@ -1,0 +1,17 @@
+id: math_prof_11_0029
+subject: math_prof
+task_type: 11
+difficulty: 2
+statement: |
+  Прямая $y=kx+b$ проходит через точки $(-2;\,3)$ и $(4;\,-15)$. Найдите $k$.
+answer:
+  type: number
+  value: '-3'
+solution: |
+  $k=\dfrac{y_2-y_1}{x_2-x_1}=\dfrac{-15-(3)}{4-(-2)}=-3$.
+hints:
+  - 'Угловой коэффициент — отношение приращения $y$ к приращению $x$.'
+source:
+  kind: own
+  ref: 'tpl:graph_linear'
+status: live

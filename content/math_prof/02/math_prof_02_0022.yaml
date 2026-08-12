@@ -1,0 +1,17 @@
+id: math_prof_02_0022
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите скалярное произведение векторов $\vec{a}\,(6;\,8)$ и $\vec{b}\,(-5;\,1)$.
+answer:
+  type: number
+  value: '-22'
+solution: |
+  $\vec{a}\cdot\vec{b}=6\cdot-5+8\cdot1=-30+8=-22$.
+hints:
+  - 'Скалярное произведение по координатам: $x_1x_2+y_1y_2$.'
+source:
+  kind: own
+  ref: 'tpl:vector_dot'
+status: live

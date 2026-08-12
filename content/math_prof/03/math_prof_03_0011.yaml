@@ -1,0 +1,15 @@
+id: math_prof_03_0011
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Найдите объём прямоугольного параллелепипеда с измерениями $8$, $9$ и $3$.
+answer:
+  type: number
+  value: '216'
+solution: |
+  Объём равен произведению измерений: $8\cdot 9\cdot 3=216$.
+source:
+  kind: own
+  ref: 'tpl:box_volume'
+status: live

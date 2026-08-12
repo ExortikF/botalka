@@ -1,0 +1,17 @@
+id: math_prof_12_0026
+subject: math_prof
+task_type: 12
+difficulty: 2
+statement: |
+  Найдите наибольшее значение функции $y=-1x^{2}+10x-5$.
+answer:
+  type: number
+  value: '20'
+solution: |
+  Ветви параболы направлены вниз, максимум в вершине: $x_0=-\dfrac{b}{2a}=-\dfrac{10}{-2}=5$, $y(5)=20$.
+hints:
+  - 'У параболы с отрицательным старшим коэффициентом максимум в вершине.'
+source:
+  kind: own
+  ref: 'tpl:max_quadratic'
+status: live

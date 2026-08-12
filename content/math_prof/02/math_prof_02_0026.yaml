@@ -1,0 +1,17 @@
+id: math_prof_02_0026
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Векторы $\vec{a}\,(5;\,4)$ и $\vec{b}\,(20;\,m)$ коллинеарны. Найдите $m$.
+answer:
+  type: number
+  value: '16'
+solution: |
+  Коллинеарность означает $x_1 m - y_1 x_2 = 0$, то есть $5m-4\cdot20=0$, откуда $m=16$.
+hints:
+  - 'Для коллинеарных векторов координаты пропорциональны.'
+source:
+  kind: own
+  ref: 'tpl:vector_collinear'
+status: live

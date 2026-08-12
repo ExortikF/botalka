@@ -1,0 +1,17 @@
+id: math_prof_01_0037
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $28$, а одна из его сторон равна $8$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '48'
+solution: |
+  Полупериметр равен $14$, значит вторая сторона равна $14-8=6$. Площадь: $8\cdot 6=48$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

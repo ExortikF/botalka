@@ -1,0 +1,17 @@
+id: math_prof_03_0014
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Ребро куба равно $7$. Найдите площадь его полной поверхности.
+answer:
+  type: number
+  value: '294'
+solution: |
+  У куба $6$ граней, каждая — квадрат со стороной $7$: $6\cdot 7^2=6\cdot 49=294$.
+hints:
+  - 'У куба шесть одинаковых квадратных граней.'
+source:
+  kind: own
+  ref: 'tpl:cube_surface'
+status: live

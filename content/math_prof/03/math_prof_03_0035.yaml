@@ -1,0 +1,17 @@
+id: math_prof_03_0035
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Радиус основания цилиндра равен $2$, высота равна $9$. Найдите объём цилиндра, делённый на $\pi$.
+answer:
+  type: number
+  value: '36'
+solution: |
+  $V=\pi R^2 h=\pi\cdot 2^2\cdot 9=36\pi$. Разделив на $\pi$, получаем $36$.
+hints:
+  - 'Объём цилиндра: $V=\pi R^2 h$.'
+source:
+  kind: own
+  ref: 'tpl:cylinder_volume'
+status: live

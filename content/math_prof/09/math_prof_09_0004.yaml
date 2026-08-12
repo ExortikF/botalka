@@ -1,0 +1,15 @@
+id: math_prof_09_0004
+subject: math_prof
+task_type: 9
+difficulty: 1
+statement: |
+  Мощность постоянного тока вычисляется по формуле $P=I^{2}R$. Найдите мощность (в ваттах), если сила тока $I=2$ А, а сопротивление $R=15$ Ом.
+answer:
+  type: number
+  value: '60'
+solution: |
+  $P=2^{2}\cdot 15=4\cdot 15=60$.
+source:
+  kind: own
+  ref: 'tpl:applied_power'
+status: live

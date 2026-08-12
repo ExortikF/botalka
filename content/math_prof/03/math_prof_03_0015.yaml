@@ -1,0 +1,17 @@
+id: math_prof_03_0015
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Ребро куба равно $14$. Найдите площадь его полной поверхности.
+answer:
+  type: number
+  value: '1176'
+solution: |
+  У куба $6$ граней, каждая — квадрат со стороной $14$: $6\cdot 14^2=6\cdot 196=1176$.
+hints:
+  - 'У куба шесть одинаковых квадратных граней.'
+source:
+  kind: own
+  ref: 'tpl:cube_surface'
+status: live

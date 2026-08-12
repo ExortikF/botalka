@@ -1,0 +1,17 @@
+id: math_prof_12_0028
+subject: math_prof
+task_type: 12
+difficulty: 2
+statement: |
+  Найдите наибольшее значение функции $y=-3x^{2}-30x+18$.
+answer:
+  type: number
+  value: '93'
+solution: |
+  Ветви параболы направлены вниз, максимум в вершине: $x_0=-\dfrac{b}{2a}=-\dfrac{-30}{-6}=-5$, $y(-5)=93$.
+hints:
+  - 'У параболы с отрицательным старшим коэффициентом максимум в вершине.'
+source:
+  kind: own
+  ref: 'tpl:max_quadratic'
+status: live

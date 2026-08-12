@@ -1,0 +1,17 @@
+id: math_prof_03_0025
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Радиус основания цилиндра равен $7$, высота равна $6$. Найдите объём цилиндра, делённый на $\pi$.
+answer:
+  type: number
+  value: '294'
+solution: |
+  $V=\pi R^2 h=\pi\cdot 7^2\cdot 6=294\pi$. Разделив на $\pi$, получаем $294$.
+hints:
+  - 'Объём цилиндра: $V=\pi R^2 h$.'
+source:
+  kind: own
+  ref: 'tpl:cylinder_volume'
+status: live

@@ -1,0 +1,17 @@
+id: math_prof_04_0006
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  В коробке $20$ шаров, из них $6$ белых. Наугад достают один шар. Найдите вероятность того, что он окажется этого цвета.
+answer:
+  type: number
+  value: '0.3'
+solution: |
+  $P=\dfrac{6}{20}=0,3$.
+hints:
+  - 'Вероятность — отношение подходящих исходов к общему числу исходов.'
+source:
+  kind: own
+  ref: 'tpl:prob_balls'
+status: live

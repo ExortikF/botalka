@@ -1,0 +1,17 @@
+id: math_prof_02_0025
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Векторы $\vec{a}\,(6;\,2)$ и $\vec{b}\,(12;\,m)$ коллинеарны. Найдите $m$.
+answer:
+  type: number
+  value: '4'
+solution: |
+  Коллинеарность означает $x_1 m - y_1 x_2 = 0$, то есть $6m-2\cdot12=0$, откуда $m=4$.
+hints:
+  - 'Для коллинеарных векторов координаты пропорциональны.'
+source:
+  kind: own
+  ref: 'tpl:vector_collinear'
+status: live

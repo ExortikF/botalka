@@ -1,0 +1,17 @@
+id: math_prof_01_0039
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $22$, а одна из его сторон равна $4$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '28'
+solution: |
+  Полупериметр равен $11$, значит вторая сторона равна $11-4=7$. Площадь: $4\cdot 7=28$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

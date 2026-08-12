@@ -1,14 +1,17 @@
 id: math_prof_07_0002
 subject: math_prof
 task_type: 7
-difficulty: 1
+difficulty: 2
 statement: |
-  Найдите значение выражения $\dfrac{2^{5}\cdot 2^{3}}{2^{6}}$.
+  Найдите значение выражения $\log_{2}16-\log_{2}2$.
 answer:
   type: number
-  value: '4'
+  value: '3'
 solution: |
-  $\dfrac{2^{5+3}}{2^{6}}=2^{8-6}=2^{2}=4$.
+  $\log_{2}16-\log_{2}2=\log_{2}\dfrac{16}{2}=\log_{2}8=3$.
+hints:
+  - 'Разность логарифмов с одним основанием — логарифм частного.'
 source:
   kind: own
+  ref: 'tpl:calc_log_diff'
 status: live

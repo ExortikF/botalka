@@ -1,16 +1,17 @@
 id: math_prof_11_0002
 subject: math_prof
 task_type: 11
-difficulty: 3
+difficulty: 1
 statement: |
-  Парабола $y=x^{2}+bx+c$ проходит через точки $(0;\,5)$ и $(1;\,2)$. Найдите $b$.
+  График функции $y=\dfrac{k}{x}$ проходит через точку $(6;\,-12)$. Найдите $k$.
 answer:
   type: number
-  value: '-4'
+  value: '-72'
 solution: |
-  Из точки $(0;5)$: $c=5$. Из точки $(1;2)$: $1+b+5=2$, откуда $b=-4$.
+  Подставим точку: $-12=\dfrac{k}{6}$, откуда $k=6\cdot-12=-72$.
 hints:
-  - 'Начните с точки, у которой $x=0$ — она сразу даёт $c$.'
+  - 'Подставьте координаты точки в формулу функции.'
 source:
   kind: own
+  ref: 'tpl:graph_hyperbola'
 status: live

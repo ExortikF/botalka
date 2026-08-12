@@ -1,0 +1,17 @@
+id: math_prof_06_0015
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $2^{\,x+1}=16$.
+answer:
+  type: number
+  value: '3'
+solution: |
+  $16=2^{4}$, значит $x+1=4$ и $x=3$.
+hints:
+  - 'Приведите обе части к одному основанию.'
+source:
+  kind: own
+  ref: 'tpl:eq_exp'
+status: live

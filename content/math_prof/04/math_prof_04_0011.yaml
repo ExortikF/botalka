@@ -1,0 +1,17 @@
+id: math_prof_04_0011
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  В коробке $25$ шаров, из них $2$ синих. Наугад достают один шар. Найдите вероятность того, что он окажется этого цвета.
+answer:
+  type: number
+  value: '0.08'
+solution: |
+  $P=\dfrac{2}{25}=0,08$.
+hints:
+  - 'Вероятность — отношение подходящих исходов к общему числу исходов.'
+source:
+  kind: own
+  ref: 'tpl:prob_balls'
+status: live

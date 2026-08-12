@@ -1,0 +1,17 @@
+id: math_prof_03_0024
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Ребро куба равно $4$. Найдите площадь его полной поверхности.
+answer:
+  type: number
+  value: '96'
+solution: |
+  У куба $6$ граней, каждая — квадрат со стороной $4$: $6\cdot 4^2=6\cdot 16=96$.
+hints:
+  - 'У куба шесть одинаковых квадратных граней.'
+source:
+  kind: own
+  ref: 'tpl:cube_surface'
+status: live

@@ -1,0 +1,15 @@
+id: math_prof_04_0025
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  В классе $50$ учеников, из них $42$ девочек. Наугад выбирают одного дежурного. Найдите вероятность того, что дежурным окажется мальчик.
+answer:
+  type: number
+  value: '0.16'
+solution: |
+  Мальчиков $50-42=8$. $P=\dfrac{8}{50}=0,16$.
+source:
+  kind: own
+  ref: 'tpl:prob_class'
+status: live

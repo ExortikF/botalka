@@ -1,0 +1,17 @@
+id: math_prof_11_0005
+subject: math_prof
+task_type: 11
+difficulty: 1
+statement: |
+  График функции $y=\dfrac{k}{x}$ проходит через точку $(2;\,4)$. Найдите $k$.
+answer:
+  type: number
+  value: '8'
+solution: |
+  Подставим точку: $4=\dfrac{k}{2}$, откуда $k=2\cdot4=8$.
+hints:
+  - 'Подставьте координаты точки в формулу функции.'
+source:
+  kind: own
+  ref: 'tpl:graph_hyperbola'
+status: live

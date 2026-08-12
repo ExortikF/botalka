@@ -1,0 +1,17 @@
+id: math_prof_01_0041
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $30$, а одна из его сторон равна $11$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '44'
+solution: |
+  Полупериметр равен $15$, значит вторая сторона равна $15-11=4$. Площадь: $11\cdot 4=44$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

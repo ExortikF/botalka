@@ -1,0 +1,17 @@
+id: math_prof_11_0007
+subject: math_prof
+task_type: 11
+difficulty: 1
+statement: |
+  График функции $y=\dfrac{k}{x}$ проходит через точку $(-3;\,-12)$. Найдите $k$.
+answer:
+  type: number
+  value: '36'
+solution: |
+  Подставим точку: $-12=\dfrac{k}{-3}$, откуда $k=-3\cdot-12=36$.
+hints:
+  - 'Подставьте координаты точки в формулу функции.'
+source:
+  kind: own
+  ref: 'tpl:graph_hyperbola'
+status: live

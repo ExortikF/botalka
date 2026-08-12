@@ -1,0 +1,17 @@
+id: math_prof_10_0032
+subject: math_prof
+task_type: 10
+difficulty: 3
+statement: |
+  Товар стоил $1200$ рублей. Сначала его уценили на $25\%$, а затем ещё на $50\%$ от новой цены. Сколько рублей стоит товар теперь?
+answer:
+  type: number
+  value: '450'
+solution: |
+  После первой скидки: $1200\cdot 0,75=900$ р. После второй: $900\cdot 0,5=450$ р. Скидки не складываются — множители перемножаются.
+hints:
+  - 'Скидка на $p\%$ — это умножение на $1-\dfrac{p}{100}$.'
+source:
+  kind: own
+  ref: 'tpl:text_percent'
+status: live

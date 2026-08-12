@@ -1,0 +1,17 @@
+id: math_prof_09_0031
+subject: math_prof
+task_type: 9
+difficulty: 2
+statement: |
+  Два резистора соединены параллельно, их сопротивления равны $6$ Ом и $6$ Ом. Общее сопротивление находится по формуле $\dfrac{1}{R}=\dfrac{1}{R_1}+\dfrac{1}{R_2}$. Найдите $R$ (в омах).
+answer:
+  type: number
+  value: '3'
+solution: |
+  $\dfrac{1}{R}=\dfrac{1}{6}+\dfrac{1}{6}=\dfrac{12}{36}$, откуда $R=\dfrac{36}{12}=3$.
+hints:
+  - 'Сначала найдите $\dfrac{1}{R}$, потом переверните дробь.'
+source:
+  kind: own
+  ref: 'tpl:applied_ohm'
+status: live

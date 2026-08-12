@@ -1,0 +1,17 @@
+id: math_prof_06_0016
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $2^{\,x+3}=4$.
+answer:
+  type: number
+  value: '-1'
+solution: |
+  $4=2^{2}$, значит $x+3=2$ и $x=-1$.
+hints:
+  - 'Приведите обе части к одному основанию.'
+source:
+  kind: own
+  ref: 'tpl:eq_exp'
+status: live

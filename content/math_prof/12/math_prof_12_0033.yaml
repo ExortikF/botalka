@@ -1,0 +1,17 @@
+id: math_prof_12_0033
+subject: math_prof
+task_type: 12
+difficulty: 2
+statement: |
+  Найдите наибольшее значение функции $y=-2x^{2}+20x+19$.
+answer:
+  type: number
+  value: '69'
+solution: |
+  Ветви параболы направлены вниз, максимум в вершине: $x_0=-\dfrac{b}{2a}=-\dfrac{20}{-4}=5$, $y(5)=69$.
+hints:
+  - 'У параболы с отрицательным старшим коэффициентом максимум в вершине.'
+source:
+  kind: own
+  ref: 'tpl:max_quadratic'
+status: live

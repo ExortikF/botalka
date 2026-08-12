@@ -1,0 +1,17 @@
+id: math_prof_02_0019
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите скалярное произведение векторов $\vec{a}\,(3;\,-3)$ и $\vec{b}\,(0;\,2)$.
+answer:
+  type: number
+  value: '-6'
+solution: |
+  $\vec{a}\cdot\vec{b}=3\cdot0+-3\cdot2=0+-6=-6$.
+hints:
+  - 'Скалярное произведение по координатам: $x_1x_2+y_1y_2$.'
+source:
+  kind: own
+  ref: 'tpl:vector_dot'
+status: live

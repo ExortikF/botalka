@@ -1,0 +1,17 @@
+id: math_prof_03_0021
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Ребро куба равно $3$. Найдите площадь его полной поверхности.
+answer:
+  type: number
+  value: '54'
+solution: |
+  У куба $6$ граней, каждая — квадрат со стороной $3$: $6\cdot 3^2=6\cdot 9=54$.
+hints:
+  - 'У куба шесть одинаковых квадратных граней.'
+source:
+  kind: own
+  ref: 'tpl:cube_surface'
+status: live

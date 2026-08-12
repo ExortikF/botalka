@@ -1,0 +1,17 @@
+id: math_prof_07_0010
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $\log_{3}1701-\log_{3}7$.
+answer:
+  type: number
+  value: '5'
+solution: |
+  $\log_{3}1701-\log_{3}7=\log_{3}\dfrac{1701}{7}=\log_{3}243=5$.
+hints:
+  - 'Разность логарифмов с одним основанием — логарифм частного.'
+source:
+  kind: own
+  ref: 'tpl:calc_log_diff'
+status: live

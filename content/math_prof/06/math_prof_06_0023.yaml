@@ -1,0 +1,17 @@
+id: math_prof_06_0023
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $2^{\,x+3}=32$.
+answer:
+  type: number
+  value: '2'
+solution: |
+  $32=2^{5}$, значит $x+3=5$ и $x=2$.
+hints:
+  - 'Приведите обе части к одному основанию.'
+source:
+  kind: own
+  ref: 'tpl:eq_exp'
+status: live

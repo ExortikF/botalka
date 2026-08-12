@@ -1,0 +1,17 @@
+id: math_prof_03_0047
+subject: math_prof
+task_type: 3
+difficulty: 2
+statement: |
+  Основание прямой призмы — прямоугольный треугольник с катетами $15$ и $36$, боковое ребро равно $7$. Найдите объём призмы.
+answer:
+  type: number
+  value: '1890'
+solution: |
+  Площадь основания $S=\dfrac{15\cdot 36}{2}=270$, объём $V=S\cdot h=270\cdot 7=1890$.
+hints:
+  - 'Объём призмы — площадь основания на высоту.'
+source:
+  kind: own
+  ref: 'tpl:prism_volume'
+status: live

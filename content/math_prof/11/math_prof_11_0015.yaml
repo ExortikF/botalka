@@ -1,0 +1,17 @@
+id: math_prof_11_0015
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  Парабола $y=x^{2}+bx+c$ проходит через точки $(0;\,1)$ и $(-1;\,-4)$. Найдите $b$.
+answer:
+  type: number
+  value: '6'
+solution: |
+  Из точки $(0;1)$ сразу $c=1$. Подставим вторую точку: $1+b\cdot(-1)+(1)=-4$, откуда $b=6$.
+hints:
+  - 'Начните с точки, где $x=0$ — она сразу даёт $c$.'
+source:
+  kind: own
+  ref: 'tpl:graph_parabola'
+status: live

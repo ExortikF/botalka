@@ -1,0 +1,17 @@
+id: math_prof_02_0012
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите длину вектора $\vec{a}\,(7;\,24)$.
+answer:
+  type: number
+  value: '25'
+solution: |
+  $|\vec{a}|=\sqrt{(7)^2+(24)^2}=\sqrt{49+576}=\sqrt{625}=25$.
+hints:
+  - 'Длина вектора по координатам: $\sqrt{x^2+y^2}$.'
+source:
+  kind: own
+  ref: 'tpl:vector_length'
+status: live

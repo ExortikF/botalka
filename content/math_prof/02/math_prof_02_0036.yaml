@@ -1,0 +1,17 @@
+id: math_prof_02_0036
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Векторы $\vec{a}\,(6;\,5)$ и $\vec{b}\,(-18;\,m)$ коллинеарны. Найдите $m$.
+answer:
+  type: number
+  value: '-15'
+solution: |
+  Коллинеарность означает $x_1 m - y_1 x_2 = 0$, то есть $6m-5\cdot-18=0$, откуда $m=-15$.
+hints:
+  - 'Для коллинеарных векторов координаты пропорциональны.'
+source:
+  kind: own
+  ref: 'tpl:vector_collinear'
+status: live

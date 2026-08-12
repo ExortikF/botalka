@@ -1,0 +1,17 @@
+id: math_prof_06_0020
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $5^{\,x+6}=625$.
+answer:
+  type: number
+  value: '-2'
+solution: |
+  $625=5^{4}$, значит $x+6=4$ и $x=-2$.
+hints:
+  - 'Приведите обе части к одному основанию.'
+source:
+  kind: own
+  ref: 'tpl:eq_exp'
+status: live

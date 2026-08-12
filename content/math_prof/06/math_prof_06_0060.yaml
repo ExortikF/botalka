@@ -1,0 +1,15 @@
+id: math_prof_06_0060
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $4x + (3) = 9x + (-17)$.
+answer:
+  type: number
+  value: '4'
+solution: |
+  Переносим: $(4-9)x = -17 - (3)$, то есть $-5x=-20$, откуда $x=4$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

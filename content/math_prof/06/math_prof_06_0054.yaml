@@ -1,0 +1,15 @@
+id: math_prof_06_0054
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $8x + (8) = 6x + (6)$.
+answer:
+  type: number
+  value: '-1'
+solution: |
+  Переносим: $(8-6)x = 6 - (8)$, то есть $2x=-2$, откуда $x=-1$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

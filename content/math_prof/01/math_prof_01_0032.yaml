@@ -1,0 +1,17 @@
+id: math_prof_01_0032
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  Стороны треугольника равны $10$, $10$ и $12$. Найдите его площадь.
+answer:
+  type: number
+  value: '48'
+solution: |
+  Полупериметр $p=\dfrac{10+10+12}{2}=16$. По формуле Герона $S=\sqrt{p(p-a)(p-b)(p-c)}=\sqrt{16\cdot6\cdot6\cdot4}=48$.
+hints:
+  - 'Посчитайте полупериметр и примените формулу Герона.'
+source:
+  kind: own
+  ref: 'tpl:heron'
+status: live

@@ -1,0 +1,15 @@
+id: math_prof_03_0006
+subject: math_prof
+task_type: 3
+difficulty: 1
+statement: |
+  Найдите объём прямоугольного параллелепипеда с измерениями $9$, $10$ и $8$.
+answer:
+  type: number
+  value: '720'
+solution: |
+  Объём равен произведению измерений: $9\cdot 10\cdot 8=720$.
+source:
+  kind: own
+  ref: 'tpl:box_volume'
+status: live

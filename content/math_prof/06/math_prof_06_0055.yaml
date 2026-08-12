@@ -1,0 +1,15 @@
+id: math_prof_06_0055
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $4x + (1) = 6x + (-7)$.
+answer:
+  type: number
+  value: '4'
+solution: |
+  Переносим: $(4-6)x = -7 - (1)$, то есть $-2x=-8$, откуда $x=4$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

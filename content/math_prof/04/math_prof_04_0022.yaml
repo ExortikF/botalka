@@ -1,0 +1,15 @@
+id: math_prof_04_0022
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  В классе $25$ учеников, из них $6$ девочек. Наугад выбирают одного дежурного. Найдите вероятность того, что дежурным окажется мальчик.
+answer:
+  type: number
+  value: '0.76'
+solution: |
+  Мальчиков $25-6=19$. $P=\dfrac{19}{25}=0,76$.
+source:
+  kind: own
+  ref: 'tpl:prob_class'
+status: live

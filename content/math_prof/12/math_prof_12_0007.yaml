@@ -1,0 +1,17 @@
+id: math_prof_12_0007
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x^{3}-27x+8$ на отрезке $[0;\,5]$.
+answer:
+  type: number
+  value: '-46'
+solution: |
+  $y'=3x^{2}-27=0$ при $x=\pm3$; отрезку принадлежит $x=3$. Сравниваем: $y(0)=8$, $y(3)=-46$, $y(5)=-2$. Наименьшее — $-46$.
+hints:
+  - 'Найдите критические точки и сравните значения на концах отрезка и в них.'
+source:
+  kind: own
+  ref: 'tpl:min_cubic'
+status: live

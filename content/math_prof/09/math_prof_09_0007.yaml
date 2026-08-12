@@ -1,0 +1,15 @@
+id: math_prof_09_0007
+subject: math_prof
+task_type: 9
+difficulty: 1
+statement: |
+  Мощность постоянного тока вычисляется по формуле $P=I^{2}R$. Найдите мощность (в ваттах), если сила тока $I=3$ А, а сопротивление $R=9$ Ом.
+answer:
+  type: number
+  value: '81'
+solution: |
+  $P=3^{2}\cdot 9=9\cdot 9=81$.
+source:
+  kind: own
+  ref: 'tpl:applied_power'
+status: live

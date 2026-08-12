@@ -13,4 +13,5 @@ hints:
   - 'Теорема Пифагора: квадрат гипотенузы равен сумме квадратов катетов.'
 source:
   kind: own
+  ref: 'tpl:right_triangle_hyp'
 status: live

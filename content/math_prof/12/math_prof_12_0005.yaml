@@ -1,0 +1,17 @@
+id: math_prof_12_0005
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите наименьшее значение функции $y=x^{3}-27x+18$ на отрезке $[0;\,6]$.
+answer:
+  type: number
+  value: '-36'
+solution: |
+  $y'=3x^{2}-27=0$ при $x=\pm3$; отрезку принадлежит $x=3$. Сравниваем: $y(0)=18$, $y(3)=-36$, $y(6)=72$. Наименьшее — $-36$.
+hints:
+  - 'Найдите критические точки и сравните значения на концах отрезка и в них.'
+source:
+  kind: own
+  ref: 'tpl:min_cubic'
+status: live

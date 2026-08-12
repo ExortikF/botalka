@@ -1,0 +1,17 @@
+id: math_prof_01_0042
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $34$, а одна из его сторон равна $9$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '72'
+solution: |
+  Полупериметр равен $17$, значит вторая сторона равна $17-9=8$. Площадь: $9\cdot 8=72$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

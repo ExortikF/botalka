@@ -1,0 +1,17 @@
+id: math_prof_02_0021
+subject: math_prof
+task_type: 2
+difficulty: 1
+statement: |
+  Найдите скалярное произведение векторов $\vec{a}\,(8;\,-7)$ и $\vec{b}\,(1;\,6)$.
+answer:
+  type: number
+  value: '-34'
+solution: |
+  $\vec{a}\cdot\vec{b}=8\cdot1+-7\cdot6=8+-42=-34$.
+hints:
+  - 'Скалярное произведение по координатам: $x_1x_2+y_1y_2$.'
+source:
+  kind: own
+  ref: 'tpl:vector_dot'
+status: live

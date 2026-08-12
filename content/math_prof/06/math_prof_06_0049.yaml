@@ -1,0 +1,15 @@
+id: math_prof_06_0049
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $8x + (-6) = 9x + (-14)$.
+answer:
+  type: number
+  value: '8'
+solution: |
+  Переносим: $(8-9)x = -14 - (-6)$, то есть $-1x=-8$, откуда $x=8$.
+source:
+  kind: own
+  ref: 'tpl:eq_linear'
+status: live

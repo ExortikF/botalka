@@ -1,0 +1,17 @@
+id: math_prof_01_0045
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $32$, а одна из его сторон равна $9$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '63'
+solution: |
+  Полупериметр равен $16$, значит вторая сторона равна $16-9=7$. Площадь: $9\cdot 7=63$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

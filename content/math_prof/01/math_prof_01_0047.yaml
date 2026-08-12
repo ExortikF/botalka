@@ -1,0 +1,17 @@
+id: math_prof_01_0047
+subject: math_prof
+task_type: 1
+difficulty: 1
+statement: |
+  Периметр прямоугольника равен $24$, а одна из его сторон равна $7$. Найдите площадь прямоугольника.
+answer:
+  type: number
+  value: '35'
+solution: |
+  Полупериметр равен $12$, значит вторая сторона равна $12-7=5$. Площадь: $7\cdot 5=35$.
+hints:
+  - 'Полупериметр — это сумма двух соседних сторон.'
+source:
+  kind: own
+  ref: 'tpl:rectangle_area'
+status: live

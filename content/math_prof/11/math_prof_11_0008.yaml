@@ -1,0 +1,17 @@
+id: math_prof_11_0008
+subject: math_prof
+task_type: 11
+difficulty: 1
+statement: |
+  График функции $y=\dfrac{k}{x}$ проходит через точку $(4;\,6)$. Найдите $k$.
+answer:
+  type: number
+  value: '24'
+solution: |
+  Подставим точку: $6=\dfrac{k}{4}$, откуда $k=4\cdot6=24$.
+hints:
+  - 'Подставьте координаты точки в формулу функции.'
+source:
+  kind: own
+  ref: 'tpl:graph_hyperbola'
+status: live

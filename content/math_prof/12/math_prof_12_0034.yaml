@@ -1,0 +1,17 @@
+id: math_prof_12_0034
+subject: math_prof
+task_type: 12
+difficulty: 2
+statement: |
+  Найдите наибольшее значение функции $y=-2x^{2}+8x+7$.
+answer:
+  type: number
+  value: '15'
+solution: |
+  Ветви параболы направлены вниз, максимум в вершине: $x_0=-\dfrac{b}{2a}=-\dfrac{8}{-4}=2$, $y(2)=15$.
+hints:
+  - 'У параболы с отрицательным старшим коэффициентом максимум в вершине.'
+source:
+  kind: own
+  ref: 'tpl:max_quadratic'
+status: live

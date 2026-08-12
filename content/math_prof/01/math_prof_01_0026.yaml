@@ -1,0 +1,17 @@
+id: math_prof_01_0026
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  Стороны треугольника равны $14$, $25$ и $25$. Найдите его площадь.
+answer:
+  type: number
+  value: '168'
+solution: |
+  Полупериметр $p=\dfrac{14+25+25}{2}=32$. По формуле Герона $S=\sqrt{p(p-a)(p-b)(p-c)}=\sqrt{32\cdot18\cdot7\cdot7}=168$.
+hints:
+  - 'Посчитайте полупериметр и примените формулу Герона.'
+source:
+  kind: own
+  ref: 'tpl:heron'
+status: live

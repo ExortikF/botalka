@@ -1,0 +1,15 @@
+id: math_prof_04_0026
+subject: math_prof
+task_type: 4
+difficulty: 1
+statement: |
+  В классе $40$ учеников, из них $22$ девочек. Наугад выбирают одного дежурного. Найдите вероятность того, что дежурным окажется мальчик.
+answer:
+  type: number
+  value: '0.45'
+solution: |
+  Мальчиков $40-22=18$. $P=\dfrac{18}{40}=0,45$.
+source:
+  kind: own
+  ref: 'tpl:prob_class'
+status: live
