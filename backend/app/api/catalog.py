@@ -17,6 +17,21 @@ PLANNED_SUBJECTS = [
 ]
 
 
+class PublicConfig(BaseModel):
+    dev_login: bool
+    bot_username: str
+
+
+@router.get("/config", response_model=PublicConfig)
+async def public_config() -> PublicConfig:
+    """Публичные настройки для фронта. Секретов здесь быть не должно."""
+    from app.core.config import settings
+
+    return PublicConfig(
+        dev_login=settings.dev_login, bot_username=settings.telegram_bot_username
+    )
+
+
 class SubjectOut(BaseModel):
     id: int | None
     slug: str

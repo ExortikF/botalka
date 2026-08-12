@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     # включать на любом публичном адресе (туннель, прод) — там всегда https
     cookie_secure: bool = False
 
+    # ОПАСНО: включает вход без Telegram по одной кнопке. Только для локальной
+    # разработки, когда домен для виджета ещё не настроен. В проде — строго False.
+    dev_login: bool = False
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

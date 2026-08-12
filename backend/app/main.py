@@ -14,6 +14,12 @@ from app.core.db import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if settings.dev_login:
+        print(
+            "\n"
+            "  ВНИМАНИЕ: включён DEV_LOGIN — вход без Telegram доступен всем,\n"
+            "  кто откроет сайт. Выключи его перед публикацией.\n"
+        )
     app.state.redis = aioredis.from_url(settings.redis_url, decode_responses=True)
     yield
     await app.state.redis.aclose()

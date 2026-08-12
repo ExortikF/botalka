@@ -95,6 +95,20 @@ export type QuizPreset = "weak" | "mistakes" | "unsolved";
 
 export const getSubjects = () => api<Subject[]>("/api/subjects");
 
+export type PublicConfig = { dev_login: boolean; bot_username: string };
+export const getConfig = () => api<PublicConfig>("/api/config");
+
+/** Вход без Telegram. Доступен, только если на бэкенде включён DEV_LOGIN. */
+export const devLogin = (isAdmin = false) =>
+  api<User>("/api/auth/dev-login", {
+    method: "POST",
+    body: JSON.stringify({
+      tg_id: isAdmin ? 900002 : 900001,
+      display_name: isAdmin ? "Тестовый админ" : "Тестовый ученик",
+      is_admin: isAdmin,
+    }),
+  });
+
 export const startQuiz = (params: {
   subject?: string;
   taskTypeIds?: number[];

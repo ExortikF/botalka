@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Layers, Swords, User as UserIcon, Zap } from "lucide-react";
 import TelegramLogin from "./TelegramLogin";
 import { initials } from "@/lib/format";
-import { getMe, getTaskTypes, type User } from "@/lib/api";
+import { devLogin, getConfig, getMe, getTaskTypes, type User } from "@/lib/api";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
 
 export default function Landing() {
@@ -14,6 +14,7 @@ export default function Landing() {
   const [error, setError] = useState<string | null>(null);
   const [me, setMe] = useState<User | null>(null);
   const [tasksCount, setTasksCount] = useState<number | null>(null);
+  const [devAvailable, setDevAvailable] = useState(false);
   // считаем после монтирования: на сервере и в браузере «сейчас» разное,
   // а расхождение ломает гидратацию
   const [days, setDays] = useState<number | null>(null);
@@ -31,6 +32,10 @@ export default function Landing() {
     getTaskTypes()
       .then((types) => setTasksCount(types.reduce((s, t) => s + t.tasks_count, 0)))
       .catch(() => setTasksCount(null));
+
+    getConfig()
+      .then((cfg) => setDevAvailable(cfg.dev_login))
+      .catch(() => setDevAvailable(false));
   }, [router]);
 
   const onLogin = useCallback(() => router.push("/app"), [router]);
@@ -101,6 +106,30 @@ export default function Landing() {
               <span className="text-sm opacity-80">Без пароля, вход за 10 секунд</span>
             </div>
             {error && <p className="mt-3 text-sm text-white/90">{error}</p>}
+
+            {devAvailable && (
+              <div className="mt-5 rounded-xl border border-white/30 p-4">
+                <p className="text-sm font-medium">Отладочный вход</p>
+                <p className="mt-1 text-sm opacity-80">
+                  Домен для виджета Telegram пока не настроен, поэтому кнопка выше не
+                  работает. Эти входят без Telegram — включено переменной DEV_LOGIN.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    className="rounded-lg bg-white/20 px-3 py-2 text-sm"
+                    onClick={() => devLogin(false).then(onLogin)}
+                  >
+                    Войти учеником
+                  </button>
+                  <button
+                    className="rounded-lg bg-white/20 px-3 py-2 text-sm"
+                    onClick={() => devLogin(true).then(onLogin)}
+                  >
+                    Войти админом
+                  </button>
+                </div>
+              </div>
+            )}
 
             <p className="mt-4 text-sm opacity-80">
               Или{" "}

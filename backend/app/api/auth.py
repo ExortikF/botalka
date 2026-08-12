@@ -116,3 +116,42 @@ async def me(user: CurrentUser) -> User:
 async def logout(response: Response) -> dict:
     response.delete_cookie(SESSION_COOKIE)
     return {"ok": True}
+
+
+class DevLoginIn(BaseModel):
+    """Вход без Telegram — только для отладки, см. settings.dev_login."""
+
+    tg_id: int = 900001
+    display_name: str = "Тестовый ученик"
+    is_admin: bool = False
+
+
+@router.post("/dev-login", response_model=UserOut)
+async def dev_login(
+    payload: DevLoginIn, session: DbSession, response: Response, guest: OptionalUser
+) -> User:
+    """Логинит тестовым пользователем, минуя Telegram.
+
+    Нужен, пока у бота нет домена: виджет Telegram не работает с localhost.
+    Выключен по умолчанию и включается только переменной DEV_LOGIN=true.
+    """
+    if not settings.dev_login:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "не найдено")
+
+    user = await _login(
+        session,
+        response,
+        {
+            "tg_id": payload.tg_id,
+            "username": f"dev{payload.tg_id}",
+            "first_name": payload.display_name,
+            "last_name": "",
+            "photo_url": None,
+        },
+        guest,
+    )
+    if payload.is_admin and not user.is_admin:
+        user.is_admin = True
+        await session.commit()
+        await session.refresh(user)
+    return user
