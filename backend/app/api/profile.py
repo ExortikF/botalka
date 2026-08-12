@@ -71,8 +71,17 @@ class ProfileOut(BaseModel):
     perfect_quizzes: int
     numbers_covered: int
 
+    # попытки: сколько раз ответил верно и сколько ошибся
+    attempts_total: int
+    attempts_correct: int
+    attempts_wrong: int
+
+    # работа над ошибками: задачи, где ошибался, и сколько из них уже закрыто
+    mistakes_total: int
+    mistakes_fixed: int
+    mistakes_open: int
+
     tasks_total: int
-    unsolved: int
 
     activity: list[ActivityDay]
     achievements: list[Achievement]
@@ -169,13 +178,12 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         )
     ) or 0
 
-    # исправленные ошибки: сначала ошибся, потом на этой же задаче ответил верно
+    # Работа над ошибками. Ошибочной считается задача, где хоть раз ответили неверно;
+    # закрытой — если потом на ней же ответили верно.
     wrong_tasks = {a.task_id for a in attempts if not a.is_correct}
-    fixed = sum(
-        1
-        for task_id in wrong_tasks
-        if any(a.task_id == task_id and a.is_correct for a in attempts)
-    )
+    correct_tasks = {a.task_id for a in attempts if a.is_correct}
+    fixed = len(wrong_tasks & correct_tasks)
+    mistakes_open = len(wrong_tasks - correct_tasks)
 
     today = max(days) if days else date.today()
     counts: dict[date, int] = {}
@@ -205,8 +213,13 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         best_correct_run=best_run,
         perfect_quizzes=perfect,
         numbers_covered=numbers_covered,
+        attempts_total=len(attempts),
+        attempts_correct=sum(a.is_correct for a in attempts),
+        attempts_wrong=sum(not a.is_correct for a in attempts),
+        mistakes_total=len(wrong_tasks),
+        mistakes_fixed=fixed,
+        mistakes_open=mistakes_open,
         tasks_total=tasks_total,
-        unsolved=max(0, tasks_total - correct_total),
         activity=activity,
         achievements=_build_achievements(
             solved_total, streak_record, best_run, perfect, numbers_covered, fixed

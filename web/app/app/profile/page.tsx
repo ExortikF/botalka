@@ -29,8 +29,13 @@ type Profile = {
   best_correct_run: number;
   perfect_quizzes: number;
   numbers_covered: number;
+  attempts_total: number;
+  attempts_correct: number;
+  attempts_wrong: number;
+  mistakes_total: number;
+  mistakes_fixed: number;
+  mistakes_open: number;
   tasks_total: number;
-  unsolved: number;
   activity: { day: string; solved: number }[];
   achievements: Achievement[];
 };
@@ -100,27 +105,30 @@ export default function ProfilePage() {
         <Metric value={String(profile.solved_total)} label="задач решено" />
         <Metric value={`${profile.accuracy}%`} label="верных ответов" />
         <Metric
-          value={`${profile.numbers_covered}/12`}
-          label="номеров с верным решением"
+          value={`${profile.attempts_correct} / ${profile.attempts_wrong}`}
+          label="верных и ошибочных ответов"
         />
       </section>
 
       <section className="card flex flex-wrap items-center gap-7 p-7">
         <Ring
-          done={profile.tasks_total - profile.unsolved}
-          total={profile.tasks_total}
-          value={profile.unsolved}
+          done={profile.mistakes_fixed}
+          total={profile.mistakes_total}
+          value={profile.mistakes_open}
+          accent={profile.mistakes_open > 0}
         />
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl">Нерешённые задачи</h2>
+          <h2 className="text-xl">Работа над ошибками</h2>
           <p className="muted mt-1 text-sm leading-relaxed">
-            {profile.unsolved > 0
-              ? `Из ${profile.tasks_total} задач банка ты ещё не решил верно ${profile.unsolved}. Кольцо показывает, сколько закрыто.`
-              : "Весь банк пройден — задачи закончились. Пора добавлять новые."}
+            {profile.mistakes_total === 0
+              ? "Ошибок пока не было — как появятся, они соберутся здесь."
+              : profile.mistakes_open > 0
+                ? `Ты ошибался в ${profile.mistakes_total} ${plural(profile.mistakes_total, "задаче", "задачах", "задачах")}, из них закрыто ${profile.mistakes_fixed}. Осталось проработать ${profile.mistakes_open}.`
+                : `Все ${profile.mistakes_total} ${plural(profile.mistakes_total, "задача", "задачи", "задач")}, где ты ошибался, уже решены верно.`}
           </p>
-          {profile.unsolved > 0 && (
-            <Link className="btn mt-4" href="/app/quiz/run?preset=unsolved&length=10">
-              Решить
+          {profile.mistakes_open > 0 && (
+            <Link className="btn mt-4" href="/app/quiz/run?preset=mistakes&length=10">
+              Проработать
             </Link>
           )}
         </div>
@@ -167,7 +175,17 @@ export default function ProfilePage() {
   );
 }
 
-function Ring({ done, total, value }: { done: number; total: number; value: number }) {
+function Ring({
+  done,
+  total,
+  value,
+  accent,
+}: {
+  done: number;
+  total: number;
+  value: number;
+  accent?: boolean;
+}) {
   const size = 116;
   const stroke = 12;
   const radius = (size - stroke) / 2;
@@ -190,7 +208,7 @@ function Ring({ done, total, value }: { done: number; total: number; value: numb
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="var(--accent)"
+          stroke={accent ? "var(--accent-2)" : "var(--accent)"}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -200,7 +218,7 @@ function Ring({ done, total, value }: { done: number; total: number; value: numb
       </svg>
       <span className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="h text-3xl">{value}</span>
-        <span className="muted text-[11px]">осталось</span>
+        <span className="muted text-[11px]">{total === 0 ? "ошибок" : "осталось"}</span>
       </span>
     </div>
   );
