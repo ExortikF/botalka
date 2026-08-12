@@ -333,11 +333,21 @@ async def submit_answer(
         select(func.count(Attempt.id)).where(Attempt.quiz_id == quiz.id)
     )
     # +1 — текущая попытка ещё не в базе на момент подсчёта
-    if (answered or 0) + 1 >= len(quiz.task_ids):
+    quiz_just_finished = (answered or 0) + 1 >= len(quiz.task_ids)
+    if quiz_just_finished:
         quiz.finished_at = datetime.now(UTC)
         _bump_streak(user)
 
     await session.commit()
+
+    if quiz_just_finished and quiz.duel_id is not None:
+        # импорт здесь, чтобы не было кольцевой зависимости модулей
+        from app.api.duels import _refresh
+        from app.models import Duel
+
+        duel = await session.get(Duel, quiz.duel_id)
+        if duel is not None:
+            await _refresh(session, duel)
 
     return AnswerOut(
         is_correct=is_correct,

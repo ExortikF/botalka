@@ -19,7 +19,7 @@ const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
-  { href: "/app/duels", label: "Дуэли", icon: Swords, soon: true },
+  { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
 ];
 

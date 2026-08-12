@@ -6,6 +6,7 @@ import { Lightbulb, X } from "lucide-react";
 import MathText from "../../../Math";
 import {
   getQuizResult,
+  playDuel,
   sendAnswer,
   startQuiz,
   type AnswerResult,
@@ -29,9 +30,18 @@ type Props = {
   selection: { task_type_id: number; count: number }[];
   preset: QuizPreset | null;
   length: number;
+  /** Если задан — это прохождение дуэли: задачи берутся из неё, а не собираются заново. */
+  duelCode?: string;
 };
 
-export default function QuizRunner({ subject, taskTypeIds, selection, preset, length }: Props) {
+export default function QuizRunner({
+  subject,
+  taskTypeIds,
+  selection,
+  preset,
+  length,
+  duelCode,
+}: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState("");
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -44,7 +54,11 @@ export default function QuizRunner({ subject, taskTypeIds, selection, preset, le
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    startQuiz({ subject, taskTypeIds, selection, preset, length })
+    const starting = duelCode
+      ? playDuel(duelCode)
+      : startQuiz({ subject, taskTypeIds, selection, preset, length });
+
+    starting
       .then((q) => {
         setQuiz(q);
         setSlots(
@@ -60,7 +74,7 @@ export default function QuizRunner({ subject, taskTypeIds, selection, preset, le
     // taskTypeIds приходит новым массивом на каждый рендер — сравниваем по строке,
     // иначе эффект перезапускается и создаёт новый квиз
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, taskTypeIds.join(","), JSON.stringify(selection), preset, length]);
+  }, [subject, taskTypeIds.join(","), JSON.stringify(selection), preset, length, duelCode]);
 
   const task = quiz?.tasks[index];
   const slot = task ? slots[task.id] : undefined;
@@ -115,6 +129,10 @@ export default function QuizRunner({ subject, taskTypeIds, selection, preset, le
 
   async function finish() {
     if (!quiz) return;
+    if (duelCode) {
+      window.location.href = `/app/duels/${duelCode}`;
+      return;
+    }
     setResult(await getQuizResult(quiz.id));
     setPhase("finished");
   }
@@ -140,7 +158,10 @@ export default function QuizRunner({ subject, taskTypeIds, selection, preset, le
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link className="muted flex items-center gap-1.5 text-sm hover:underline" href="/app">
+        <Link
+          className="muted flex items-center gap-1.5 text-sm hover:underline"
+          href={duelCode ? `/app/duels/${duelCode}` : "/app/quiz"}
+        >
           <X size={16} /> Выйти
         </Link>
         <span className="eyebrow">

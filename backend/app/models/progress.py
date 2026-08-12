@@ -26,6 +26,46 @@ class QuizMode(str, enum.Enum):
     CHALLENGE = "challenge"
 
 
+class DuelState(str, enum.Enum):
+    WAITING = "waiting"      # вызов создан, соперник ещё не прошёл
+    FINISHED = "finished"    # прошли оба
+    EXPIRED = "expired"
+
+
+class Duel(Base):
+    """Асинхронная дуэль: оба игрока решают один и тот же набор задач.
+
+    Реалтайма здесь нет намеренно — вызов по ссылке работает, даже когда соперник
+    не в сети, а это единственный сценарий, пока игроков мало.
+    """
+
+    __tablename__ = "duels"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(16), unique=True, index=True)
+    task_ids: Mapped[list[int]] = mapped_column(ARRAY(Integer))
+
+    challenger_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    opponent_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), index=True)
+
+    challenger_quiz_id: Mapped[int | None] = mapped_column(Integer)
+    opponent_quiz_id: Mapped[int | None] = mapped_column(Integer)
+
+    challenger_score: Mapped[int | None] = mapped_column(Integer)
+    opponent_score: Mapped[int | None] = mapped_column(Integer)
+    challenger_time_ms: Mapped[int | None] = mapped_column(Integer)
+    opponent_time_ms: Mapped[int | None] = mapped_column(Integer)
+
+    winner_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    state: Mapped[DuelState] = mapped_column(
+        Enum(DuelState, native_enum=False), default=DuelState.WAITING, index=True
+    )
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class Quiz(Base):
     __tablename__ = "quizzes"
 
@@ -33,6 +73,7 @@ class Quiz(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     mode: Mapped[QuizMode] = mapped_column(Enum(QuizMode, native_enum=False), default=QuizMode.SOLO)
     task_ids: Mapped[list[int]] = mapped_column(ARRAY(Integer))
+    duel_id: Mapped[int | None] = mapped_column(ForeignKey("duels.id"), index=True)
 
     score: Mapped[int] = mapped_column(Integer, default=0)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

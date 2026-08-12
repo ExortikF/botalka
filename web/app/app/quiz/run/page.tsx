@@ -11,6 +11,7 @@ export default async function QuizRunPage({
     length?: string;
     preset?: string;
     subject?: string;
+    duel?: string;
   }>;
 }) {
   const params = await searchParams;
@@ -41,6 +42,7 @@ export default async function QuizRunPage({
         selection={selection}
         preset={preset}
         length={Number.isFinite(length) && length > 0 ? length : 10}
+        duelCode={params.duel}
       />
     </Suspense>
   );

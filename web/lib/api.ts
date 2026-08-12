@@ -146,3 +146,46 @@ export const sendAnswer = (
   });
 
 export const getQuizResult = (quizId: number) => api<QuizResult>(`/api/quiz/${quizId}/result`);
+
+
+// ---------------------------------------------------------------- дуэли по ссылке
+
+export type DuelSide = {
+  name: string;
+  score: number | null;
+  time_ms: number | null;
+  finished: boolean;
+};
+
+export type Duel = {
+  code: string;
+  state: "waiting" | "finished" | "expired";
+  total: number;
+  challenger: DuelSide;
+  opponent: DuelSide | null;
+  winner: "challenger" | "opponent" | "draw" | null;
+  your_side: "challenger" | "opponent" | null;
+  can_play: boolean;
+  expires_at: string | null;
+};
+
+export type DuelListItem = {
+  code: string;
+  state: string;
+  role: "challenger" | "opponent";
+  opponent_name: string | null;
+  your_score: number | null;
+  their_score: number | null;
+  outcome: "win" | "loss" | "draw" | null;
+  created_at: string;
+};
+
+export const createDuel = (taskTypeIds: number[] = [], length = 7) =>
+  api<Duel>("/api/duels", {
+    method: "POST",
+    body: JSON.stringify({ subject: "math_prof", task_type_ids: taskTypeIds, length }),
+  });
+
+export const getDuel = (code: string) => api<Duel>(`/api/duels/${code}`);
+export const playDuel = (code: string) => api<Quiz>(`/api/duels/${code}/play`, { method: "POST" });
+export const getMyDuels = () => api<DuelListItem[]>("/api/duels");
