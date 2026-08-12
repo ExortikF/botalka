@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BookOpen,
   Flame,
   Shield,
   Swords,
@@ -33,7 +32,6 @@ const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
-  { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
@@ -88,19 +86,40 @@ export default function Sidebar({ user }: { user: User | null }) {
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between gap-2">
-          <IdeaButton />
+        <div
+          className="space-y-2 rounded-xl p-3"
+          style={{ background: "var(--surface)" }}
+        >
           <button
-            className="muted shrink-0"
-            title={sound ? "Выключить звук" : "Включить звук"}
+            className="flex w-full items-center justify-between gap-2 text-sm font-medium"
             onClick={() => {
               const next = !sound;
               setSound(next);
               setSoundEnabled(next);
             }}
           >
-            {sound ? <Volume2 size={15} /> : <VolumeX size={15} />}
+            <span className="flex items-center gap-2">
+              {sound ? (
+                <Volume2 size={17} style={{ color: "var(--accent)" }} />
+              ) : (
+                <VolumeX size={17} className="muted" />
+              )}
+              Звук
+            </span>
+            <span
+              className="rounded-full px-2 py-0.5 text-xs font-semibold"
+              style={{
+                background: sound ? "var(--accent-100)" : "var(--divider)",
+                color: sound ? "var(--accent-700)" : "var(--n-600)",
+              }}
+            >
+              {sound ? "вкл" : "выкл"}
+            </span>
           </button>
+
+          <div className="border-t pt-2" style={{ borderColor: "var(--divider)" }}>
+            <IdeaButton />
+          </div>
         </div>
 
         <div>
@@ -124,18 +143,26 @@ export default function Sidebar({ user }: { user: User | null }) {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm">{user.display_name}</span>
-              <span className="muted flex items-center gap-1 text-xs">
-                {user.streak_days > 0 ? (
-                  <>
-                    <Flame size={12} style={{ color: "var(--accent-2)" }} />
-                    {user.streak_days} {plural(user.streak_days, "день", "дня", "дней")} подряд
-                  </>
-                ) : user.is_guest ? (
-                  "без входа"
-                ) : (
-                  "серии пока нет"
-                )}
-              </span>
+              {user.streak_days > 0 ? (
+                <span
+                  className="mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
+                  style={{
+                    background: user.streak_days >= 7 ? "var(--accent-2-100)" : "var(--surface)",
+                    color: user.streak_days >= 7 ? "var(--accent-2)" : "var(--n-700)",
+                  }}
+                >
+                  <Flame
+                    size={user.streak_days >= 7 ? 18 : 14}
+                    style={{ color: "var(--accent-2)" }}
+                    fill={user.streak_days >= 7 ? "var(--accent-2)" : "none"}
+                  />
+                  {user.streak_days}
+                </span>
+              ) : (
+                <span className="muted text-xs">
+                  {user.is_guest ? "без входа" : "серии пока нет"}
+                </span>
+              )}
             </span>
           </div>
         )}

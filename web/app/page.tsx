@@ -41,20 +41,10 @@ export default function Landing() {
   return (
     <div>
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <span className="h text-xl">
+        <span className="h text-4xl tracking-tight">
           Боталка<span style={{ color: "var(--accent)" }}>.</span>
         </span>
         <nav className="flex items-center gap-6 text-sm">
-          <a className="muted hidden md:inline" href="#how">
-            Как это работает
-          </a>
-          <a className="muted hidden md:inline" href="#duels">
-            Дуэли
-          </a>
-          <Link className="muted hidden md:inline" href="/app/quiz">
-            Тренажёр
-          </Link>
-
           <Link
             href="/app/profile"
             title="Профиль и статистика"

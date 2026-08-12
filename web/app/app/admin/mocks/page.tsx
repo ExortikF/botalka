@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Check, Plus, Search, Trash2 } from "lucide-react";
 import MathText from "../../../Math";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
+import AddTaskInline from "./AddTaskInline";
 
 type PickRow = {
   id: number;
@@ -285,13 +286,10 @@ export default function AdminMocksPage() {
               Выбрано задач: {picked.length}
               {picked.length > 0 && ` (номера ${[...new Set(picked.map((t) => t.number))].sort((a, b) => a - b).join(", ")})`}
             </p>
-            <p className="muted text-xs">
-              Нужной задачи нет?{" "}
-              <Link className="underline" href="/app/admin">
-                Добавь её в банк
-              </Link>{" "}
-              — и она появится здесь.
-            </p>
+            <AddTaskInline
+              types={types}
+              onCreated={(task) => setPicked((prev) => [...prev, task])}
+            />
           </div>
         )}
 

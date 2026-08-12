@@ -21,11 +21,17 @@ QUIZ_LENGTH = 10
 STREAK_TZ = ZoneInfo("Europe/Moscow")
 
 
+DIFFICULTY_BANDS = {"easy": (1, 2), "medium": (3, 3), "hard": (4, 5)}
+
+
 class TaskTypeOut(BaseModel):
     id: int
     number: int
     title: str
     tasks_count: int
+    easy: int
+    medium: int
+    hard: int
 
 
 class TaskOut(BaseModel):
@@ -138,17 +144,43 @@ async def list_task_types(session: DbSession, subject: str = "math_prof") -> lis
         .order_by(TaskType.number)
     )
     rows = (await session.execute(stmt)).all()
-    return [
-        TaskTypeOut(id=tt.id, number=tt.number, title=tt.title, tasks_count=count)
-        for tt, count in rows
-    ]
+
+    out: list[TaskTypeOut] = []
+    for task_type, count in rows:
+        bands = {}
+        for band, (low, high) in DIFFICULTY_BANDS.items():
+            bands[band] = (
+                await session.scalar(
+                    select(func.count(Task.id)).where(
+                        Task.task_type_id == task_type.id,
+                        Task.status == TaskStatus.LIVE,
+                        Task.difficulty.between(low, high),
+                    )
+                )
+            ) or 0
+        out.append(
+            TaskTypeOut(
+                id=task_type.id,
+                number=task_type.number,
+                title=task_type.title,
+                tasks_count=count,
+                **bands,
+            )
+        )
+    return out
 
 
 class TypeSelection(BaseModel):
-    """Сколько задач взять из конкретного номера."""
+    """Сколько задач взять из номера, с разбивкой по сложности.
+
+    Сложность 1–2 считаем лёгкой, 3 средней, 4–5 сложной.
+    """
 
     task_type_id: int
-    count: int = Field(default=5, ge=1, le=20)
+    count: int = Field(default=0, ge=0, le=20)     # без разбивки, любая сложность
+    easy: int = Field(default=0, ge=0, le=20)
+    medium: int = Field(default=0, ge=0, le=20)
+    hard: int = Field(default=0, ge=0, le=20)
 
 
 class QuizStartIn(BaseModel):
@@ -259,15 +291,40 @@ async def start_quiz(payload: QuizStartIn, session: DbSession, user: PlayerUser)
         stmt = stmt.where(Task.id.in_(task_ids))
 
     if payload.selection and not payload.preset:
-        # по каждому номеру берём ровно столько, сколько попросили
+        # по каждому номеру берём ровно столько, сколько попросили, с учётом сложности
         tasks = []
         for item in payload.selection:
-            chunk = await session.scalars(
-                stmt.where(Task.task_type_id == item.task_type_id)
-                .order_by(func.random())
-                .limit(item.count)
-            )
-            tasks.extend(chunk.all())
+            by_type = stmt.where(Task.task_type_id == item.task_type_id)
+
+            for band, count in (
+                ("easy", item.easy),
+                ("medium", item.medium),
+                ("hard", item.hard),
+            ):
+                if count <= 0:
+                    continue
+                low, high = DIFFICULTY_BANDS[band]
+                chunk = await session.scalars(
+                    by_type.where(Task.difficulty.between(low, high))
+                    .order_by(func.random())
+                    .limit(count)
+                )
+                tasks.extend(chunk.all())
+
+            if item.count > 0:
+                chunk = await session.scalars(
+                    by_type.order_by(func.random()).limit(item.count)
+                )
+                tasks.extend(chunk.all())
+
+        # одна задача не должна попасть в квиз дважды
+        seen: set[int] = set()
+        unique = []
+        for task in tasks:
+            if task.id not in seen:
+                seen.add(task.id)
+                unique.append(task)
+        tasks = unique
         random.shuffle(tasks)
     else:
         if type_ids:

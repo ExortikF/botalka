@@ -13,8 +13,17 @@ import {
 } from "@/lib/api";
 import { plural } from "@/lib/exam";
 
-/** Сколько задач берём из темы по умолчанию, когда её только что отметили. */
-const DEFAULT_PER_TYPE = 5;
+/** Полосы сложности: цвет и подпись. Совпадают с DIFFICULTY_BANDS на бэкенде. */
+const BANDS = [
+  { key: "easy", label: "лёгкие", color: "#1f9d55", bg: "#e8f6ee" },
+  { key: "medium", label: "средние", color: "#c98a00", bg: "#fdf3dd" },
+  { key: "hard", label: "сложные", color: "#d6006c", bg: "#ffe9f0" },
+] as const;
+
+type Band = (typeof BANDS)[number]["key"];
+type Pick = Record<Band, number>;
+
+const EMPTY: Pick = { easy: 0, medium: 0, hard: 0 };
 
 export default function QuizBuilder() {
   const router = useRouter();
@@ -22,8 +31,8 @@ export default function QuizBuilder() {
   const [subject, setSubject] = useState("math_prof");
   const [types, setTypes] = useState<TaskType[]>([]);
   const [stats, setStats] = useState<StatsRow[]>([]);
-  /** id номера → сколько задач из него взять. Нет ключа — тема не выбрана. */
-  const [picked, setPicked] = useState<Record<number, number>>({});
+  /** id номера → сколько задач каждой сложности взять. */
+  const [picked, setPicked] = useState<Record<number, Pick>>({});
 
   useEffect(() => {
     getSubjects().then(setSubjects).catch(() => setSubjects([]));
@@ -36,51 +45,41 @@ export default function QuizBuilder() {
   }, [subject]);
 
   const statsByNumber = new Map(stats.map((s) => [s.task_type_number, s]));
-  const available = types.filter((t) => t.tasks_count > 0);
-  const chosen = Object.entries(picked).map(([id, count]) => ({
-    task_type_id: Number(id),
-    count,
-  }));
-  const totalTasks = chosen.reduce((sum, c) => sum + c.count, 0);
+  const chosen = Object.entries(picked)
+    .map(([id, pick]) => ({ task_type_id: Number(id), ...pick }))
+    .filter((p) => p.easy + p.medium + p.hard > 0);
+  const totalTasks = chosen.reduce((sum, p) => sum + p.easy + p.medium + p.hard, 0);
 
-  function toggle(type: TaskType) {
+  function bump(type: TaskType, band: Band, delta: number) {
+    const max = type[band];
     setPicked((prev) => {
-      const next = { ...prev };
-      if (next[type.id]) delete next[type.id];
-      else next[type.id] = Math.min(DEFAULT_PER_TYPE, type.tasks_count);
-      return next;
+      const current = prev[type.id] ?? EMPTY;
+      const next = Math.max(0, Math.min(current[band] + delta, max));
+      const updated = { ...current, [band]: next };
+      if (updated.easy + updated.medium + updated.hard === 0) {
+        const copy = { ...prev };
+        delete copy[type.id];
+        return copy;
+      }
+      return { ...prev, [type.id]: updated };
     });
   }
 
-  function setCount(type: TaskType, delta: number) {
-    setPicked((prev) => {
-      const current = prev[type.id] ?? 0;
-      const next = Math.max(1, Math.min(current + delta, type.tasks_count));
-      return { ...prev, [type.id]: next };
-    });
-  }
-
-  function startPreset(preset: "weak" | "mistakes" | "unsolved" | null) {
-    const query = new URLSearchParams({ subject, length: "10" });
-    if (preset) query.set("preset", preset);
-    router.push(`/app/quiz/run?${query}`);
+  function startPreset(preset: "weak" | "mistakes") {
+    router.push(`/app/quiz/run?subject=${subject}&length=10&preset=${preset}`);
   }
 
   function startPicked() {
-    const query = new URLSearchParams({
-      subject,
-      selection: chosen.map((c) => `${c.task_type_id}:${c.count}`).join(","),
-    });
-    router.push(`/app/quiz/run?${query}`);
+    const selection = chosen
+      .map((p) => `${p.task_type_id}:${p.easy}:${p.medium}:${p.hard}`)
+      .join(",");
+    router.push(`/app/quiz/run?subject=${subject}&bands=${selection}`);
   }
 
   return (
     <div className="space-y-8">
       <header>
         <h1 className="text-3xl">Квизы</h1>
-        <p className="muted mt-2">
-          Выбери предмет и темы. В каждой теме стрелочками задаётся, сколько задач из неё взять.
-        </p>
       </header>
 
       <section className="space-y-3">
@@ -109,11 +108,7 @@ export default function QuizBuilder() {
                     ) : null}
                   </span>
                   <span className="muted mt-2 block text-sm">
-                    {s.available
-                      ? `${s.tasks_count} задач · ${s.types_count} номеров${
-                          s.solved ? ` · решено ${s.solved}` : ""
-                        }`
-                      : "скоро"}
+                    {s.available ? `${s.tasks_count} задач` : "скоро"}
                   </span>
                 </button>
               </li>
@@ -129,100 +124,79 @@ export default function QuizBuilder() {
             icon={<Target size={18} />}
             title="Работа над ошибками"
             text="Задачи, где ты ошибался и ещё не решил верно"
-            accent
             onClick={() => startPreset("mistakes")}
           />
           <Preset
             icon={<AlertTriangle size={18} />}
             title="Слабые темы"
-            text="Номера, где процент верных ответов ниже всего"
-            accent
+            text="Номера, где процент верных ниже всего"
             onClick={() => startPreset("weak")}
           />
         </div>
-        <p className="muted text-sm">
-          Оба набора собираются по твоей статистике: если ошибок ещё нет, они пока пустые —
-          порешай обычный квиз ниже.
-        </p>
       </section>
 
       <section className="space-y-3">
-        <div className="flex items-baseline justify-between">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="eyebrow">Собрать свой квиз</h2>
-          <span className="muted text-sm">
-            {chosen.length === 0
-              ? "тема не выбрана"
-              : `${chosen.length} ${plural(chosen.length, "тема", "темы", "тем")} · ${totalTasks} ${plural(
-                  totalTasks,
-                  "задача",
-                  "задачи",
-                  "задач",
-                )}`}
-          </span>
+          <div className="flex items-center gap-3 text-xs">
+            {BANDS.map((band) => (
+              <span key={band.key} className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-2.5 w-2.5 rounded-full"
+                  style={{ background: band.color }}
+                />
+                {band.label}
+              </span>
+            ))}
+          </div>
         </div>
 
-        <ul className="grid gap-2 sm:grid-cols-2">
-          {available.map((type) => {
+        <ul className="space-y-2">
+          {types.map((type) => {
             const stat = statsByNumber.get(type.number);
             const percent = stat?.total ? Math.round((stat.correct / stat.total) * 100) : null;
-            const count = picked[type.id];
-            const checked = count !== undefined;
+            const pick = picked[type.id] ?? EMPTY;
+            const chosenHere = pick.easy + pick.medium + pick.hard;
+            const empty = type.tasks_count === 0;
 
             return (
               <li key={type.id}>
                 <div
-                  className="card flex items-center gap-3 p-4 transition"
+                  className="card flex flex-wrap items-center gap-4 p-4 transition"
                   style={{
-                    borderColor: checked ? "var(--accent)" : "var(--divider)",
-                    background: checked ? "var(--accent-100)" : "var(--card)",
+                    borderColor: chosenHere ? "var(--accent)" : "var(--divider)",
+                    background: chosenHere ? "var(--accent-100)" : "var(--card)",
+                    opacity: empty ? 0.55 : 1,
                   }}
                 >
-                  <button
-                    onClick={() => toggle(type)}
-                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
-                    aria-pressed={checked}
-                  >
-                    <span
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border"
-                      style={{
-                        borderColor: checked ? "var(--accent)" : "var(--divider)",
-                        background: checked ? "var(--accent)" : "transparent",
-                        color: "#fff",
-                      }}
-                    >
-                      {checked && <Check size={13} />}
-                    </span>
-                    <span className="min-w-0">
+                  <span className="min-w-0 flex-1">
+                    <span className="block">
                       <span className="muted mr-2 text-sm">№{type.number}</span>
                       {type.title}
-                      <span className="muted block text-xs">
-                        {type.tasks_count} задач в банке
-                        {percent !== null && ` · сейчас ${percent}% верно`}
-                      </span>
                     </span>
-                  </button>
+                    <span className="muted text-xs">
+                      {empty ? (
+                        "задач пока нет"
+                      ) : (
+                        <>
+                          {type.tasks_count} задач
+                          {percent !== null && ` · сейчас ${percent}% верно`}
+                        </>
+                      )}
+                    </span>
+                  </span>
 
-                  {checked ? (
-                    <span className="flex shrink-0 items-center gap-1">
-                      <Stepper
-                        label="Меньше задач"
-                        disabled={count <= 1}
-                        onClick={() => setCount(type, -1)}
-                      >
-                        <Minus size={14} />
-                      </Stepper>
-                      <span className="h w-7 text-center text-lg">{count}</span>
-                      <Stepper
-                        label="Больше задач"
-                        disabled={count >= type.tasks_count}
-                        onClick={() => setCount(type, 1)}
-                      >
-                        <Plus size={14} />
-                      </Stepper>
-                    </span>
-                  ) : (
-                    <span className="muted shrink-0 text-sm">
-                      {percent !== null ? `${percent}%` : `${type.tasks_count} зад.`}
+                  {!empty && (
+                    <span className="flex flex-wrap items-center gap-3">
+                      {BANDS.map((band) => (
+                        <Stepper
+                          key={band.key}
+                          band={band}
+                          value={pick[band.key]}
+                          max={type[band.key]}
+                          onChange={(delta) => bump(type, band.key, delta)}
+                        />
+                      ))}
                     </span>
                   )}
                 </div>
@@ -237,11 +211,11 @@ export default function QuizBuilder() {
         style={{ position: "sticky", bottom: "1rem", boxShadow: "var(--shadow-md)" }}
       >
         <span className="muted text-sm">
-          {chosen.length === 0
-            ? "Отметь темы выше, чтобы собрать квиз"
+          {totalTasks === 0
+            ? "Добавь задачи стрелочками — по сложности"
             : `В квизе будет ${totalTasks} ${plural(totalTasks, "задача", "задачи", "задач")}`}
         </span>
-        <button className="btn" onClick={startPicked} disabled={chosen.length === 0}>
+        <button className="btn" onClick={startPicked} disabled={totalTasks === 0}>
           Начать квиз
         </button>
       </section>
@@ -250,26 +224,46 @@ export default function QuizBuilder() {
 }
 
 function Stepper({
-  children,
-  onClick,
-  disabled,
-  label,
+  band,
+  value,
+  max,
+  onChange,
 }: {
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-  label: string;
+  band: (typeof BANDS)[number];
+  value: number;
+  max: number;
+  onChange: (delta: number) => void;
 }) {
+  const disabled = max === 0;
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className="flex h-7 w-7 items-center justify-center rounded-lg border transition disabled:opacity-30"
-      style={{ borderColor: "var(--divider)", background: "var(--card)" }}
+    <span
+      className="flex items-center gap-1 rounded-xl px-1.5 py-1"
+      style={{ background: value > 0 ? band.bg : "var(--surface)", opacity: disabled ? 0.4 : 1 }}
+      title={`${band.label}: доступно ${max}`}
     >
-      {children}
-    </button>
+      <button
+        onClick={() => onChange(-1)}
+        disabled={disabled || value === 0}
+        aria-label={`Меньше: ${band.label}`}
+        className="flex h-6 w-6 items-center justify-center rounded-lg disabled:opacity-30"
+      >
+        <Minus size={13} />
+      </button>
+      <span
+        className="h w-6 text-center text-base"
+        style={{ color: value > 0 ? band.color : "var(--n-500)" }}
+      >
+        {value}
+      </span>
+      <button
+        onClick={() => onChange(1)}
+        disabled={disabled || value >= max}
+        aria-label={`Больше: ${band.label}`}
+        className="flex h-6 w-6 items-center justify-center rounded-lg disabled:opacity-30"
+      >
+        <Plus size={13} />
+      </button>
+    </span>
   );
 }
 
@@ -278,20 +272,18 @@ function Preset({
   title,
   text,
   onClick,
-  accent,
 }: {
   icon: React.ReactNode;
   title: string;
   text: string;
   onClick: () => void;
-  accent?: boolean;
 }) {
   return (
     <button
       className="card p-5 text-left transition hover:shadow-[var(--shadow-sm)]"
       onClick={onClick}
     >
-      <span style={{ color: accent ? "var(--accent-2)" : "var(--accent)" }}>{icon}</span>
+      <span style={{ color: "var(--accent-2)" }}>{icon}</span>
       <span className="mt-2 block font-medium">{title}</span>
       <span className="muted mt-1 block text-sm">{text}</span>
     </button>

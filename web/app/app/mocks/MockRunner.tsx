@@ -72,7 +72,8 @@ export default function MockRunner({
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [left, setLeft] = useState(0);
   const [draftOpen, setDraftOpen] = useState(false);
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
+  // черновик свой у каждого задания: ключ — id задачи
+  const [drafts, setDrafts] = useState<Record<number, Stroke[]>>({});
   const [finishing, setFinishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -266,9 +267,10 @@ export default function MockRunner({
 
       {draftOpen && (
         <DrawingPad
-          strokes={strokes}
-          onChange={setStrokes}
+          strokes={drafts[task.id] ?? []}
+          onChange={(next) => setDrafts((prev) => ({ ...prev, [task.id]: next }))}
           onClose={() => setDraftOpen(false)}
+          height={820}
         />
       )}
     </div>

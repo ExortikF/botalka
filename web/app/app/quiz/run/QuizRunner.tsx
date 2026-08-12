@@ -30,7 +30,7 @@ type Slot = {
 type Props = {
   subject: string;
   taskTypeIds: number[];
-  selection: { task_type_id: number; count: number }[];
+  selection: { task_type_id: number; count?: number; easy?: number; medium?: number; hard?: number }[];
   preset: QuizPreset | null;
   length: number;
   /** Если задан — это прохождение дуэли: задачи берутся из неё, а не собираются заново. */
@@ -54,7 +54,8 @@ export default function QuizRunner({
   const [sending, setSending] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
   // черновик общий на весь квиз: при переходе к следующей задаче он остаётся
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
+  // черновик свой у каждого задания: ключ — id задачи
+  const [drafts, setDrafts] = useState<Record<number, Stroke[]>>({});
 
   const startedAt = useRef(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
@@ -324,9 +325,10 @@ export default function QuizRunner({
 
       {draftOpen && (
         <DrawingPad
-          strokes={strokes}
-          onChange={setStrokes}
+          strokes={drafts[task.id] ?? []}
+          onChange={(next) => setDrafts((prev) => ({ ...prev, [task.id]: next }))}
           onClose={() => setDraftOpen(false)}
+          height={820}
         />
       )}
     </div>

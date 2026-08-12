@@ -24,7 +24,7 @@ export default function DrawingPad({
   strokes,
   onChange,
   onClose,
-  height = 620,
+  height = 820,
 }: {
   strokes: Stroke[];
   onChange: (next: Stroke[]) => void;
@@ -216,7 +216,7 @@ export default function DrawingPad({
       </div>
 
       <p className="muted text-xs">
-        Черновик виден только тебе и сохраняется, пока идёт квиз.
+        У каждого задания свой черновик — он сохраняется, пока идёт квиз.
       </p>
     </section>
   );

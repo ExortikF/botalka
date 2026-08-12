@@ -30,7 +30,7 @@ ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"  # без похожих симво
 class CreateDuelIn(BaseModel):
     subject: str = "math_prof"
     task_type_ids: list[int] = Field(default_factory=list)
-    length: int = Field(default=DUEL_LENGTH, ge=3, le=15)
+    length: int = Field(default=DUEL_LENGTH, ge=3, le=30)
     # если задан — вызов адресный: принять его сможет только этот человек
     opponent_id: int | None = None
 

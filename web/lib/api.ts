@@ -33,7 +33,15 @@ export type AnswerResult = {
   score: number;
 };
 
-export type TaskType = { id: number; number: number; title: string; tasks_count: number };
+export type TaskType = {
+  id: number;
+  number: number;
+  title: string;
+  tasks_count: number;
+  easy: number;
+  medium: number;
+  hard: number;
+};
 
 export type StatsRow = {
   task_type_number: number;
@@ -112,8 +120,14 @@ export const devLogin = (isAdmin = false) =>
 export const startQuiz = (params: {
   subject?: string;
   taskTypeIds?: number[];
-  /** Сколько задач взять из каждого номера — задаётся стрелочками в плитке темы. */
-  selection?: { task_type_id: number; count: number }[];
+  /** Сколько задач взять из номера, с разбивкой по сложности. */
+  selection?: {
+    task_type_id: number;
+    count?: number;
+    easy?: number;
+    medium?: number;
+    hard?: number;
+  }[];
   preset?: QuizPreset | null;
   length?: number;
 }) =>

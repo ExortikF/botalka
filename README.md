@@ -30,6 +30,7 @@ cp .env.example .env && make up && make migrate
 | [docs/DESIGN.md](docs/DESIGN.md) | дизайн-токены, экраны, продуктовые решения из макетов |
 | [docs/RATING.md](docs/RATING.md) | как считается рейтинг и почему именно так |
 | [docs/BACKLOG.md](docs/BACKLOG.md) | что задумали, но ещё не сделали |
+| [docs/GAMIFICATION.md](docs/GAMIFICATION.md) | план по монетам, магазину, кланам и персонажам |
 
 ## Структура репозитория
 

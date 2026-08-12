@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Swords } from "lucide-react";
+import { Minus, Plus, Swords } from "lucide-react";
 import { createDuel, getMyDuels, type DuelListItem } from "@/lib/api";
 import { plural } from "@/lib/exam";
-
-const LENGTHS = [5, 7, 11];
 
 const OUTCOME: Record<string, { label: string; color: string }> = {
   win: { label: "победа", color: "var(--accent)" },
@@ -52,19 +50,35 @@ export default function DuelsPage() {
       </header>
 
       <section
-        className="card flex flex-wrap items-center justify-between gap-4 p-7"
-        style={{ background: "var(--accent-100)", borderColor: "var(--accent-200)" }}
+        className="relative overflow-hidden p-10 text-center text-white"
+        style={{ background: "var(--accent)", borderRadius: "var(--radius-lg)" }}
       >
-        <div>
-          <h2 className="text-xl">Онлайн-матч</h2>
-          <p className="muted mt-1 text-sm">
-            Живая дуэль с подбором соперника: 7 раундов, вопрос обоим одновременно.
-            Только этот режим меняет рейтинг.
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-30"
+          style={{ background: "var(--accent-2)" }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full opacity-20"
+          style={{ background: "#ffffff" }}
+        />
+
+        <div className="relative">
+          <Swords size={44} className="mx-auto" />
+          <h2 className="h mt-4 text-4xl">Онлайн-матч</h2>
+          <p className="mx-auto mt-3 max-w-md opacity-90">
+            Семь раундов, вопрос приходит обоим одновременно. Очко забирает тот, кто
+            ответил верно и быстрее. Только этот режим меняет рейтинг.
           </p>
+          <Link
+            className="mt-7 inline-block rounded-2xl bg-white px-10 py-4 text-lg font-bold shadow-lg transition hover:scale-[1.03]"
+            style={{ color: "var(--accent-700)" }}
+            href="/app/duels/online"
+          >
+            Найти соперника
+          </Link>
         </div>
-        <Link className="btn shrink-0" href="/app/duels/online">
-          Найти соперника
-        </Link>
       </section>
 
       <section className="card space-y-4 p-7">
@@ -77,18 +91,31 @@ export default function DuelsPage() {
           когда ему удобно — быть онлайн одновременно не нужно.
         </p>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="muted text-sm">Раундов:</span>
-          {LENGTHS.map((n) => (
+          <span
+            className="flex items-center gap-2 rounded-xl px-2 py-1"
+            style={{ background: "var(--surface)" }}
+          >
             <button
-              key={n}
-              onClick={() => setLength(n)}
-              className={`pill ${length === n ? "pill-active" : "pill-idle"}`}
-              style={{ border: "1px solid var(--divider)" }}
+              className="flex h-7 w-7 items-center justify-center rounded-lg disabled:opacity-30"
+              onClick={() => setLength((n) => Math.max(3, n - 1))}
+              disabled={length <= 3}
+              aria-label="Меньше раундов"
             >
-              {n}
+              <Minus size={14} />
             </button>
-          ))}
+            <span className="h w-8 text-center text-lg">{length}</span>
+            <button
+              className="flex h-7 w-7 items-center justify-center rounded-lg disabled:opacity-30"
+              onClick={() => setLength((n) => Math.min(30, n + 1))}
+              disabled={length >= 30}
+              aria-label="Больше раундов"
+            >
+              <Plus size={14} />
+            </button>
+          </span>
+          <span className="muted text-xs">от 3 до 30</span>
         </div>
 
         <button className="btn btn-accent2" onClick={create} disabled={creating}>

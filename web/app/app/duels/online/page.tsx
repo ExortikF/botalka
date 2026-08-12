@@ -129,7 +129,31 @@ export default function OnlineDuelPage() {
     setPhase("idle");
   }
 
-  if (phase === "over" && over) return <Result over={over} opponent={opponent} />;
+  function reset() {
+    // Link на ту же страницу ничего не перезагружает — состояние надо сбросить руками
+    ws.current?.close();
+    ws.current = null;
+    setOver(null);
+    setRound(null);
+    setResult(null);
+    setOpponent(null);
+    setAnswer("");
+    setSent(false);
+    setOpponentAnswered(false);
+    setPhase("idle");
+  }
+
+  if (phase === "over" && over)
+    return (
+      <Result
+        over={over}
+        opponent={opponent}
+        onAgain={() => {
+          reset();
+          connect();
+        }}
+      />
+    );
 
   if (phase === "playing" && round)
     return (
@@ -297,7 +321,15 @@ function Side({
   );
 }
 
-function Result({ over, opponent }: { over: Over; opponent: { name: string } | null }) {
+function Result({
+  over,
+  opponent,
+  onAgain,
+}: {
+  over: Over;
+  opponent: { name: string } | null;
+  onAgain: () => void;
+}) {
   const label =
     over.result === "win" ? "Победа" : over.result === "loss" ? "Поражение" : "Ничья";
 
@@ -331,9 +363,9 @@ function Result({ over, opponent }: { over: Over; opponent: { name: string } | n
       </section>
 
       <div className="flex gap-3">
-        <Link className="btn" href="/app/duels/online">
+        <button className="btn" onClick={onAgain}>
           Ещё матч
-        </Link>
+        </button>
         <Link className="btn-ghost" href="/app/duels">
           К дуэлям
         </Link>

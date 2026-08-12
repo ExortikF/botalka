@@ -22,6 +22,8 @@ type Profile = {
   is_guest: boolean;
   rating: number;
   rank: string;
+  rank_color: string;
+  incoming_duels: { code: string; from: string; rounds: number }[];
   duels_played: number;
   duels_won: number;
   duel_win_streak: number;
@@ -88,7 +90,15 @@ export default function ProfilePage() {
           {initials(profile.display_name)}
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl">{profile.display_name}</h1>
+          <h1 className="flex flex-wrap items-center gap-3 text-2xl">
+            {profile.display_name}
+            <span
+              className="rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ background: `${profile.rank_color}1a`, color: profile.rank_color }}
+            >
+              {profile.rank}
+            </span>
+          </h1>
           <p className="muted mt-1 text-sm">
             {profile.is_guest
               ? "Гостевой аккаунт — войди через Telegram, чтобы прогресс не потерялся"
@@ -96,6 +106,30 @@ export default function ProfilePage() {
           </p>
         </div>
       </section>
+
+      {profile.incoming_duels.length > 0 && (
+        <section
+          className="card space-y-3 p-6"
+          style={{ background: "var(--accent-2-100)", borderColor: "var(--accent-2-200)" }}
+        >
+          <h2 className="flex items-center gap-2 text-xl">
+            <Swords size={18} style={{ color: "var(--accent-2)" }} />
+            {profile.incoming_duels.length === 1
+              ? "Тебя вызвали на дуэль"
+              : `Тебя вызвали на дуэль: ${profile.incoming_duels.length}`}
+          </h2>
+          {profile.incoming_duels.map((duel) => (
+            <div key={duel.code} className="flex flex-wrap items-center justify-between gap-3">
+              <span>
+                <b>{duel.from}</b> — {duel.rounds} {plural(duel.rounds, "раунд", "раунда", "раундов")}
+              </span>
+              <Link className="btn btn-accent2 text-sm" href={`/app/duels/${duel.code}`}>
+                Принять вызов
+              </Link>
+            </div>
+          ))}
+        </section>
+      )}
 
       <section className="grid gap-4 sm:grid-cols-4">
         <Metric
@@ -152,7 +186,7 @@ export default function ProfilePage() {
           <p className="h text-5xl">{profile.rating}</p>
           <p
             className="mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold"
-            style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+            style={{ background: `${profile.rank_color}1a`, color: profile.rank_color }}
           >
             {profile.rank}
           </p>
@@ -184,9 +218,11 @@ export default function ProfilePage() {
           </span>
         </div>
 
-        <ul className="grid gap-3 sm:grid-cols-2">
+        {/* items-stretch + h-full: иначе открытая плитка ниже закрытой,
+            и в сетке появляются рваные пустоты */}
+        <ul className="grid items-stretch gap-3 sm:grid-cols-2">
           {[...unlocked, ...locked].map((a) => (
-            <li key={a.code}>
+            <li key={a.code} className="h-full">
               <AchievementCard achievement={a} />
             </li>
           ))}
@@ -389,7 +425,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
 
   return (
     <div
-      className="card flex gap-4 p-5"
+      className="card flex h-full gap-4 p-5"
       style={{ opacity: a.unlocked ? 1 : 0.75, borderColor: a.unlocked ? rarity.color : undefined }}
     >
       <span
@@ -417,8 +453,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
         </p>
         <p className="muted mt-0.5 text-sm">{a.description}</p>
 
-        {!a.unlocked && (
-          <div className="mt-3">
+        <div className="mt-3" style={{ visibility: a.unlocked ? "hidden" : "visible" }}>
             <div
               className="h-1.5 overflow-hidden rounded-full"
               style={{ background: "var(--surface)" }}
@@ -428,11 +463,10 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
                 style={{ width: `${percent}%`, background: rarity.color }}
               />
             </div>
-            <p className="muted mt-1 text-xs">
-              {a.progress} из {a.target}
-            </p>
-          </div>
-        )}
+          <p className="muted mt-1 text-xs">
+            {a.progress} из {a.target}
+          </p>
+        </div>
       </div>
     </div>
   );

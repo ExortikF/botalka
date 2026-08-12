@@ -19,19 +19,28 @@ from app.models import Attempt, Duel, DuelKind, DuelState, Quiz, Task, TaskStatu
 
 # Ранги по рейтингу — чтобы число само по себе что-то значило
 RANKS = [
-    (1500, "Мастер"),
-    (1300, "Сильный"),
-    (1150, "Уверенный"),
-    (1000, "Ученик"),
-    (0, "Новичок"),
+    (1800, "Гуру задач", "#7c3aed"),
+    (1600, "Гранд-мастер", "#d6006c"),
+    (1450, "Мастер", "#e0a800"),
+    (1300, "Пахарь", "#1f9d55"),
+    (1150, "Любитель задачек", "#0088b0"),
+    (1000, "Ученик", "#5b6570"),
+    (0, "Новичок", "#8a5a2b"),
 ]
 
 
 def rank_for(rating: int) -> str:
-    for threshold, name in RANKS:
+    for threshold, name, _ in RANKS:
         if rating >= threshold:
             return name
     return "Новичок"
+
+
+def rank_color(rating: int) -> str:
+    for threshold, _, color in RANKS:
+        if rating >= threshold:
+            return color
+    return "#8a5a2b"
 
 router = APIRouter(prefix="/api", tags=["profile"])
 
@@ -78,6 +87,8 @@ class ProfileOut(BaseModel):
     avatar_url: str | None
     rating: int
     rank: str
+    rank_color: str
+    incoming_duels: list[dict]
     duels_played: int
     duels_won: int
     duel_win_streak: int
@@ -261,6 +272,28 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         else:
             break
 
+    # входящие вызовы: тебя позвали, ты ещё не играл
+    incoming = []
+    for duel in await session.scalars(
+        select(Duel)
+        .where(
+            Duel.kind == DuelKind.LINK,
+            Duel.state == DuelState.WAITING,
+            Duel.opponent_id == user.id,
+            Duel.opponent_quiz_id.is_(None),
+        )
+        .order_by(Duel.id.desc())
+        .limit(5)
+    ):
+        challenger = await session.get(User, duel.challenger_id)
+        incoming.append(
+            {
+                "code": duel.code,
+                "from": challenger.display_name if challenger else "—",
+                "rounds": len(duel.task_ids),
+            }
+        )
+
     fast_correct = sum(1 for a in attempts if a.is_correct and 0 < a.time_spent_ms < 15_000)
     night_attempts = sum(1 for a in attempts if a.created_at.astimezone(TZ).hour < 5)
     best_day = max(counts.values()) if counts else 0
@@ -277,6 +310,8 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         avatar_url=user.avatar_url,
         rating=user.rating,
         rank=rank_for(user.rating),
+        rank_color=rank_color(user.rating),
+        incoming_duels=incoming,
         duels_played=len(online),
         duels_won=duels_won,
         duel_win_streak=win_streak,
@@ -364,6 +399,8 @@ class LeaderRow(BaseModel):
     display_name: str
     rating: int
     rank: str
+    rank_color: str
+    incoming_duels: list[dict]
     duels: int
     wins: int
     solved_week: int
@@ -431,6 +468,7 @@ async def leaderboard(
             display_name=u.display_name,
             rating=u.rating,
             rank=rank_for(u.rating),
+            rank_color=rank_color(u.rating),
             duels=played.get(u.id, 0),
             wins=won.get(u.id, 0),
             solved_week=solved_week.get(u.id, 0),
