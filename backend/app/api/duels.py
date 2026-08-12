@@ -31,6 +31,8 @@ class CreateDuelIn(BaseModel):
     subject: str = "math_prof"
     task_type_ids: list[int] = Field(default_factory=list)
     length: int = Field(default=DUEL_LENGTH, ge=3, le=15)
+    # если задан — вызов адресный: принять его сможет только этот человек
+    opponent_id: int | None = None
 
 
 class DuelSideOut(BaseModel):
@@ -165,10 +167,31 @@ async def create_duel(payload: CreateDuelIn, session: DbSession, user: PlayerUse
             status.HTTP_404_NOT_FOUND, "мало задач для дуэли — выберите другие темы"
         )
 
+    if payload.opponent_id is not None:
+        # вызвать можно только друга — иначе можно спамить вызовами кому угодно
+        from app.models import Friendship, FriendshipState
+
+        friendship = await session.scalar(
+            select(Friendship).where(
+                Friendship.state == FriendshipState.ACCEPTED,
+                (
+                    (Friendship.from_user_id == user.id)
+                    & (Friendship.to_user_id == payload.opponent_id)
+                )
+                | (
+                    (Friendship.from_user_id == payload.opponent_id)
+                    & (Friendship.to_user_id == user.id)
+                ),
+            )
+        )
+        if friendship is None:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "вызвать можно только друга")
+
     duel = Duel(
         code=await _new_code(session),
         task_ids=[t.id for t in tasks],
         challenger_id=user.id,
+        opponent_id=payload.opponent_id,
         expires_at=datetime.now(UTC) + timedelta(hours=DUEL_TTL_HOURS),
     )
     session.add(duel)

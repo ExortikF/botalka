@@ -22,6 +22,9 @@ class User(Base):
     username: Mapped[str | None] = mapped_column(String(64))
     display_name: Mapped[str] = mapped_column(String(128))
     avatar_url: Mapped[str | None] = mapped_column(String(512))
+    # короткий код, по которому тебя добавляют в друзья. Работает и у гостей,
+    # у которых нет username в Telegram
+    friend_code: Mapped[str | None] = mapped_column(String(12), unique=True, index=True)
 
     rating: Mapped[int] = mapped_column(Integer, default=STARTING_RATING)
     streak_days: Mapped[int] = mapped_column(Integer, default=0)

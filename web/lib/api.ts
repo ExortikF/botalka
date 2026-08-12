@@ -180,10 +180,15 @@ export type DuelListItem = {
   created_at: string;
 };
 
-export const createDuel = (taskTypeIds: number[] = [], length = 7) =>
+export const createDuel = (taskTypeIds: number[] = [], length = 7, opponentId?: number) =>
   api<Duel>("/api/duels", {
     method: "POST",
-    body: JSON.stringify({ subject: "math_prof", task_type_ids: taskTypeIds, length }),
+    body: JSON.stringify({
+      subject: "math_prof",
+      task_type_ids: taskTypeIds,
+      length,
+      opponent_id: opponentId ?? null,
+    }),
   });
 
 export const getDuel = (code: string) => api<Duel>(`/api/duels/${code}`);

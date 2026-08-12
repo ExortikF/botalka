@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Flame, Shield, Swords, Trophy, User as UserIcon, Zap } from "lucide-react";
+import {
+  BookOpen,
+  Flame,
+  Shield,
+  Swords,
+  Trophy,
+  User as UserIcon,
+  Users,
+  Zap,
+} from "lucide-react";
 import type { User } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
@@ -20,6 +29,7 @@ const NAV: NavItem[] = [
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
+  { href: "/app/friends", label: "Друзья", icon: Users },
   { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
 ];
 
