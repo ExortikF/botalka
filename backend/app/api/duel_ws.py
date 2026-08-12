@@ -24,9 +24,10 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from sqlalchemy import func, select
 
 from app.core.answers import check_answer
+from app.core.coins import award
 from app.core.db import SessionLocal
 from app.core.security import SESSION_COOKIE, read_session_token
-from app.models import Duel, DuelKind, DuelState, Task, TaskStatus, TaskType, User
+from app.models import CoinReason, Duel, DuelKind, DuelState, Task, TaskStatus, TaskType, User
 
 router = APIRouter()
 
@@ -287,6 +288,13 @@ async def _finish_match(match: Match, forfeit: Player | None = None) -> None:
         if user_a and user_b:
             user_a.rating = max(RATING_FLOOR, user_a.rating + delta_a)
             user_b.rating = max(RATING_FLOOR, user_b.rating + delta_b)
+
+            for player_user, outcome in ((user_a, outcome_a), (user_b, 1 - outcome_a)):
+                await award(
+                    session,
+                    player_user,
+                    CoinReason.DUEL_WIN if outcome > 0.5 else CoinReason.DUEL_LOSS,
+                )
 
         winner_id = None
         if outcome_a == 1.0:

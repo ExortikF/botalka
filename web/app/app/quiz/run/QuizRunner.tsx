@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Lightbulb, PenLine, X } from "lucide-react";
+import { Coins, Lightbulb, PenLine, X } from "lucide-react";
 import MathText from "../../../Math";
 import DrawingPad, { type Stroke } from "../../DrawingPad";
 import ReportButton from "../../ReportButton";
@@ -366,10 +366,18 @@ function Feedback({
         }}
       >
         <p
-          className="font-semibold"
+          className="flex flex-wrap items-center gap-3 font-semibold"
           style={{ color: result.is_correct ? "var(--accent-700)" : "var(--accent-2)" }}
         >
           {result.is_correct ? "Верно" : `Неверно. Правильный ответ: ${result.correct_answer}`}
+          {result.coins > 0 && (
+            <span
+              className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
+              style={{ background: "#fdf3dd", color: "#c98a00" }}
+            >
+              <Coins size={14} /> +{result.coins}
+            </span>
+          )}
         </p>
         {result.is_correct && result.used_hint && (
           <p className="muted mt-1 text-sm">Решено с подсказкой</p>

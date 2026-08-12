@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Flame, Lock, Swords, X } from "lucide-react";
+import { Coins, Flame, Lock, Swords, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { plural } from "@/lib/exam";
 import { initials } from "@/lib/format";
@@ -23,6 +23,8 @@ type Profile = {
   rating: number;
   rank: string;
   rank_color: string;
+  coins: number;
+  coins_week: number;
   incoming_duels: { code: string; from: string; rounds: number }[];
   duels_played: number;
   duels_won: number;
@@ -131,7 +133,7 @@ export default function ProfilePage() {
         </section>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <Metric
           value={String(profile.streak_days)}
           unit={plural(profile.streak_days, "день", "дня", "дней")}
@@ -141,6 +143,11 @@ export default function ProfilePage() {
         <Metric
           value={`${unlocked.length}/${profile.achievements.length}`}
           label="получено достижений"
+        />
+        <Metric
+          value={String(profile.coins)}
+          label={profile.coins_week > 0 ? `монет · +${profile.coins_week} за неделю` : "монет"}
+          icon={<Coins size={15} style={{ color: "#c98a00" }} />}
         />
         <Metric value={`${profile.accuracy}%`} label="верных ответов" />
         <Metric

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
+  Coins,
   Flame,
   Shield,
   Swords,
@@ -31,6 +33,7 @@ type NavItem = {
 const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
+  { href: "/app/stats", label: "Статистика", icon: BarChart3 },
   { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
@@ -143,6 +146,15 @@ export default function Sidebar({ user }: { user: User | null }) {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm">{user.display_name}</span>
+              {user.coins > 0 && (
+                <span
+                  className="mr-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
+                  style={{ background: "#fdf3dd", color: "#c98a00" }}
+                >
+                  <Coins size={12} />
+                  {user.coins}
+                </span>
+              )}
               {user.streak_days > 0 ? (
                 <span
                   className="mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"

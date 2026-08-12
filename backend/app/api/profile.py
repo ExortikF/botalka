@@ -15,7 +15,18 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
-from app.models import Attempt, Duel, DuelKind, DuelState, Quiz, Task, TaskStatus, TaskType, User
+from app.models import (
+    Attempt,
+    CoinTransaction,
+    Duel,
+    DuelKind,
+    DuelState,
+    Quiz,
+    Task,
+    TaskStatus,
+    TaskType,
+    User,
+)
 
 # Ранги по рейтингу — чтобы число само по себе что-то значило
 RANKS = [
@@ -88,6 +99,8 @@ class ProfileOut(BaseModel):
     rating: int
     rank: str
     rank_color: str
+    coins: int
+    coins_week: int
     incoming_duels: list[dict]
     duels_played: int
     duels_won: int
@@ -272,6 +285,16 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         else:
             break
 
+    coins_week = (
+        await session.scalar(
+            select(func.coalesce(func.sum(CoinTransaction.amount), 0)).where(
+                CoinTransaction.user_id == user.id,
+                CoinTransaction.amount > 0,
+                CoinTransaction.created_at >= datetime.now(TZ) - timedelta(days=7),
+            )
+        )
+    ) or 0
+
     # входящие вызовы: тебя позвали, ты ещё не играл
     incoming = []
     for duel in await session.scalars(
@@ -311,6 +334,8 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         rating=user.rating,
         rank=rank_for(user.rating),
         rank_color=rank_color(user.rating),
+        coins=user.coins,
+        coins_week=coins_week,
         incoming_duels=incoming,
         duels_played=len(online),
         duels_won=duels_won,
@@ -483,3 +508,154 @@ async def leaderboard(
         top = top + [r for r in rows if r.is_you]
 
     return LeaderboardOut(board=board, rows=top, your_place=your_place)
+
+
+# --------------------------------------------------------------- статистика за год
+
+class MonthRow(BaseModel):
+    month: str          # «2026-08»
+    solved: int
+    correct: int
+    days_active: int
+
+
+class HourRow(BaseModel):
+    hour: int
+    attempts: int
+
+
+class TypeRow(BaseModel):
+    number: int
+    title: str
+    total: int
+    correct: int
+    accuracy: int
+    avg_seconds: int
+
+
+class StatsYearOut(BaseModel):
+    days_total: int
+    attempts_total: int
+    correct_total: int
+    accuracy: int
+    minutes_total: int
+    avg_seconds: int
+    best_day: dict | None
+    quizzes: int
+    mocks: int
+    duels: int
+    forecast_secondary: int      # прогноз тестового балла по текущей точности
+    months: list[MonthRow]
+    hours: list[HourRow]
+    by_type: list[TypeRow]
+
+
+@router.get("/stats/year", response_model=StatsYearOut)
+async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
+    """Всё, что накопилось за год: помесячно, по часам и по номерам заданий."""
+    from app.core.scoring import secondary_score
+    from app.models import MockAttempt
+
+    year_ago = datetime.now(TZ) - timedelta(days=365)
+    attempts = list(
+        await session.scalars(
+            select(Attempt).where(Attempt.user_id == user.id, Attempt.created_at >= year_ago)
+        )
+    )
+
+    months: dict[str, dict] = {}
+    hours: dict[int, int] = {h: 0 for h in range(24)}
+    per_day: dict[date, int] = {}
+
+    for attempt in attempts:
+        local = attempt.created_at.astimezone(TZ)
+        key = f"{local.year}-{local.month:02d}"
+        entry = months.setdefault(key, {"solved": 0, "correct": 0, "days": set()})
+        entry["solved"] += 1
+        entry["correct"] += int(attempt.is_correct)
+        entry["days"].add(local.date())
+        hours[local.hour] += 1
+        per_day[local.date()] = per_day.get(local.date(), 0) + 1
+
+    correct_total = sum(a.is_correct for a in attempts)
+    accuracy = round(100 * correct_total / len(attempts)) if attempts else 0
+    total_ms = sum(a.time_spent_ms for a in attempts)
+    timed = [a for a in attempts if a.time_spent_ms > 0]
+
+    rows = (
+        await session.execute(
+            select(
+                TaskType.number,
+                TaskType.title,
+                func.count(Attempt.id),
+                func.count(Attempt.id).filter(Attempt.is_correct),
+                func.avg(Attempt.time_spent_ms),
+            )
+            .join(Task, Task.id == Attempt.task_id)
+            .join(TaskType, TaskType.id == Task.task_type_id)
+            .where(Attempt.user_id == user.id)
+            .group_by(TaskType.number, TaskType.title)
+            .order_by(TaskType.number)
+        )
+    ).all()
+
+    best = max(per_day.items(), key=lambda kv: kv[1], default=None)
+
+    # прогноз: считаем, что на экзамене будет та же точность на 12 заданиях части 1
+    forecast_primary = round(12 * accuracy / 100)
+
+    return StatsYearOut(
+        days_total=len(per_day),
+        attempts_total=len(attempts),
+        correct_total=correct_total,
+        accuracy=accuracy,
+        minutes_total=round(total_ms / 60000),
+        avg_seconds=round(sum(a.time_spent_ms for a in timed) / len(timed) / 1000) if timed else 0,
+        best_day={"day": str(best[0]), "solved": best[1]} if best else None,
+        quizzes=(
+            await session.scalar(
+                select(func.count(Quiz.id)).where(
+                    Quiz.user_id == user.id, Quiz.finished_at.is_not(None)
+                )
+            )
+        )
+        or 0,
+        mocks=(
+            await session.scalar(
+                select(func.count(MockAttempt.id)).where(
+                    MockAttempt.user_id == user.id, MockAttempt.finished_at.is_not(None)
+                )
+            )
+        )
+        or 0,
+        duels=(
+            await session.scalar(
+                select(func.count(Duel.id)).where(
+                    (Duel.challenger_id == user.id) | (Duel.opponent_id == user.id)
+                )
+            )
+        )
+        or 0,
+        forecast_secondary=secondary_score(forecast_primary),
+        months=[
+            MonthRow(
+                month=key,
+                solved=value["solved"],
+                correct=value["correct"],
+                days_active=len(value["days"]),
+            )
+            for key, value in sorted(months.items())
+        ],
+        hours=[HourRow(hour=h, attempts=hours[h]) for h in range(24)],
+        by_type=[
+            TypeRow(
+                number=number,
+                title=title,
+                total=total,
+                correct=correct,
+                accuracy=round(100 * correct / total) if total else 0,
+                avg_seconds=round((avg_ms or 0) / 1000),
+            )
+            for number, title, total, correct, avg_ms in rows
+        ],
+    )

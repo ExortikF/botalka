@@ -17,6 +17,7 @@ from app.api.deps import CurrentUser, DbSession
 from app.core.answers import check_answer
 from app.models import (
     AnswerType,
+    CoinTransaction,
     Idea,
     IdeaStatus,
     MockAttempt,
@@ -333,6 +334,14 @@ class ProblemTask(BaseModel):
     accuracy: int
 
 
+class Funnel(BaseModel):
+    registered: int
+    started_quiz: int
+    finished_quiz: int
+    came_back: int          # вернулись на другой день
+    played_duel: int
+
+
 class Dashboard(BaseModel):
     users_total: int
     users_telegram: int
@@ -347,6 +356,12 @@ class Dashboard(BaseModel):
     quizzes_finished: int
     duels_link: int
     duels_online: int
+
+    coins_issued: int
+    avg_seconds: int
+    retention_d1: int       # % вернувшихся на следующий день
+    retention_d7: int
+    funnel: Funnel
 
     users: list[UserRow]
     hardest: list[ProblemTask]
@@ -471,7 +486,69 @@ async def dashboard(session: DbSession, admin: AdminUser, limit: int = 100) -> D
     ]
     scored.sort(key=lambda t: t.accuracy)
 
+    # Ретеншн: из тех, кто зарегистрировался достаточно давно, сколько вернулись
+    # хотя бы раз на следующий день и на седьмой. Главная метрика продукта.
+    day_sets: dict[int, set] = {}
+    for row in (
+        await session.execute(
+            select(Attempt.user_id, func.date(Attempt.created_at)).distinct()
+        )
+    ).all():
+        day_sets.setdefault(row[0], set()).add(row[1])
+
+    def _retention(days: int) -> int:
+        eligible = [u for u in users if (now - u.created_at).days >= days]
+        if not eligible:
+            return 0
+        returned = 0
+        for u in eligible:
+            active = day_sets.get(u.id, set())
+            start = u.created_at.date()
+            if any((d - start).days >= days for d in active):
+                returned += 1
+        return round(100 * returned / len(eligible))
+
+    quizzes_started = (
+        await session.scalar(select(func.count(func.distinct(Quiz.user_id)))) or 0
+    )
+    quizzes_done = (
+        await session.scalar(
+            select(func.count(func.distinct(Quiz.user_id))).where(Quiz.finished_at.is_not(None))
+        )
+        or 0
+    )
+    duelists = (
+        await session.scalar(
+            select(func.count(func.distinct(Duel.challenger_id)))
+        )
+        or 0
+    )
+    multi_day = sum(1 for days in day_sets.values() if len(days) > 1)
+
+    coins_issued = (
+        await session.scalar(
+            select(func.coalesce(func.sum(CoinTransaction.amount), 0)).where(
+                CoinTransaction.amount > 0
+            )
+        )
+        or 0
+    )
+    avg_ms = await session.scalar(
+        select(func.avg(Attempt.time_spent_ms)).where(Attempt.time_spent_ms > 0)
+    )
+
     return Dashboard(
+        coins_issued=coins_issued,
+        avg_seconds=round((avg_ms or 0) / 1000),
+        retention_d1=_retention(1),
+        retention_d7=_retention(7),
+        funnel=Funnel(
+            registered=len(users),
+            started_quiz=quizzes_started,
+            finished_quiz=quizzes_done,
+            came_back=multi_day,
+            played_duel=duelists,
+        ),
         users_total=len(users),
         users_telegram=sum(1 for u in users if not u.is_guest),
         users_guests=sum(1 for u in users if u.is_guest),

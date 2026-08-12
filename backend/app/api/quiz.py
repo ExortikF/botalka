@@ -10,7 +10,8 @@ from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
 from app.core.answers import check_answer
-from app.models import Attempt, Quiz, QuizMode, Task, TaskStatus, TaskType, User
+from app.core.coins import MAX_STREAK_BONUS, award, is_first_correct
+from app.models import Attempt, CoinReason, Quiz, QuizMode, Task, TaskStatus, TaskType, User
 
 router = APIRouter(prefix="/api", tags=["quiz"])
 
@@ -63,6 +64,8 @@ class AnswerIn(BaseModel):
 class AnswerOut(BaseModel):
     is_correct: bool
     used_hint: bool
+    coins: int          # сколько монет принёс этот ответ
+    coins_total: int
     correct_answer: str
     solution: str | None
     score: int
@@ -376,6 +379,13 @@ async def submit_answer(
 
     is_correct = check_answer(task.answer_type, task.answer_payload, payload.answer)
 
+    # проверяем ДО записи попытки, иначе она посчитает саму себя
+    first_solve = is_correct and await is_first_correct(session, user.id, task.id)
+
+    coins = 0
+    if first_solve:
+        coins += await award(session, user, CoinReason.TASK_FIRST_SOLVE, note=task.slug)
+
     session.add(
         Attempt(
             user_id=user.id,
@@ -390,14 +400,30 @@ async def submit_answer(
     if is_correct:
         quiz.score += 1
 
-    answered = await session.scalar(
-        select(func.count(Attempt.id)).where(Attempt.quiz_id == quiz.id)
-    )
-    # +1 — текущая попытка ещё не в базе на момент подсчёта
-    quiz_just_finished = (answered or 0) + 1 >= len(quiz.task_ids)
+    # Считаем ПОСЛЕ записи текущей попытки: SQLAlchemy делает autoflush перед SELECT,
+    # поэтому «плюс один к счётчику» приводил к завершению квиза на задачу раньше
+    # и к повторной выдаче бонусов на последнем ответе.
+    await session.flush()
+    answered = (
+        await session.scalar(select(func.count(Attempt.id)).where(Attempt.quiz_id == quiz.id))
+    ) or 0
+
+    quiz_just_finished = quiz.finished_at is None and answered >= len(quiz.task_ids)
     if quiz_just_finished:
         quiz.finished_at = datetime.now(UTC)
+        streak_before = user.streak_days
         _bump_streak(user)
+
+        if quiz.score == len(quiz.task_ids):
+            coins += await award(session, user, CoinReason.QUIZ_PERFECT)
+
+        # первый завершённый квиз за сегодня — по росту серии это видно точнее всего
+        if user.streak_days != streak_before:
+            coins += await award(session, user, CoinReason.DAILY_FIRST_QUIZ)
+            bonus = min(user.streak_days, MAX_STREAK_BONUS)
+            coins += await award(
+                session, user, CoinReason.STREAK_DAY, amount=bonus, note=f"серия {user.streak_days}"
+            )
 
     await session.commit()
 
@@ -413,6 +439,8 @@ async def submit_answer(
     return AnswerOut(
         is_correct=is_correct,
         used_hint=payload.used_hint,
+        coins=coins,
+        coins_total=user.coins,
         correct_answer=_correct_answer_text(task),
         solution=task.solution,
         score=quiz.score,

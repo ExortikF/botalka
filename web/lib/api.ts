@@ -9,6 +9,7 @@ export type User = {
   display_name: string;
   avatar_url: string | null;
   rating: number;
+  coins: number;
   streak_days: number;
 };
 
@@ -28,6 +29,8 @@ export type Quiz = { id: number; mode: string; tasks: Task[] };
 export type AnswerResult = {
   is_correct: boolean;
   used_hint: boolean;
+  coins: number;
+  coins_total: number;
   correct_answer: string;
   solution: string | null;
   score: number;

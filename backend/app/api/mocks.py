@@ -16,8 +16,9 @@ from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
 from app.core.answers import check_answer
+from app.core.coins import award, is_first_correct
 from app.core.scoring import MAX_PRIMARY, secondary_score
-from app.models import Attempt, MockAttempt, MockExam, MockStatus, Task, TaskType
+from app.models import Attempt, CoinReason, MockAttempt, MockExam, MockStatus, Task, TaskType
 
 router = APIRouter(prefix="/api/mocks", tags=["mocks"])
 
@@ -247,6 +248,8 @@ async def finish(attempt_id: int, session: DbSession, user: PlayerUser) -> MockR
                 task.answer_type, task.answer_payload, given
             )
             score += int(correct)
+            if correct and await is_first_correct(session, user.id, task.id):
+                await award(session, user, CoinReason.TASK_FIRST_SOLVE, note=task.slug)
             # пишем в общую статистику: пробник тоже тренировка
             session.add(
                 Attempt(
@@ -258,6 +261,8 @@ async def finish(attempt_id: int, session: DbSession, user: PlayerUser) -> MockR
                     time_spent_ms=0,
                 )
             )
+
+        await award(session, user, CoinReason.MOCK_FINISHED, note=exam.title[:100])
 
         attempt.score = score
         attempt.timed_out = timed_out

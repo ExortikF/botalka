@@ -26,7 +26,20 @@ type ProblemTask = {
   accuracy: number;
 };
 
+type Funnel = {
+  registered: number;
+  started_quiz: number;
+  finished_quiz: number;
+  came_back: number;
+  played_duel: number;
+};
+
 type Dashboard = {
+  coins_issued: number;
+  avg_seconds: number;
+  retention_d1: number;
+  retention_d7: number;
+  funnel: Funnel;
   users_total: number;
   users_telegram: number;
   users_guests: number;
@@ -94,6 +107,55 @@ export default function AdminDashboard() {
           label="средняя точность"
           hint={`квизов ${data.quizzes_finished}`}
         />
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-4">
+        <Metric
+          value={`${data.retention_d1}%`}
+          label="вернулись на следующий день"
+          hint="из тех, кто зарегистрирован сутки назад и раньше"
+        />
+        <Metric
+          value={`${data.retention_d7}%`}
+          label="вернулись через неделю"
+          hint="главная метрика продукта"
+        />
+        <Metric value={data.coins_issued} label="монет выдано всего" />
+        <Metric value={`${data.avg_seconds} с`} label="в среднем на задачу" />
+      </section>
+
+      <section className="card p-6">
+        <p className="eyebrow mb-4">Воронка</p>
+        <ul className="space-y-2">
+          {[
+            { label: "Зарегистрировались", value: data.funnel.registered },
+            { label: "Начали квиз", value: data.funnel.started_quiz },
+            { label: "Закончили квиз", value: data.funnel.finished_quiz },
+            { label: "Вернулись в другой день", value: data.funnel.came_back },
+            { label: "Сыграли дуэль", value: data.funnel.played_duel },
+          ].map((step) => {
+            const percent = data.funnel.registered
+              ? Math.round((step.value / data.funnel.registered) * 100)
+              : 0;
+            return (
+              <li key={step.label} className="flex items-center gap-3 text-sm">
+                <span className="w-52 shrink-0">{step.label}</span>
+                <span
+                  className="h-3 flex-1 overflow-hidden rounded-full"
+                  style={{ background: "var(--surface)" }}
+                >
+                  <span
+                    className="block h-full rounded-full"
+                    style={{ width: `${percent}%`, background: "var(--accent)" }}
+                  />
+                </span>
+                <span className="w-20 shrink-0 text-right">
+                  {step.value} <span className="muted">· {percent}%</span>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       <section className="card p-6">

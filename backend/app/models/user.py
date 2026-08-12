@@ -27,6 +27,7 @@ class User(Base):
     friend_code: Mapped[str | None] = mapped_column(String(12), unique=True, index=True)
 
     rating: Mapped[int] = mapped_column(Integer, default=STARTING_RATING)
+    coins: Mapped[int] = mapped_column(Integer, default=0)
     streak_days: Mapped[int] = mapped_column(Integer, default=0)
     streak_last_date: Mapped[date | None] = mapped_column(Date)
 

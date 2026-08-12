@@ -24,6 +24,7 @@ class UserOut(BaseModel):
     display_name: str
     avatar_url: str | None
     rating: int
+    coins: int
     streak_days: int
 
 
