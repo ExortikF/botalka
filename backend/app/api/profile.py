@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter
@@ -354,3 +354,95 @@ async def day_stats(day: date, session: DbSession, user: PlayerUser) -> DayStats
         quizzes=len({a.quiz_id for a in todays if a.quiz_id}),
         by_type=sorted(by_type.values(), key=lambda r: r.number),
     )
+
+
+# ------------------------------------------------------------------ лидерборд
+
+class LeaderRow(BaseModel):
+    place: int
+    user_id: int
+    display_name: str
+    rating: int
+    rank: str
+    duels: int
+    wins: int
+    solved_week: int
+    is_you: bool
+
+
+class LeaderboardOut(BaseModel):
+    board: str
+    rows: list[LeaderRow]
+    your_place: int | None
+
+
+@router.get("/leaderboard", response_model=LeaderboardOut)
+async def leaderboard(
+    session: DbSession, user: PlayerUser, board: str = "rating", limit: int = 30
+) -> LeaderboardOut:
+    """Две таблицы: по рейтингу (только те, кто играл онлайн) и по активности за неделю.
+
+    Гостей в рейтинговой таблице нет: рейтинг привязан к куке, и её можно очистить,
+    чтобы обнулить неудачную серию.
+    """
+    week_ago = datetime.now(TZ) - timedelta(days=7)
+
+    solved_week = {
+        row.user_id: row.count
+        for row in (
+            await session.execute(
+                select(
+                    Attempt.user_id.label("user_id"),
+                    func.count(func.distinct(Attempt.task_id)).label("count"),
+                )
+                .where(Attempt.is_correct.is_(True), Attempt.created_at >= week_ago)
+                .group_by(Attempt.user_id)
+            )
+        ).all()
+    }
+
+    duel_rows = (
+        await session.execute(
+            select(Duel).where(Duel.kind == DuelKind.ONLINE, Duel.state == DuelState.FINISHED)
+        )
+    ).scalars()
+    played: dict[int, int] = {}
+    won: dict[int, int] = {}
+    for duel in duel_rows:
+        for uid in (duel.challenger_id, duel.opponent_id):
+            if uid:
+                played[uid] = played.get(uid, 0) + 1
+        if duel.winner_id:
+            won[duel.winner_id] = won.get(duel.winner_id, 0) + 1
+
+    users = list(await session.scalars(select(User)))
+
+    if board == "week":
+        candidates = [u for u in users if solved_week.get(u.id, 0) > 0]
+        candidates.sort(key=lambda u: -solved_week.get(u.id, 0))
+    else:
+        candidates = [u for u in users if not u.is_guest and played.get(u.id, 0) > 0]
+        candidates.sort(key=lambda u: (-u.rating, -played.get(u.id, 0)))
+
+    rows = [
+        LeaderRow(
+            place=i + 1,
+            user_id=u.id,
+            display_name=u.display_name,
+            rating=u.rating,
+            rank=rank_for(u.rating),
+            duels=played.get(u.id, 0),
+            wins=won.get(u.id, 0),
+            solved_week=solved_week.get(u.id, 0),
+            is_you=u.id == user.id,
+        )
+        for i, u in enumerate(candidates)
+    ]
+
+    your_place = next((r.place for r in rows if r.is_you), None)
+    # свою строку показываем всегда, даже если она за пределами топа
+    top = rows[:limit]
+    if your_place and your_place > limit:
+        top = top + [r for r in rows if r.is_you]
+
+    return LeaderboardOut(board=board, rows=top, your_place=your_place)

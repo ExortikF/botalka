@@ -7,6 +7,7 @@ import {
   Flame,
   Shield,
   Swords,
+  ClipboardList,
   Trophy,
   User as UserIcon,
   Users,
@@ -27,10 +28,11 @@ type NavItem = {
 const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
+  { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
   { href: "/app/subjects", label: "Предметы", icon: BookOpen, soon: true },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
-  { href: "/app/rating", label: "Рейтинг", icon: Trophy, soon: true },
+  { href: "/app/rating", label: "Лидерборд", icon: Trophy },
 ];
 
 const ADMIN_ITEM: NavItem = { href: "/app/admin", label: "Админка", icon: Shield };

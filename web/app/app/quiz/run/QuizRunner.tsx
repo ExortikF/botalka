@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Lightbulb, X } from "lucide-react";
+import { Lightbulb, PenLine, X } from "lucide-react";
 import MathText from "../../../Math";
+import DrawingPad from "../../DrawingPad";
+import ReportButton from "../../ReportButton";
 import {
   getQuizResult,
   playDuel,
@@ -49,6 +51,7 @@ export default function QuizRunner({
   const [index, setIndex] = useState(0);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [sending, setSending] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(false);
 
   const startedAt = useRef(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
@@ -87,13 +90,11 @@ export default function QuizRunner({
     setSlots((prev) => ({ ...prev, [taskId]: { ...prev[taskId], ...next } }));
   }, []);
 
-  const goTo = useCallback(
-    (i: number) => {
-      setIndex(i);
-      startedAt.current = Date.now();
-    },
-    [],
-  );
+  const goTo = useCallback((i: number) => {
+    setIndex(i);
+    setDraftOpen(false);
+    startedAt.current = Date.now();
+  }, []);
 
   /** Следующая незаполненная задача — так работают и «Пропустить», и «Дальше». */
   const goNextUnanswered = useCallback(() => {
@@ -212,6 +213,8 @@ export default function QuizRunner({
 
           {!slot.result ? (
             <>
+              {draftOpen && <DrawingPad />}
+
               <form
                 className="flex flex-wrap gap-3"
                 onSubmit={(e) => {
@@ -234,15 +237,24 @@ export default function QuizRunner({
                 </button>
               </form>
 
-              {slot.hintsShown < task.hints.length && (
+              <div className="flex flex-wrap items-center gap-4">
+                {slot.hintsShown < task.hints.length && (
+                  <button
+                    className="muted flex items-center gap-2 text-sm hover:underline"
+                    onClick={() => patch(task.id, { hintsShown: slot.hintsShown + 1 })}
+                  >
+                    <Lightbulb size={15} />
+                    Подсказка — задача будет отмечена как решённая с подсказкой
+                  </button>
+                )}
                 <button
                   className="muted flex items-center gap-2 text-sm hover:underline"
-                  onClick={() => patch(task.id, { hintsShown: slot.hintsShown + 1 })}
+                  onClick={() => setDraftOpen((v) => !v)}
                 >
-                  <Lightbulb size={15} />
-                  Подсказка — задача будет отмечена как решённая с подсказкой
+                  <PenLine size={15} />
+                  {draftOpen ? "Убрать черновик" : "Черновик"}
                 </button>
-              )}
+              </div>
             </>
           ) : (
             <Feedback
@@ -253,6 +265,10 @@ export default function QuizRunner({
               lastOne={allAnswered}
             />
           )}
+
+          <div className="border-t pt-3" style={{ borderColor: "var(--divider)" }}>
+            <ReportButton taskId={task.id} givenAnswer={slot.answer || undefined} />
+          </div>
         </article>
 
         <aside className="space-y-6">

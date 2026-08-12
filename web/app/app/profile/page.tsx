@@ -93,8 +93,6 @@ export default function ProfilePage() {
             {profile.is_guest
               ? "Гостевой аккаунт — войди через Telegram, чтобы прогресс не потерялся"
               : "Аккаунт Telegram"}
-            {" · "}
-            открыто достижений: {unlocked.length} из {profile.achievements.length}
           </p>
         </div>
       </section>
@@ -172,8 +170,8 @@ export default function ProfilePage() {
                   ? ` Серия из ${profile.duel_win_streak} побед подряд.`
                   : "")}
           </p>
-          <Link className="btn mt-4" href="/app/duels/online">
-            {profile.duels_played === 0 ? "Сыграть первый матч" : "Найти соперника"}
+          <Link className="btn mt-4" href="/app/duels">
+            Сразиться
           </Link>
         </div>
       </section>

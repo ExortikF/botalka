@@ -17,6 +17,11 @@ from app.api.deps import CurrentUser, DbSession
 from app.core.answers import check_answer
 from app.models import (
     AnswerType,
+    MockAttempt,
+    MockExam,
+    MockStatus,
+    ReportStatus,
+    TaskReport,
     Attempt,
     Duel,
     DuelKind,
@@ -490,3 +495,193 @@ async def dashboard(session: DbSession, admin: AdminUser, limit: int = 100) -> D
         hardest=scored[:10],
         easiest=list(reversed(scored[-10:])),
     )
+
+
+# ------------------------------------------------------------------ жалобы
+
+class ReportOut(BaseModel):
+    id: int
+    task_id: int
+    task_number: int
+    statement: str
+    correct_answer: str
+    message: str
+    given_answer: str | None
+    status: str
+    created_at: datetime
+
+
+@router.get("/reports", response_model=list[ReportOut])
+async def list_reports(
+    session: DbSession, admin: AdminUser, only_new: bool = True
+) -> list[ReportOut]:
+    stmt = select(TaskReport).order_by(TaskReport.id.desc()).limit(100)
+    if only_new:
+        stmt = stmt.where(TaskReport.status == ReportStatus.NEW)
+
+    out: list[ReportOut] = []
+    for report in await session.scalars(stmt):
+        task = await session.get(Task, report.task_id)
+        if task is None:
+            continue
+        await session.refresh(task, ["task_type"])
+        out.append(
+            ReportOut(
+                id=report.id,
+                task_id=task.id,
+                task_number=task.task_type.number,
+                statement=task.statement,
+                correct_answer=str((task.answer_payload or {}).get("value", "")),
+                message=report.message,
+                given_answer=report.given_answer,
+                status=report.status.value,
+                created_at=report.created_at,
+            )
+        )
+    return out
+
+
+@router.post("/reports/{report_id}/{action}")
+async def resolve_report(
+    report_id: int, action: str, session: DbSession, admin: AdminUser
+) -> dict:
+    if action not in ("resolve", "decline"):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "действие не поддерживается")
+    report = await session.get(TaskReport, report_id)
+    if report is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "жалоба не найдена")
+
+    report.status = ReportStatus.RESOLVED if action == "resolve" else ReportStatus.DECLINED
+    report.resolved_at = datetime.now(UTC)
+    await session.commit()
+    return {"ok": True, "status": report.status.value}
+
+
+# --------------------------------------------------------- конструктор пробников
+
+class MockIn(BaseModel):
+    title: str = Field(min_length=3, max_length=200)
+    description: str | None = None
+    duration_minutes: int = Field(default=235, ge=10, le=360)
+    status: MockStatus = MockStatus.DRAFT
+    # либо явный список задач, либо «собрать автоматически по номерам»
+    task_ids: list[int] = Field(default_factory=list)
+    auto_numbers: list[int] = Field(default_factory=list)
+
+
+class MockOut(BaseModel):
+    id: int
+    title: str
+    description: str | None
+    duration_minutes: int
+    status: str
+    task_ids: list[int]
+    numbers: list[int]
+    attempts: int
+
+
+async def _mock_out(session: DbSession, exam: MockExam) -> MockOut:
+    numbers = []
+    for task_id in exam.task_ids:
+        task = await session.get(Task, task_id)
+        if task is None:
+            continue
+        await session.refresh(task, ["task_type"])
+        numbers.append(task.task_type.number)
+
+    attempts = (
+        await session.scalar(
+            select(func.count(MockAttempt.id)).where(MockAttempt.exam_id == exam.id)
+        )
+    ) or 0
+    return MockOut(
+        id=exam.id,
+        title=exam.title,
+        description=exam.description,
+        duration_minutes=exam.duration_minutes,
+        status=exam.status.value,
+        task_ids=list(exam.task_ids),
+        numbers=numbers,
+        attempts=attempts,
+    )
+
+
+async def _collect_tasks(session: DbSession, numbers: list[int], subject: str) -> list[int]:
+    """По одной случайной задаче на каждый указанный номер — как в настоящем варианте."""
+    picked: list[int] = []
+    for number in numbers:
+        task_id = await session.scalar(
+            select(Task.id)
+            .join(TaskType, TaskType.id == Task.task_type_id)
+            .where(
+                Task.status == TaskStatus.LIVE,
+                TaskType.number == number,
+                TaskType.subject.has(slug=subject),
+            )
+            .order_by(func.random())
+            .limit(1)
+        )
+        if task_id:
+            picked.append(task_id)
+    return picked
+
+
+@router.get("/mocks", response_model=list[MockOut])
+async def list_mocks_admin(session: DbSession, admin: AdminUser) -> list[MockOut]:
+    exams = list(await session.scalars(select(MockExam).order_by(MockExam.id.desc())))
+    return [await _mock_out(session, exam) for exam in exams]
+
+
+@router.post("/mocks", response_model=MockOut, status_code=status.HTTP_201_CREATED)
+async def create_mock(payload: MockIn, session: DbSession, admin: AdminUser) -> MockOut:
+    task_ids = payload.task_ids or await _collect_tasks(
+        session, payload.auto_numbers or list(range(1, 13)), "math_prof"
+    )
+    if len(task_ids) < 3:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "не набралось задач — проверь, что по выбранным номерам они есть",
+        )
+
+    exam = MockExam(
+        title=payload.title.strip(),
+        description=(payload.description or "").strip() or None,
+        task_ids=task_ids,
+        duration_minutes=payload.duration_minutes,
+        status=payload.status,
+    )
+    session.add(exam)
+    await session.commit()
+    await session.refresh(exam)
+    return await _mock_out(session, exam)
+
+
+@router.put("/mocks/{exam_id}", response_model=MockOut)
+async def update_mock(
+    exam_id: int, payload: MockIn, session: DbSession, admin: AdminUser
+) -> MockOut:
+    exam = await session.get(MockExam, exam_id)
+    if exam is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "пробник не найден")
+
+    exam.title = payload.title.strip()
+    exam.description = (payload.description or "").strip() or None
+    exam.duration_minutes = payload.duration_minutes
+    exam.status = payload.status
+    if payload.task_ids:
+        exam.task_ids = payload.task_ids
+    elif payload.auto_numbers:
+        exam.task_ids = await _collect_tasks(session, payload.auto_numbers, "math_prof")
+
+    await session.commit()
+    return await _mock_out(session, exam)
+
+
+@router.delete("/mocks/{exam_id}")
+async def hide_mock(exam_id: int, session: DbSession, admin: AdminUser) -> dict:
+    exam = await session.get(MockExam, exam_id)
+    if exam is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "пробник не найден")
+    exam.status = MockStatus.HIDDEN
+    await session.commit()
+    return {"ok": True}

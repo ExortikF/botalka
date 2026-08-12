@@ -399,6 +399,37 @@ async def quiz_result(quiz_id: int, session: DbSession, user: PlayerUser) -> Qui
     )
 
 
+class ReportIn(BaseModel):
+    message: str = Field(min_length=3, max_length=1000)
+    given_answer: str | None = Field(default=None, max_length=512)
+
+
+@router.post("/tasks/{task_id}/report", status_code=status.HTTP_201_CREATED)
+async def report_task(
+    task_id: int, payload: ReportIn, session: DbSession, user: PlayerUser
+) -> dict:
+    """«Нашли ошибку?» — жалоба уходит в админку, задача остаётся в выдаче.
+
+    Автоматически снимать задачу нельзя: так любой сможет вычистить банк.
+    """
+    from app.models import TaskReport
+
+    task = await session.get(Task, task_id)
+    if task is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "задача не найдена")
+
+    session.add(
+        TaskReport(
+            task_id=task_id,
+            user_id=user.id,
+            message=payload.message.strip(),
+            given_answer=payload.given_answer,
+        )
+    )
+    await session.commit()
+    return {"ok": True}
+
+
 class StatsRow(BaseModel):
     task_type_number: int
     task_type_title: str
