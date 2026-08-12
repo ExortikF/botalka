@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Lightbulb, PenLine, X } from "lucide-react";
 import MathText from "../../../Math";
-import DrawingPad from "../../DrawingPad";
+import DrawingPad, { type Stroke } from "../../DrawingPad";
 import ReportButton from "../../ReportButton";
+import { playCorrect, playWrong } from "@/lib/sound";
 import {
   getQuizResult,
   playDuel,
@@ -52,6 +53,8 @@ export default function QuizRunner({
   const [result, setResult] = useState<QuizResult | null>(null);
   const [sending, setSending] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
+  // черновик общий на весь квиз: при переходе к следующей задаче он остаётся
+  const [strokes, setStrokes] = useState<Stroke[]>([]);
 
   const startedAt = useRef(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,7 +95,6 @@ export default function QuizRunner({
 
   const goTo = useCallback((i: number) => {
     setIndex(i);
-    setDraftOpen(false);
     startedAt.current = Date.now();
   }, []);
 
@@ -121,6 +123,8 @@ export default function QuizRunner({
         slot.hintsShown > 0,
       );
       patch(task.id, { result: res });
+      if (res.is_correct) playCorrect();
+      else playWrong();
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -213,8 +217,6 @@ export default function QuizRunner({
 
           {!slot.result ? (
             <>
-              {draftOpen && <DrawingPad />}
-
               <form
                 className="flex flex-wrap gap-3"
                 onSubmit={(e) => {
@@ -319,6 +321,14 @@ export default function QuizRunner({
           )}
         </aside>
       </div>
+
+      {draftOpen && (
+        <DrawingPad
+          strokes={strokes}
+          onChange={setStrokes}
+          onClose={() => setDraftOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -125,10 +125,14 @@ def _correct_answer_text(task: Task) -> str:
 @router.get("/task-types", response_model=list[TaskTypeOut])
 async def list_task_types(session: DbSession, subject: str = "math_prof") -> list[TaskTypeOut]:
     """Типы заданий с количеством живых задач — для выбора режима тренировки."""
+    # outer join: номера без задач тоже показываем — по ним видно, чего в банке нет
     stmt = (
         select(TaskType, func.count(Task.id))
-        .join(Task, (Task.task_type_id == TaskType.id) & (Task.status == TaskStatus.LIVE))
-        .join(TaskType.subject)
+        .join(
+            Task,
+            (Task.task_type_id == TaskType.id) & (Task.status == TaskStatus.LIVE),
+            isouter=True,
+        )
         .where(TaskType.subject.has(slug=subject))
         .group_by(TaskType.id)
         .order_by(TaskType.number)
@@ -425,6 +429,23 @@ async def report_task(
             message=payload.message.strip(),
             given_answer=payload.given_answer,
         )
+    )
+    await session.commit()
+    return {"ok": True}
+
+
+class IdeaIn(BaseModel):
+    message: str = Field(min_length=5, max_length=2000)
+    page: str | None = Field(default=None, max_length=200)
+
+
+@router.post("/ideas", status_code=status.HTTP_201_CREATED)
+async def submit_idea(payload: IdeaIn, session: DbSession, user: PlayerUser) -> dict:
+    """«Есть идеи по улучшению сайта?» — предложение уходит в админку."""
+    from app.models import Idea
+
+    session.add(
+        Idea(user_id=user.id, message=payload.message.strip(), page=payload.page)
     )
     await session.commit()
     return {"ok": True}

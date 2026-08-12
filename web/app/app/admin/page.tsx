@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { BarChart3, ClipboardList, Flag, Pencil, Plus, Trash2 } from "lucide-react";
+import { BarChart3, ClipboardList, Flag, Lightbulb, Pencil, Plus, Trash2 } from "lucide-react";
 import MathText from "../../Math";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
 import TaskForm, { type AdminTask, EMPTY_TASK } from "./TaskForm";
@@ -23,6 +24,15 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default function AdminPage() {
+  // useSearchParams требует границы Suspense, иначе страница не пререндерится
+  return (
+    <Suspense fallback={<p className="muted">Загрузка…</p>}>
+      <AdminTasks />
+    </Suspense>
+  );
+}
+
+function AdminTasks() {
   const [denied, setDenied] = useState(false);
   const [list, setList] = useState<TaskList | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -49,9 +59,20 @@ export default function AdminPage() {
     api<Stats>("/api/admin/stats").then(setStats).catch(() => setStats(null));
   }, [filter]);
 
+  const params = useSearchParams();
+  const requestedTask = params.get("task");
+
   useEffect(() => {
     getTaskTypes().then(setTypes).catch(() => setTypes([]));
   }, []);
+
+  // ?task=42 — открыть сразу форму этой задачи, например из жалобы
+  useEffect(() => {
+    if (!requestedTask) return;
+    api<AdminTask>(`/api/admin/tasks/${requestedTask}`)
+      .then(setEditing)
+      .catch(() => setDenied(true));
+  }, [requestedTask]);
 
   useEffect(reload, [reload]);
 
@@ -104,6 +125,9 @@ export default function AdminPage() {
           </Link>
           <Link className="btn-ghost" href="/app/admin/reports">
             <Flag size={16} /> Жалобы
+          </Link>
+          <Link className="btn-ghost" href="/app/admin/ideas">
+            <Lightbulb size={16} /> Идеи
           </Link>
           <Link className="btn-ghost" href="/app/admin/mocks">
             <ClipboardList size={16} /> Пробники

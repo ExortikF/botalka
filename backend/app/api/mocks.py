@@ -16,6 +16,7 @@ from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
 from app.core.answers import check_answer
+from app.core.scoring import MAX_PRIMARY, secondary_score
 from app.models import Attempt, MockAttempt, MockExam, MockStatus, Task, TaskType
 
 router = APIRouter(prefix="/api/mocks", tags=["mocks"])
@@ -65,6 +66,8 @@ class MockResultOut(BaseModel):
     attempt_id: int
     title: str
     score: int
+    secondary: int      # тестовый балл по официальной шкале
+    max_primary: int    # сколько первичных даёт вся работа целиком
     total: int
     percent: int
     spent_minutes: int
@@ -296,6 +299,8 @@ async def _result_payload(
         attempt_id=attempt.id,
         title=exam.title,
         score=attempt.score or 0,
+        secondary=secondary_score(attempt.score or 0),
+        max_primary=MAX_PRIMARY,
         total=total,
         percent=round(100 * (attempt.score or 0) / total) if total else 0,
         spent_minutes=spent,

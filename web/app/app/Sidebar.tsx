@@ -9,6 +9,8 @@ import {
   Swords,
   ClipboardList,
   Trophy,
+  Volume2,
+  VolumeX,
   User as UserIcon,
   Users,
   Zap,
@@ -17,6 +19,8 @@ import type { User } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
 import { initials } from "@/lib/format";
+import { setSoundEnabled, soundEnabled } from "@/lib/sound";
+import IdeaButton from "./IdeaButton";
 
 type NavItem = {
   href: string;
@@ -40,7 +44,12 @@ const ADMIN_ITEM: NavItem = { href: "/app/admin", label: "Админка", icon:
 export default function Sidebar({ user }: { user: User | null }) {
   const pathname = usePathname();
   const [days, setDays] = useState<number | null>(null);
-  useEffect(() => setDays(daysUntilExam()), []);
+  const [sound, setSound] = useState(true);
+
+  useEffect(() => {
+    setDays(daysUntilExam());
+    setSound(soundEnabled());
+  }, []);
 
   return (
     <aside
@@ -78,7 +87,22 @@ export default function Sidebar({ user }: { user: User | null }) {
         </nav>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <IdeaButton />
+          <button
+            className="muted shrink-0"
+            title={sound ? "Выключить звук" : "Включить звук"}
+            onClick={() => {
+              const next = !sound;
+              setSound(next);
+              setSoundEnabled(next);
+            }}
+          >
+            {sound ? <Volume2 size={15} /> : <VolumeX size={15} />}
+          </button>
+        </div>
+
         <div>
           <p className="eyebrow">До экзамена</p>
           <p className="h mt-1 text-2xl">

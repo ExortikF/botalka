@@ -135,6 +135,46 @@ async def _upsert(data: dict, types_meta: dict) -> str:
         return "создана" if created else "обновлена"
 
 
+async def _ensure_task_types(types_meta: dict) -> None:
+    """Заводит номера заданий из task_types.yaml, даже если задач по ним ещё нет.
+
+    Нужно, чтобы часть 2 можно было выбирать в конструкторе пробников и заливать
+    в неё контент, не трогая код.
+    """
+    async with SessionLocal() as session:
+        for subject_slug, numbers in types_meta.items():
+            subject = await session.scalar(select(Subject).where(Subject.slug == subject_slug))
+            if subject is None:
+                subject = Subject(
+                    slug=subject_slug, title=SUBJECT_TITLES.get(subject_slug, subject_slug)
+                )
+                session.add(subject)
+                await session.flush()
+
+            for number, meta in numbers.items():
+                task_type = await session.scalar(
+                    select(TaskType).where(
+                        TaskType.subject_id == subject.id,
+                        TaskType.number == number,
+                        TaskType.year_spec == 2026,
+                    )
+                )
+                if task_type is None:
+                    session.add(
+                        TaskType(
+                            subject_id=subject.id,
+                            number=number,
+                            year_spec=2026,
+                            title=meta.get("title", f"Задание {number}"),
+                            description=meta.get("description"),
+                        )
+                    )
+                else:
+                    task_type.title = meta.get("title", task_type.title)
+                    task_type.description = meta.get("description")
+        await session.commit()
+
+
 async def main() -> int:
     meta_path = CONTENT_DIR / "task_types.yaml"
     types_meta: dict = {}
@@ -143,6 +183,8 @@ async def main() -> int:
         types_meta = {
             subject: {int(n): v for n, v in numbers.items()} for subject, numbers in raw.items()
         }
+
+    await _ensure_task_types(types_meta)
 
     docs = _load_files()
     if not docs:

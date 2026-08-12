@@ -1,30 +1,49 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Eraser, Redo2, Undo2 } from "lucide-react";
+import { ChevronDown, Eraser, Redo2, Undo2 } from "lucide-react";
 
 /**
- * Черновик к задаче: рисовать чертёж прямо в браузере.
+ * Черновик: большой лист в клетку под задачей.
  *
  * Штрихи храним списком точек, а не картинкой, — только так работают «назад»
  * и «вернуть»: отменённый штрих просто перестаёт рисоваться при перерисовке.
- * Никуда не сохраняется: черновик живёт, пока открыта задача.
+ *
+ * Состояние живёт **снаружи**, в родителе: иначе черновик стирался бы при
+ * переходе к следующей задаче, когда компонент размонтируется.
  */
 
-type Point = { x: number; y: number };
-type Stroke = { points: Point[]; color: string; width: number };
+export type Point = { x: number; y: number };
+export type Stroke = { points: Point[]; color: string; width: number };
 
 const COLORS = ["#14171c", "#0088b0", "#d6006c", "#1f9d55", "#e0a800"];
 const WIDTHS = [2, 4, 8];
+const CELL = 24; // размер клетки, как в тетради
 
-export default function DrawingPad({ height = 320 }: { height?: number }) {
+export default function DrawingPad({
+  strokes,
+  onChange,
+  onClose,
+  height = 620,
+}: {
+  strokes: Stroke[];
+  onChange: (next: Stroke[]) => void;
+  onClose?: () => void;
+  height?: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [undone, setUndone] = useState<Stroke[]>([]);
   const [color, setColor] = useState(COLORS[0]);
   const [width, setWidth] = useState(WIDTHS[1]);
   const drawing = useRef(false);
+  const strokesRef = useRef(strokes);
+  strokesRef.current = strokes;
 
+  /**
+   * Рисуем из strokesRef, а не из пропса: перерисовку зовёт и ResizeObserver,
+   * чей колбэк создан на первом рендере. С замыканием на `strokes` он рисовал бы
+   * пустой список, и при изменении ширины черновик стирался бы.
+   */
   function repaint() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -34,55 +53,65 @@ export default function DrawingPad({ height = 320 }: { height?: number }) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    for (const stroke of strokes) {
+    for (const stroke of strokesRef.current) {
       ctx.beginPath();
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = stroke.width;
-      stroke.points.forEach((point, i) =>
-        i === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y),
-      );
+      stroke.points.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
       ctx.stroke();
     }
   }
 
   useEffect(repaint, [strokes]);
 
-  // холст тянется по ширине карточки — размер в пикселях выставляем вручную
+  // ResizeObserver, а не замер на монтировании: в момент первого эффекта элемент
+  // может быть ещё не разложен, и offsetWidth равен нулю — холст выходил нулевой ширины
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = height;
-      repaint();
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+
+    const observer = new ResizeObserver(([entry]) => {
+      const width = Math.round(entry.contentRect.width);
+      if (width > 0 && canvas.width !== width) {
+        canvas.width = width;
+        canvas.height = height;
+        repaint();
+      }
+    });
+    observer.observe(canvas);
+    return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height]);
 
-  function pointFrom(e: React.PointerEvent<HTMLCanvasElement>): Point {
-    const rect = e.currentTarget.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  /**
+   * Координаты берём у самого холста через ref, а не у e.currentTarget:
+   * внутри асинхронного обновления состояния currentTarget уже равен null.
+   */
+  function pointAt(clientX: number, clientY: number): Point | null {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
   }
 
   function start(e: React.PointerEvent<HTMLCanvasElement>) {
-    e.currentTarget.setPointerCapture(e.pointerId);
+    const point = pointAt(e.clientX, e.clientY);
+    if (!point) return;
+    canvasRef.current?.setPointerCapture(e.pointerId);
     drawing.current = true;
     setUndone([]); // новая линия обрывает цепочку «вернуть»
-    setStrokes((prev) => [...prev, { points: [pointFrom(e)], color, width }]);
+    onChange([...strokesRef.current, { points: [point], color, width }]);
   }
 
   function move(e: React.PointerEvent<HTMLCanvasElement>) {
     if (!drawing.current) return;
-    const point = pointFrom(e);
-    setStrokes((prev) => {
-      const next = [...prev];
-      const last = next[next.length - 1];
-      next[next.length - 1] = { ...last, points: [...last.points, point] };
-      return next;
-    });
+    const point = pointAt(e.clientX, e.clientY);
+    if (!point) return;
+
+    const current = strokesRef.current;
+    const last = current[current.length - 1];
+    if (!last) return;
+    onChange([...current.slice(0, -1), { ...last, points: [...last.points, point] }]);
   }
 
   function stop() {
@@ -90,23 +119,20 @@ export default function DrawingPad({ height = 320 }: { height?: number }) {
   }
 
   function undo() {
-    setStrokes((prev) => {
-      if (prev.length === 0) return prev;
-      setUndone((u) => [...u, prev[prev.length - 1]]);
-      return prev.slice(0, -1);
-    });
+    const current = strokesRef.current;
+    if (current.length === 0) return;
+    setUndone((u) => [...u, current[current.length - 1]]);
+    onChange(current.slice(0, -1));
   }
 
   function redo() {
-    setUndone((prev) => {
-      if (prev.length === 0) return prev;
-      setStrokes((s) => [...s, prev[prev.length - 1]]);
-      return prev.slice(0, -1);
-    });
+    if (undone.length === 0) return;
+    onChange([...strokesRef.current, undone[undone.length - 1]]);
+    setUndone((u) => u.slice(0, -1));
   }
 
   return (
-    <div className="space-y-3">
+    <section className="card space-y-3 p-4">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-1.5">
           {COLORS.map((c) => (
@@ -115,11 +141,7 @@ export default function DrawingPad({ height = 320 }: { height?: number }) {
               onClick={() => setColor(c)}
               aria-label={`Цвет ${c}`}
               className="h-6 w-6 rounded-full transition"
-              style={{
-                background: c,
-                outline: color === c ? `2px solid ${c}` : "none",
-                outlineOffset: 2,
-              }}
+              style={{ background: c, outline: color === c ? `2px solid ${c}` : "none", outlineOffset: 2 }}
             />
           ))}
         </div>
@@ -145,26 +167,16 @@ export default function DrawingPad({ height = 320 }: { height?: number }) {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <button
-            className="btn-ghost px-3 py-1.5 text-sm"
-            onClick={undo}
-            disabled={strokes.length === 0}
-            title="Отменить"
-          >
+          <button className="btn-ghost px-3 py-1.5" onClick={undo} disabled={strokes.length === 0} title="Отменить">
             <Undo2 size={15} />
           </button>
-          <button
-            className="btn-ghost px-3 py-1.5 text-sm"
-            onClick={redo}
-            disabled={undone.length === 0}
-            title="Вернуть"
-          >
+          <button className="btn-ghost px-3 py-1.5" onClick={redo} disabled={undone.length === 0} title="Вернуть">
             <Redo2 size={15} />
           </button>
           <button
-            className="btn-ghost px-3 py-1.5 text-sm"
+            className="btn-ghost px-3 py-1.5"
             onClick={() => {
-              setStrokes([]);
+              onChange([]);
               setUndone([]);
             }}
             disabled={strokes.length === 0}
@@ -172,21 +184,40 @@ export default function DrawingPad({ height = 320 }: { height?: number }) {
           >
             <Eraser size={15} />
           </button>
+          {onClose && (
+            <button className="btn-ghost px-3 py-1.5" onClick={onClose} title="Свернуть черновик">
+              <ChevronDown size={15} />
+            </button>
+          )}
         </div>
       </div>
 
-      <canvas
-        ref={canvasRef}
-        className="w-full touch-none rounded-xl border"
-        style={{ height, borderColor: "var(--divider)", background: "var(--card)" }}
-        onPointerDown={start}
-        onPointerMove={move}
-        onPointerUp={stop}
-        onPointerLeave={stop}
-      />
+      <div
+        className="rounded-xl border"
+        style={{
+          borderColor: "var(--divider)",
+          // лист в клетку: две сетки линий поверх белого
+          background: `
+            repeating-linear-gradient(to right, #dbe6f0 0 1px, transparent 1px ${CELL}px),
+            repeating-linear-gradient(to bottom, #dbe6f0 0 1px, transparent 1px ${CELL}px),
+            #ffffff`,
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          className="block w-full touch-none"
+          style={{ height }}
+          onPointerDown={start}
+          onPointerMove={move}
+          onPointerUp={stop}
+          onPointerLeave={stop}
+          onPointerCancel={stop}
+        />
+      </div>
+
       <p className="muted text-xs">
-        Черновик виден только тебе и стирается при переходе к следующей задаче.
+        Черновик виден только тебе и сохраняется, пока идёт квиз.
       </p>
-    </div>
+    </section>
   );
 }

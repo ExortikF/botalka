@@ -2,8 +2,17 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, Plus, Search, Trash2 } from "lucide-react";
+import MathText from "../../../Math";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
+
+type PickRow = {
+  id: number;
+  number: number;
+  statement: string;
+  answer_value: string;
+  difficulty: number;
+};
 
 type Mock = {
   id: number;
@@ -34,6 +43,13 @@ export default function AdminMocksPage() {
   const [numbers, setNumbers] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
   const [publish, setPublish] = useState(true);
 
+  /** Режим набора: автоматически по номерам или вручную выбранные задачи. */
+  const [mode, setMode] = useState<"auto" | "manual">("auto");
+  const [pickNumber, setPickNumber] = useState<number | null>(null);
+  const [pickQuery, setPickQuery] = useState("");
+  const [pool, setPool] = useState<PickRow[]>([]);
+  const [picked, setPicked] = useState<PickRow[]>([]);
+
   const load = useCallback(() => {
     api<Mock[]>("/api/admin/mocks")
       .then(setMocks)
@@ -45,6 +61,21 @@ export default function AdminMocksPage() {
     getTaskTypes().then(setTypes).catch(() => setTypes([]));
   }, [load]);
 
+  function loadPool(number: number, q = "") {
+    setPickNumber(number);
+    api<PickRow[]>(`/api/admin/tasks/pick/${number}?q=${encodeURIComponent(q)}`)
+      .then(setPool)
+      .catch(() => setPool([]));
+  }
+
+  function togglePicked(task: PickRow) {
+    setPicked((prev) =>
+      prev.some((t) => t.id === task.id)
+        ? prev.filter((t) => t.id !== task.id)
+        : [...prev, task],
+    );
+  }
+
   async function create() {
     setCreating(true);
     setError("");
@@ -55,10 +86,12 @@ export default function AdminMocksPage() {
           title,
           description,
           duration_minutes: duration,
-          auto_numbers: numbers,
+          auto_numbers: mode === "auto" ? numbers : [],
+          task_ids: mode === "manual" ? picked.map((t) => t.id) : [],
           status: publish ? "live" : "draft",
         }),
       });
+      setPicked([]);
       setTitle("");
       setDescription("");
       load();
@@ -130,23 +163,137 @@ export default function AdminMocksPage() {
           />
         </label>
 
-        <div>
-          <span className="eyebrow mb-2 block">Какие номера включить</span>
-          <div className="flex flex-wrap gap-2">
-            {types.map((type) => (
-              <button
-                key={type.id}
-                onClick={() => toggleNumber(type.number)}
-                className={`pill ${numbers.includes(type.number) ? "pill-active" : "pill-idle"}`}
-                style={{ border: "1px solid var(--divider)" }}
-                title={type.title}
-              >
-                № {type.number}
-              </button>
-            ))}
-          </div>
-          <p className="muted mt-2 text-xs">Отмечено номеров: {numbers.length}</p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: "auto", label: "Собрать автоматически" },
+            { key: "manual", label: "Выбрать задачи вручную" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setMode(tab.key as "auto" | "manual")}
+              className={`pill ${mode === tab.key ? "pill-active" : "pill-idle"}`}
+              style={{ border: "1px solid var(--divider)" }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {mode === "auto" ? (
+          <div>
+            <span className="eyebrow mb-2 block">Какие номера включить</span>
+            <div className="flex flex-wrap gap-2">
+              {types.map((type) => (
+                <button
+                  key={type.id}
+                  onClick={() => toggleNumber(type.number)}
+                  disabled={type.tasks_count === 0}
+                  className={`pill ${numbers.includes(type.number) ? "pill-active" : "pill-idle"}`}
+                  style={{
+                    border: "1px solid var(--divider)",
+                    opacity: type.tasks_count === 0 ? 0.4 : 1,
+                  }}
+                  title={
+                    type.tasks_count === 0
+                      ? `${type.title} — задач в банке нет`
+                      : `${type.title} · ${type.tasks_count} задач`
+                  }
+                >
+                  № {type.number}
+                </button>
+              ))}
+            </div>
+            <p className="muted mt-2 text-xs">
+              Отмечено номеров: {numbers.length}. Из каждого берётся одна случайная задача.
+              Номера без задач выбрать нельзя.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <span className="eyebrow mb-2 block">Номер задания</span>
+              <div className="flex flex-wrap gap-2">
+                {types.map((type) => (
+                  <button
+                    key={type.id}
+                    onClick={() => loadPool(type.number, pickQuery)}
+                    disabled={type.tasks_count === 0}
+                    className={`pill ${pickNumber === type.number ? "pill-active" : "pill-idle"}`}
+                    style={{
+                      border: "1px solid var(--divider)",
+                      opacity: type.tasks_count === 0 ? 0.4 : 1,
+                    }}
+                    title={type.title}
+                  >
+                    № {type.number}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {pickNumber && (
+              <>
+                <div className="flex gap-2">
+                  <input
+                    className="input"
+                    placeholder="Поиск по условию"
+                    value={pickQuery}
+                    onChange={(e) => setPickQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && loadPool(pickNumber, pickQuery)}
+                  />
+                  <button className="btn-ghost" onClick={() => loadPool(pickNumber, pickQuery)}>
+                    <Search size={15} />
+                  </button>
+                </div>
+
+                <ul className="max-h-72 space-y-1 overflow-y-auto">
+                  {pool.map((task) => {
+                    const chosen = picked.some((t) => t.id === task.id);
+                    return (
+                      <li key={task.id}>
+                        <button
+                          onClick={() => togglePicked(task)}
+                          className="flex w-full items-start gap-3 rounded-xl p-3 text-left text-sm transition"
+                          style={{ background: chosen ? "var(--accent-100)" : "var(--surface)" }}
+                        >
+                          <span
+                            className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border"
+                            style={{
+                              borderColor: chosen ? "var(--accent)" : "var(--divider)",
+                              background: chosen ? "var(--accent)" : "transparent",
+                              color: "#fff",
+                            }}
+                          >
+                            {chosen && <Check size={12} />}
+                          </span>
+                          <span className="min-w-0">
+                            <MathText className="block" text={task.statement} />
+                            <span className="muted text-xs">ответ {task.answer_value}</span>
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                  {pool.length === 0 && (
+                    <li className="muted text-sm">По этому номеру задач не нашлось.</li>
+                  )}
+                </ul>
+              </>
+            )}
+
+            <p className="muted text-sm">
+              Выбрано задач: {picked.length}
+              {picked.length > 0 && ` (номера ${[...new Set(picked.map((t) => t.number))].sort((a, b) => a - b).join(", ")})`}
+            </p>
+            <p className="muted text-xs">
+              Нужной задачи нет?{" "}
+              <Link className="underline" href="/app/admin">
+                Добавь её в банк
+              </Link>{" "}
+              — и она появится здесь.
+            </p>
+          </div>
+        )}
 
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -160,7 +307,11 @@ export default function AdminMocksPage() {
         <button
           className="btn"
           onClick={create}
-          disabled={creating || title.trim().length < 3 || numbers.length < 3}
+          disabled={
+            creating ||
+            title.trim().length < 3 ||
+            (mode === "auto" ? numbers.length < 3 : picked.length < 3)
+          }
         >
           <Plus size={16} /> {creating ? "Собираем…" : "Собрать пробник"}
         </button>

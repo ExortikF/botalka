@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock, PenLine } from "lucide-react";
 import MathText from "../../Math";
-import DrawingPad from "../DrawingPad";
+import DrawingPad, { type Stroke } from "../DrawingPad";
 import ReportButton from "../ReportButton";
 import { api } from "@/lib/api";
 
@@ -41,6 +41,8 @@ type Result = {
   attempt_id: number;
   title: string;
   score: number;
+  secondary: number;
+  max_primary: number;
   total: number;
   percent: number;
   spent_minutes: number;
@@ -70,6 +72,7 @@ export default function MockRunner({
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [left, setLeft] = useState(0);
   const [draftOpen, setDraftOpen] = useState(false);
+  const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [finishing, setFinishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -182,8 +185,6 @@ export default function MockRunner({
           <MathText className="block text-lg leading-relaxed" text={task.statement} />
           {task.source && <p className="muted text-xs">Источник: {task.source}</p>}
 
-          {draftOpen && <DrawingPad />}
-
           <input
             className="input"
             placeholder="Ответ"
@@ -262,6 +263,14 @@ export default function MockRunner({
           </button>
         </aside>
       </div>
+
+      {draftOpen && (
+        <DrawingPad
+          strokes={strokes}
+          onChange={setStrokes}
+          onClose={() => setDraftOpen(false)}
+        />
+      )}
     </div>
   );
 }
@@ -276,13 +285,32 @@ function MockResult({ result }: { result: Result }) {
           {result.score}
           <span className="muted text-3xl"> / {result.total}</span>
         </p>
-        <p className="muted mt-2">
-          {result.percent}% · {result.spent_minutes} мин
-          {result.timed_out && " · время вышло"}
-        </p>
-        <p className="muted mx-auto mt-3 max-w-md text-sm">
-          Это первичные баллы за часть 1. Перевод во вторичные делается по официальной
-          шкале ФИПИ, которая меняется каждый год, — поэтому мы её не показываем.
+        <p className="muted mt-1 text-sm">первичных баллов</p>
+
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-8">
+          <div>
+            <p className="h text-4xl" style={{ color: "var(--accent)" }}>
+              {result.secondary}
+            </p>
+            <p className="muted text-sm">тестовый балл</p>
+          </div>
+          <div>
+            <p className="h text-4xl">{result.percent}%</p>
+            <p className="muted text-sm">верных ответов</p>
+          </div>
+          <div>
+            <p className="h text-4xl">{result.spent_minutes}</p>
+            <p className="muted text-sm">минут потрачено</p>
+          </div>
+        </div>
+
+        {result.timed_out && (
+          <p className="muted mt-3 text-sm">Время вышло — работа сдана автоматически.</p>
+        )}
+        <p className="muted mx-auto mt-3 max-w-lg text-sm">
+          Тестовый балл посчитан по официальной шкале перевода. За всю работу целиком
+          (части 1 и 2) можно набрать {result.max_primary} первичных баллов — здесь
+          только часть 1.
         </p>
         <div className="mt-5 flex justify-center gap-3">
           <Link className="btn" href="/app/mocks">

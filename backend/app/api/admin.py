@@ -17,6 +17,8 @@ from app.api.deps import CurrentUser, DbSession
 from app.core.answers import check_answer
 from app.models import (
     AnswerType,
+    Idea,
+    IdeaStatus,
     MockAttempt,
     MockExam,
     MockStatus,
@@ -685,3 +687,81 @@ async def hide_mock(exam_id: int, session: DbSession, admin: AdminUser) -> dict:
     exam.status = MockStatus.HIDDEN
     await session.commit()
     return {"ok": True}
+
+
+class IdeaOut(BaseModel):
+    id: int
+    message: str
+    page: str | None
+    author: str
+    status: str
+    created_at: datetime
+
+
+@router.get("/ideas", response_model=list[IdeaOut])
+async def list_ideas(session: DbSession, admin: AdminUser, only_new: bool = True) -> list[IdeaOut]:
+    stmt = select(Idea).order_by(Idea.id.desc()).limit(100)
+    if only_new:
+        stmt = stmt.where(Idea.status == IdeaStatus.NEW)
+
+    out: list[IdeaOut] = []
+    for idea in await session.scalars(stmt):
+        author = await session.get(User, idea.user_id) if idea.user_id else None
+        out.append(
+            IdeaOut(
+                id=idea.id,
+                message=idea.message,
+                page=idea.page,
+                author=author.display_name if author else "аноним",
+                status=idea.status.value,
+                created_at=idea.created_at,
+            )
+        )
+    return out
+
+
+@router.post("/ideas/{idea_id}/{action}")
+async def resolve_idea(idea_id: int, action: str, session: DbSession, admin: AdminUser) -> dict:
+    if action not in ("accept", "decline"):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "действие не поддерживается")
+    idea = await session.get(Idea, idea_id)
+    if idea is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "идея не найдена")
+    idea.status = IdeaStatus.ACCEPTED if action == "accept" else IdeaStatus.DECLINED
+    await session.commit()
+    return {"ok": True}
+
+
+class TaskPickRow(BaseModel):
+    id: int
+    number: int
+    statement: str
+    answer_value: str
+    difficulty: int
+
+
+@router.get("/tasks/pick/{number}", response_model=list[TaskPickRow])
+async def pick_tasks(
+    number: int, session: DbSession, admin: AdminUser, q: str | None = None, limit: int = 40
+) -> list[TaskPickRow]:
+    """Задачи одного номера — для ручного набора пробника."""
+    stmt = (
+        select(Task)
+        .join(TaskType, TaskType.id == Task.task_type_id)
+        .where(Task.status == TaskStatus.LIVE, TaskType.number == number)
+        .order_by(Task.id.desc())
+        .limit(limit)
+    )
+    if q:
+        stmt = stmt.where(Task.statement.ilike(f"%{q}%"))
+
+    return [
+        TaskPickRow(
+            id=t.id,
+            number=number,
+            statement=t.statement,
+            answer_value=str((t.answer_payload or {}).get("value", "")),
+            difficulty=t.difficulty,
+        )
+        for t in await session.scalars(stmt)
+    ]
