@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $5^{\,x+4}=625$.
+  Найдите корень уравнения $3^{\,x+6}=9$.
 answer:
   type: number
-  value: '0'
+  value: '-4'
 solution: |
-  $625=5^{4}$, значит $x+4=4$ и $x=0$.
+  $9=3^{2}$, значит $x+6=2$ и $x=-4$.
 hints:
   - 'Приведите обе части к одному основанию.'
 source:

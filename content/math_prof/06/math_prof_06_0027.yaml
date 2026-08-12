@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 2
 statement: |
-  Найдите корень уравнения $\sqrt{6x + 6}=6$.
+  Найдите корень уравнения $\sqrt{3x - 5}=4$.
 answer:
   type: number
-  value: '5'
+  value: '7'
 solution: |
-  Возведём обе части в квадрат: $6x + 6=36$, откуда $x=5$.
+  Возведём обе части в квадрат: $3x - 5=16$, откуда $x=7$.
 hints:
   - 'Возведите обе части в квадрат.'
 source:

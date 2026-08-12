@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $3^{\,x+6}=81$.
+  Найдите корень уравнения $2^{\,x+3}=32$.
 answer:
   type: number
-  value: '-2'
+  value: '2'
 solution: |
-  $81=3^{4}$, значит $x+6=4$ и $x=-2$.
+  $32=2^{5}$, значит $x+3=5$ и $x=2$.
 hints:
   - 'Приведите обе части к одному основанию.'
 source:

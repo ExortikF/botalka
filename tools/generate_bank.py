@@ -487,6 +487,8 @@ def t_eq_log(rnd: random.Random) -> Task:
     b = rnd.randint(1, 12)
     # kx - b = value  =>  x = (value + b) / k, подбираем b так, чтобы корень был целым
     b = (k * rnd.randint(2, 12)) - value
+    while b == 0:  # «2x - 0» в условии выглядит как ошибка вёрстки
+        b = (k * rnd.randint(2, 12)) - value
     x = Fraction(value + b, k)
     check(base ** float(power) == value, "степень посчитана неверно")
     check(k * x - b == value, "корень не удовлетворяет уравнению")
@@ -529,6 +531,8 @@ def t_eq_sqrt(rnd: random.Random) -> Task:
     root = rnd.randint(3, 12)
     value = root * root
     b = value - k * rnd.randint(2, 9)
+    while b == 0:
+        b = value - k * rnd.randint(2, 9)
     x = Fraction(value - b, k)
     check(math.isclose(math.sqrt(float(k * x + b)), root), "корень не удовлетворяет уравнению")
     sign = "+" if b >= 0 else "-"

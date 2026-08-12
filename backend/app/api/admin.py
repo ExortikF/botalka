@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +15,19 @@ from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentUser, DbSession
 from app.core.answers import check_answer
-from app.models import AnswerType, SourceKind, Subject, Task, TaskStatus, TaskType, User
+from app.models import (
+    AnswerType,
+    Attempt,
+    Duel,
+    DuelKind,
+    Quiz,
+    SourceKind,
+    Subject,
+    Task,
+    TaskStatus,
+    TaskType,
+    User,
+)
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -285,4 +298,195 @@ async def admin_stats(session: DbSession, admin: AdminUser) -> AdminStats:
         draft=totals["draft"],
         broken=totals["broken"],
         by_type=list(per_type.values()),
+    )
+
+
+# --------------------------------------------------------------------- дашборд
+
+class UserRow(BaseModel):
+    """Только неконфиденциальное: ни tg_id, ни username здесь нет."""
+
+    id: int
+    display_name: str
+    kind: str            # guest | telegram
+    solved: int
+    accuracy: int | None
+    streak_days: int
+    rating: int
+    duels: int
+    registered: datetime
+    last_seen: datetime | None
+
+
+class ProblemTask(BaseModel):
+    id: int
+    number: int
+    statement: str
+    attempts: int
+    accuracy: int
+
+
+class Dashboard(BaseModel):
+    users_total: int
+    users_telegram: int
+    users_guests: int
+    users_new_week: int
+    users_active_week: int
+    users_active_today: int
+
+    attempts_total: int
+    attempts_week: int
+    accuracy_avg: int | None
+    quizzes_finished: int
+    duels_link: int
+    duels_online: int
+
+    users: list[UserRow]
+    hardest: list[ProblemTask]
+    easiest: list[ProblemTask]
+
+
+@router.get("/dashboard", response_model=Dashboard)
+async def dashboard(session: DbSession, admin: AdminUser, limit: int = 100) -> Dashboard:
+    now = datetime.now(UTC)
+    week_ago = now - timedelta(days=7)
+    day_ago = now - timedelta(days=1)
+
+    users = list(await session.scalars(select(User).order_by(User.id.desc())))
+
+    stats = {
+        row.user_id: row
+        for row in (
+            await session.execute(
+                select(
+                    Attempt.user_id.label("user_id"),
+                    func.count(Attempt.id).label("attempts"),
+                    func.count(Attempt.id).filter(Attempt.is_correct).label("correct"),
+                    func.count(func.distinct(Attempt.task_id))
+                    .filter(Attempt.is_correct)
+                    .label("solved"),
+                    func.max(Attempt.created_at).label("last"),
+                )
+                .group_by(Attempt.user_id)
+            )
+        ).all()
+    }
+
+    duel_counts = {
+        row.user_id: row.count
+        for row in (
+            await session.execute(
+                select(Duel.challenger_id.label("user_id"), func.count(Duel.id).label("count"))
+                .group_by(Duel.challenger_id)
+            )
+        ).all()
+    }
+
+    rows: list[UserRow] = []
+    for user in users[:limit]:
+        stat = stats.get(user.id)
+        accuracy = (
+            round(100 * stat.correct / stat.attempts) if stat and stat.attempts else None
+        )
+        rows.append(
+            UserRow(
+                id=user.id,
+                display_name=user.display_name,
+                kind="guest" if user.is_guest else "telegram",
+                solved=stat.solved if stat else 0,
+                accuracy=accuracy,
+                streak_days=user.streak_days,
+                rating=user.rating,
+                duels=duel_counts.get(user.id, 0),
+                registered=user.created_at,
+                last_seen=stat.last if stat else None,
+            )
+        )
+
+    attempts_total = await session.scalar(select(func.count(Attempt.id))) or 0
+    attempts_week = (
+        await session.scalar(
+            select(func.count(Attempt.id)).where(Attempt.created_at >= week_ago)
+        )
+        or 0
+    )
+    correct_total = (
+        await session.scalar(
+            select(func.count(Attempt.id)).where(Attempt.is_correct.is_(True))
+        )
+        or 0
+    )
+
+    active_week = (
+        await session.scalar(
+            select(func.count(func.distinct(Attempt.user_id))).where(
+                Attempt.created_at >= week_ago
+            )
+        )
+        or 0
+    )
+    active_today = (
+        await session.scalar(
+            select(func.count(func.distinct(Attempt.user_id))).where(
+                Attempt.created_at >= day_ago
+            )
+        )
+        or 0
+    )
+
+    # Задачи с аномальной решаемостью — главный сигнал о битом контенте:
+    # 0% почти всегда значит неверный эталонный ответ, 100% — что задача слишком простая.
+    task_rows = (
+        await session.execute(
+            select(
+                Task.id,
+                TaskType.number,
+                Task.statement,
+                func.count(Attempt.id).label("attempts"),
+                func.count(Attempt.id).filter(Attempt.is_correct).label("correct"),
+            )
+            .join(TaskType, TaskType.id == Task.task_type_id)
+            .join(Attempt, Attempt.task_id == Task.id)
+            .group_by(Task.id, TaskType.number, Task.statement)
+            .having(func.count(Attempt.id) >= 3)
+        )
+    ).all()
+
+    scored = [
+        ProblemTask(
+            id=r.id,
+            number=r.number,
+            statement=r.statement[:90],
+            attempts=r.attempts,
+            accuracy=round(100 * r.correct / r.attempts),
+        )
+        for r in task_rows
+    ]
+    scored.sort(key=lambda t: t.accuracy)
+
+    return Dashboard(
+        users_total=len(users),
+        users_telegram=sum(1 for u in users if not u.is_guest),
+        users_guests=sum(1 for u in users if u.is_guest),
+        users_new_week=sum(1 for u in users if u.created_at >= week_ago),
+        users_active_week=active_week,
+        users_active_today=active_today,
+        attempts_total=attempts_total,
+        attempts_week=attempts_week,
+        accuracy_avg=round(100 * correct_total / attempts_total) if attempts_total else None,
+        quizzes_finished=await session.scalar(
+            select(func.count(Quiz.id)).where(Quiz.finished_at.is_not(None))
+        )
+        or 0,
+        duels_link=await session.scalar(
+            select(func.count(Duel.id)).where(Duel.kind == DuelKind.LINK)
+        )
+        or 0,
+        duels_online=await session.scalar(
+            select(func.count(Duel.id)).where(Duel.kind == DuelKind.ONLINE)
+        )
+        or 0,
+        users=rows,
+        hardest=scored[:10],
+        easiest=list(reversed(scored[-10:])),
     )

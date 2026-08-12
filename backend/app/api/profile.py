@@ -15,7 +15,23 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
-from app.models import Attempt, Quiz, Task, TaskStatus, TaskType, User
+from app.models import Attempt, Duel, DuelKind, DuelState, Quiz, Task, TaskStatus, TaskType, User
+
+# Ранги по рейтингу — чтобы число само по себе что-то значило
+RANKS = [
+    (1500, "Мастер"),
+    (1300, "Сильный"),
+    (1150, "Уверенный"),
+    (1000, "Ученик"),
+    (0, "Новичок"),
+]
+
+
+def rank_for(rating: int) -> str:
+    for threshold, name in RANKS:
+        if rating >= threshold:
+            return name
+    return "Новичок"
 
 router = APIRouter(prefix="/api", tags=["profile"])
 
@@ -60,7 +76,11 @@ class ProfileOut(BaseModel):
     display_name: str
     is_guest: bool
     avatar_url: str | None
-    rating: int | None  # None пока нет дуэлей — рейтинг считается только по ним
+    rating: int
+    rank: str
+    duels_played: int
+    duels_won: int
+    duel_win_streak: int
 
     solved_total: int
     correct_total: int
@@ -99,31 +119,52 @@ def _longest_daily_run(days: list[date]) -> int:
     return best
 
 
-def _build_achievements(
-    solved: int,
-    streak_record: int,
-    best_run: int,
-    perfect: int,
-    numbers: int,
-    fixed_mistakes: int,
-) -> list[Achievement]:
+def _build_achievements(**m) -> list[Achievement]:
+    """Три группы: объём, результат и «прикольные» — за характер занятий."""
+    cap = lambda value, target: min(value, target)  # noqa: E731
     raw = [
-        ("first_blood", "Первая задача", "Решить одну задачу", "bronze", min(solved, 1), 1),
-        ("solved_50", "Полсотни", "Решить 50 задач", "bronze", min(solved, 50), 50),
-        ("solved_100", "Сотня", "Решить 100 задач", "silver", min(solved, 100), 100),
-        ("solved_500", "Пятьсот", "Решить 500 задач", "gold", min(solved, 500), 500),
-        ("week_streak", "Неделя без пропусков", "7 дней подряд", "silver",
-         min(streak_record, 7), 7),
-        ("two_weeks", "Две недели без пропусков", "14 дней подряд", "gold",
-         min(streak_record, 14), 14),
-        ("run_10", "Десять подряд", "10 верных ответов подряд", "silver",
-         min(best_run, 10), 10),
-        ("perfect_quiz", "Без единой ошибки", "Пройти квиз целиком без ошибок", "silver",
-         min(perfect, 1), 1),
+        # — объём
+        ("first_blood", "Первая задача", "Решить одну задачу", "bronze",
+         cap(m["solved"], 1), 1),
+        ("solved_50", "Полсотни", "Решить 50 задач", "bronze", cap(m["solved"], 50), 50),
+        ("solved_100", "Сотня", "Решить 100 задач", "silver", cap(m["solved"], 100), 100),
+        ("solved_500", "Пятьсот", "Решить 500 задач", "gold", cap(m["solved"], 500), 500),
         ("all_numbers", "Полный охват", "Решить хотя бы по одной задаче каждого номера",
-         "gold", numbers, 12),
+         "gold", m["numbers"], 12),
+
+        # — результат
+        ("run_10", "Десять подряд", "10 верных ответов подряд", "silver",
+         cap(m["best_run"], 10), 10),
+        ("run_25", "Снайпер", "25 верных ответов подряд", "gold", cap(m["best_run"], 25), 25),
+        ("perfect_quiz", "Без единой ошибки", "Пройти квиз целиком без ошибок", "silver",
+         cap(m["perfect"], 1), 1),
+        ("accuracy_80", "Точность", "80% верных при 100 решённых задачах", "gold",
+         m["accuracy"] if m["attempts"] >= 100 else 0, 80),
         ("fix_10", "Работа над ошибками", "Исправить 10 задач, где ошибался", "silver",
-         min(fixed_mistakes, 10), 10),
+         cap(m["fixed"], 10), 10),
+        ("fix_50", "Феникс", "Исправить 50 задач, где ошибался", "gold", cap(m["fixed"], 50), 50),
+        ("week_streak", "Неделя без пропусков", "7 дней подряд", "silver",
+         cap(m["streak_record"], 7), 7),
+        ("two_weeks", "Две недели без пропусков", "14 дней подряд", "gold",
+         cap(m["streak_record"], 14), 14),
+
+        # — дуэли
+        ("duelist", "Дуэлянт", "Сыграть 10 онлайн-матчей", "silver",
+         cap(m["duels_played"], 10), 10),
+        ("win_streak_3", "На кураже", "Три победы подряд в онлайне", "silver",
+         cap(m["duel_win_streak"], 3), 3),
+        ("rating_1200", "Заслуженный", "Поднять рейтинг до 1200", "gold",
+         cap(m["rating"], 1200), 1200),
+
+        # — прикольные
+        ("lightning", "Молния", "10 верных ответов быстрее 15 секунд", "silver",
+         cap(m["fast_correct"], 10), 10),
+        ("night_owl", "Ночной ботаник", "Решать задачи между полуночью и пятью утра",
+         "bronze", cap(m["night_attempts"], 5), 5),
+        ("marathon", "Стахановец", "50 задач за один день", "gold",
+         cap(m["best_day"], 50), 50),
+        ("comeback", "Возвращение", "Вернуться после недельного перерыва", "bronze",
+         1 if m["came_back"] else 0, 1),
     ]
     return [
         Achievement(
@@ -200,11 +241,45 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         )
     ) or 0
 
+    # дуэли считаются только онлайновые: рейтинг меняют только они
+    online = list(
+        await session.scalars(
+            select(Duel)
+            .where(
+                Duel.kind == DuelKind.ONLINE,
+                Duel.state == DuelState.FINISHED,
+                (Duel.challenger_id == user.id) | (Duel.opponent_id == user.id),
+            )
+            .order_by(Duel.id.desc())
+        )
+    )
+    duels_won = sum(1 for d in online if d.winner_id == user.id)
+    win_streak = 0
+    for duel in online:  # от свежих к старым
+        if duel.winner_id == user.id:
+            win_streak += 1
+        else:
+            break
+
+    fast_correct = sum(1 for a in attempts if a.is_correct and 0 < a.time_spent_ms < 15_000)
+    night_attempts = sum(1 for a in attempts if a.created_at.astimezone(TZ).hour < 5)
+    best_day = max(counts.values()) if counts else 0
+
+    # «вернулся»: между двумя днями занятий разрыв больше недели
+    unique_days = sorted(set(days))
+    came_back = any(
+        (later - earlier).days >= 7 for earlier, later in zip(unique_days, unique_days[1:])
+    )
+
     return ProfileOut(
         display_name=user.display_name,
         is_guest=user.is_guest,
         avatar_url=user.avatar_url,
-        rating=None,
+        rating=user.rating,
+        rank=rank_for(user.rating),
+        duels_played=len(online),
+        duels_won=duels_won,
+        duel_win_streak=win_streak,
         solved_total=solved_total,
         correct_total=correct_total,
         accuracy=accuracy,
@@ -222,7 +297,21 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         tasks_total=tasks_total,
         activity=activity,
         achievements=_build_achievements(
-            solved_total, streak_record, best_run, perfect, numbers_covered, fixed
+            solved=solved_total,
+            streak_record=streak_record,
+            best_run=best_run,
+            perfect=perfect,
+            numbers=numbers_covered,
+            fixed=fixed,
+            accuracy=accuracy,
+            attempts=len(attempts),
+            duels_played=len(online),
+            duel_win_streak=win_streak,
+            rating=user.rating,
+            fast_correct=fast_correct,
+            night_attempts=night_attempts,
+            best_day=best_day,
+            came_back=came_back,
         ),
     )
 

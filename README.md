@@ -28,6 +28,8 @@ cp .env.example .env && make up && make migrate
 | [docs/CONTENT.md](docs/CONTENT.md) | формат банка задач, откуда берём контент, проверка ответов |
 | [docs/MONETIZATION.md](docs/MONETIZATION.md) | донаты сейчас, платные ИИ-проверки потом, экономика |
 | [docs/DESIGN.md](docs/DESIGN.md) | дизайн-токены, экраны, продуктовые решения из макетов |
+| [docs/RATING.md](docs/RATING.md) | как считается рейтинг и почему именно так |
+| [docs/BACKLOG.md](docs/BACKLOG.md) | что задумали, но ещё не сделали |
 
 ## Структура репозитория
 

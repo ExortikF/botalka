@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $5x + (10) = 7x + (22)$.
+  Найдите корень уравнения $8x + (0) = 7x + (-2)$.
 answer:
   type: number
-  value: '-6'
+  value: '-2'
 solution: |
-  Переносим: $(5-7)x = 22 - (10)$, то есть $-2x=12$, откуда $x=-6$.
+  Переносим: $(8-7)x = -2 - (0)$, то есть $1x=-2$, откуда $x=-2$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

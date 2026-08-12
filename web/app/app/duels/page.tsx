@@ -51,6 +51,22 @@ export default function DuelsPage() {
         </p>
       </header>
 
+      <section
+        className="card flex flex-wrap items-center justify-between gap-4 p-7"
+        style={{ background: "var(--accent-100)", borderColor: "var(--accent-200)" }}
+      >
+        <div>
+          <h2 className="text-xl">Онлайн-матч</h2>
+          <p className="muted mt-1 text-sm">
+            Живая дуэль с подбором соперника: 7 раундов, вопрос обоим одновременно.
+            Только этот режим меняет рейтинг.
+          </p>
+        </div>
+        <Link className="btn shrink-0" href="/app/duels/online">
+          Найти соперника
+        </Link>
+      </section>
+
       <section className="card space-y-4 p-7">
         <div className="flex items-center gap-3">
           <Swords size={20} style={{ color: "var(--accent-2)" }} />

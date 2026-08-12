@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $6x + (10) = 7x + (7)$.
+  Найдите корень уравнения $4x + (-2) = 7x + (-5)$.
 answer:
   type: number
-  value: '3'
+  value: '1'
 solution: |
-  Переносим: $(6-7)x = 7 - (10)$, то есть $-1x=-3$, откуда $x=3$.
+  Переносим: $(4-7)x = -5 - (-2)$, то есть $-3x=-3$, откуда $x=1$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

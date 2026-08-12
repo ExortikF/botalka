@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertTriangle, Check, Layers, Lock, Minus, Plus, Target } from "lucide-react";
+import { AlertTriangle, Check, Lock, Minus, Plus, Target } from "lucide-react";
 import {
   getStats,
   getSubjects,
@@ -123,29 +123,27 @@ export default function QuizBuilder() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="eyebrow">Быстрый старт</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <h2 className="eyebrow">Разобрать проблемные места</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
           <Preset
-            icon={<Layers size={18} />}
-            title="Вся часть 1"
-            text="Десять случайных задач из всех номеров"
-            onClick={() => startPreset(null)}
+            icon={<Target size={18} />}
+            title="Работа над ошибками"
+            text="Задачи, где ты ошибался и ещё не решил верно"
+            accent
+            onClick={() => startPreset("mistakes")}
           />
           <Preset
             icon={<AlertTriangle size={18} />}
             title="Слабые темы"
-            text="Номера, где процент ниже всего"
+            text="Номера, где процент верных ответов ниже всего"
             accent
             onClick={() => startPreset("weak")}
           />
-          <Preset
-            icon={<Target size={18} />}
-            title="Работа над ошибками"
-            text="Задачи, где ты ошибался и ещё не решил"
-            accent
-            onClick={() => startPreset("mistakes")}
-          />
         </div>
+        <p className="muted text-sm">
+          Оба набора собираются по твоей статистике: если ошибок ещё нет, они пока пустые —
+          порешай обычный квиз ниже.
+        </p>
       </section>
 
       <section className="space-y-3">
@@ -240,7 +238,7 @@ export default function QuizBuilder() {
       >
         <span className="muted text-sm">
           {chosen.length === 0
-            ? "Отметь темы выше — или запусти быстрый старт"
+            ? "Отметь темы выше, чтобы собрать квиз"
             : `В квизе будет ${totalTasks} ${plural(totalTasks, "задача", "задачи", "задач")}`}
         </span>
         <button className="btn" onClick={startPicked} disabled={chosen.length === 0}>

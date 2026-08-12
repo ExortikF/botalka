@@ -26,6 +26,11 @@ class QuizMode(str, enum.Enum):
     CHALLENGE = "challenge"
 
 
+class DuelKind(str, enum.Enum):
+    LINK = "link"        # асинхронная: каждый решает в своё время
+    ONLINE = "online"    # живой матч: вопрос приходит обоим одновременно
+
+
 class DuelState(str, enum.Enum):
     WAITING = "waiting"      # вызов создан, соперник ещё не прошёл
     FINISHED = "finished"    # прошли оба
@@ -43,6 +48,9 @@ class Duel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[str] = mapped_column(String(16), unique=True, index=True)
+    kind: Mapped[DuelKind] = mapped_column(
+        Enum(DuelKind, native_enum=False), default=DuelKind.LINK, index=True
+    )
     task_ids: Mapped[list[int]] = mapped_column(ARRAY(Integer))
 
     challenger_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
@@ -57,6 +65,9 @@ class Duel(Base):
     opponent_time_ms: Mapped[int | None] = mapped_column(Integer)
 
     winner_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    # рейтинг меняется только в живых матчах
+    challenger_rating_delta: Mapped[int | None] = mapped_column(Integer)
+    opponent_rating_delta: Mapped[int | None] = mapped_column(Integer)
     state: Mapped[DuelState] = mapped_column(
         Enum(DuelState, native_enum=False), default=DuelState.WAITING, index=True
     )

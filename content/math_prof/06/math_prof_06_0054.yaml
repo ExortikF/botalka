@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $8x + (8) = 6x + (6)$.
+  Найдите корень уравнения $7x + (-1) = 5x + (7)$.
 answer:
   type: number
-  value: '-1'
+  value: '4'
 solution: |
-  Переносим: $(8-6)x = 6 - (8)$, то есть $2x=-2$, откуда $x=-1$.
+  Переносим: $(7-5)x = 7 - (-1)$, то есть $2x=8$, откуда $x=4$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

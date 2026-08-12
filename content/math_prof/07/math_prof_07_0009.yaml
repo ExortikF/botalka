@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 7
 difficulty: 2
 statement: |
-  Найдите значение выражения $\log_{5}1875-\log_{5}3$.
+  Найдите значение выражения $\log_{2}80-\log_{2}5$.
 answer:
   type: number
   value: '4'
 solution: |
-  $\log_{5}1875-\log_{5}3=\log_{5}\dfrac{1875}{3}=\log_{5}625=4$.
+  $\log_{2}80-\log_{2}5=\log_{2}\dfrac{80}{5}=\log_{2}16=4$.
 hints:
   - 'Разность логарифмов с одним основанием — логарифм частного.'
 source:

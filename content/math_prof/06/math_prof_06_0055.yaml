@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $4x + (1) = 6x + (-7)$.
+  Найдите корень уравнения $5x + (-2) = 4x + (6)$.
 answer:
   type: number
-  value: '4'
+  value: '8'
 solution: |
-  Переносим: $(4-6)x = -7 - (1)$, то есть $-2x=-8$, откуда $x=4$.
+  Переносим: $(5-4)x = 6 - (-2)$, то есть $1x=8$, откуда $x=8$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

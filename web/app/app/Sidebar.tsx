@@ -46,7 +46,7 @@ export default function Sidebar({ user }: { user: User | null }) {
       style={{ borderColor: "var(--divider)", background: "var(--card)" }}
     >
       <div>
-        <Link href="/" className="h mb-8 block text-xl">
+        <Link href="/" className="h mb-8 block text-3xl tracking-tight">
           Боталка<span style={{ color: "var(--accent)" }}>.</span>
         </Link>
 

@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $8x + (-2) = 6x + (-4)$.
+  Найдите корень уравнения $3x + (8) = 8x + (8)$.
 answer:
   type: number
-  value: '-1'
+  value: '0'
 solution: |
-  Переносим: $(8-6)x = -4 - (-2)$, то есть $2x=-2$, откуда $x=-1$.
+  Переносим: $(3-8)x = 8 - (8)$, то есть $-5x=0$, откуда $x=0$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

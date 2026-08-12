@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import admin, auth, catalog, duels, friends, profile, quiz
+from app.api import admin, auth, catalog, duel_ws, duels, friends, profile, quiz
 from app.core.config import settings
 from app.core.db import engine
 
@@ -22,6 +22,8 @@ async def lifespan(app: FastAPI):
         )
     app.state.redis = aioredis.from_url(settings.redis_url, decode_responses=True)
     yield
+
+    await duel_ws.shutdown_matches()
     await app.state.redis.aclose()
     await engine.dispose()
 
@@ -43,6 +45,7 @@ app.include_router(profile.router)
 app.include_router(admin.router)
 app.include_router(duels.router)
 app.include_router(friends.router)
+app.include_router(duel_ws.router)
 
 
 @app.get("/health")

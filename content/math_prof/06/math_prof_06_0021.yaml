@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $5^{\,x+5}=25$.
+  Найдите корень уравнения $3^{\,x+4}=9$.
 answer:
   type: number
-  value: '-3'
+  value: '-2'
 solution: |
-  $25=5^{2}$, значит $x+5=2$ и $x=-3$.
+  $9=3^{2}$, значит $x+4=2$ и $x=-2$.
 hints:
   - 'Приведите обе части к одному основанию.'
 source:

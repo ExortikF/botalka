@@ -22,11 +22,9 @@ export default function Landing() {
 
   useEffect(() => {
     // уже вошёл — незачем показывать лендинг
+    // намеренно без редиректа: на лендинг заходят осознанно, кликнув по логотипу
     getMe()
-      .then((u: User) => {
-        setMe(u);
-        if (!u.is_guest) router.replace("/app/profile");
-      })
+      .then((u: User) => setMe(u))
       .catch(() => setMe(null));
 
     getTaskTypes()

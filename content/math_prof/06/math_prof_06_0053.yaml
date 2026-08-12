@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $8x + (-3) = 3x + (7)$.
+  Найдите корень уравнения $2x + (10) = 8x + (46)$.
 answer:
   type: number
-  value: '2'
+  value: '-6'
 solution: |
-  Переносим: $(8-3)x = 7 - (-3)$, то есть $5x=10$, откуда $x=2$.
+  Переносим: $(2-8)x = 46 - (10)$, то есть $-6x=36$, откуда $x=-6$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

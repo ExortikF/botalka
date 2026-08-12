@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 2
 statement: |
-  Найдите корень уравнения $\sqrt{3x - 5}=4$.
+  Найдите корень уравнения $\sqrt{6x + 132}=12$.
 answer:
   type: number
-  value: '7'
+  value: '2'
 solution: |
-  Возведём обе части в квадрат: $3x - 5=16$, откуда $x=7$.
+  Возведём обе части в квадрат: $6x + 132=144$, откуда $x=2$.
 hints:
   - 'Возведите обе части в квадрат.'
 source:

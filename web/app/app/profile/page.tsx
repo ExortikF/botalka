@@ -20,7 +20,11 @@ type Achievement = {
 type Profile = {
   display_name: string;
   is_guest: boolean;
-  rating: number | null;
+  rating: number;
+  rank: string;
+  duels_played: number;
+  duels_won: number;
+  duel_win_streak: number;
   solved_total: number;
   correct_total: number;
   accuracy: number;
@@ -102,7 +106,10 @@ export default function ProfilePage() {
           label={`подряд · рекорд ${profile.streak_record}`}
           icon={<Flame size={15} style={{ color: "var(--accent-2)" }} />}
         />
-        <Metric value={String(profile.solved_total)} label="задач решено" />
+        <Metric
+          value={`${unlocked.length}/${profile.achievements.length}`}
+          label="получено достижений"
+        />
         <Metric value={`${profile.accuracy}%`} label="верных ответов" />
         <Metric
           value={`${profile.attempts_correct} / ${profile.attempts_wrong}`}
@@ -142,15 +149,33 @@ export default function ProfilePage() {
         <Activity days={profile.activity} onPick={openDay} />
       </section>
 
-      <section className="card p-6">
-        <p className="eyebrow flex items-center gap-2">
-          <Swords size={14} /> Рейтинг
-        </p>
-        <p className="muted mt-2 text-sm leading-relaxed">
-          Появится вместе с дуэлями. Считаться будет только по ним: победа над сильным
-          соперником даст больше, а квизы и тренировки на рейтинг не влияют — иначе он
-          превратится в счётчик усидчивости.
-        </p>
+      <section className="card flex flex-wrap items-center gap-7 p-7">
+        <div className="text-center">
+          <p className="h text-5xl">{profile.rating}</p>
+          <p
+            className="mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold"
+            style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+          >
+            {profile.rank}
+          </p>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h2 className="flex items-center gap-2 text-xl">
+            <Swords size={18} style={{ color: "var(--accent-2)" }} /> Рейтинг
+          </h2>
+          <p className="muted mt-2 text-sm leading-relaxed">
+            {profile.duels_played === 0
+              ? "Меняется только в онлайн-матчах. Сыграй первый — первые пять матчей двигают рейтинг сильнее, чтобы быстрее найти твой уровень."
+              : `Онлайн-матчей: ${profile.duels_played}, побед: ${profile.duels_won}.` +
+                (profile.duel_win_streak >= 2
+                  ? ` Серия из ${profile.duel_win_streak} побед подряд.`
+                  : "")}
+          </p>
+          <Link className="btn mt-4" href="/app/duels/online">
+            {profile.duels_played === 0 ? "Сыграть первый матч" : "Найти соперника"}
+          </Link>
+        </div>
       </section>
 
       <section className="space-y-4">

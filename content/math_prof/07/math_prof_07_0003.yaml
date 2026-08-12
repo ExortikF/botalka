@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 7
 difficulty: 2
 statement: |
-  Найдите значение выражения $\log_{5}750-\log_{5}6$.
+  Найдите значение выражения $\log_{2}20-\log_{2}5$.
 answer:
   type: number
-  value: '3'
+  value: '2'
 solution: |
-  $\log_{5}750-\log_{5}6=\log_{5}\dfrac{750}{6}=\log_{5}125=3$.
+  $\log_{2}20-\log_{2}5=\log_{2}\dfrac{20}{5}=\log_{2}4=2$.
 hints:
   - 'Разность логарифмов с одним основанием — логарифм частного.'
 source:

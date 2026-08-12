@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $5x + (1) = 9x + (13)$.
+  Найдите корень уравнения $4x + (4) = 5x + (5)$.
 answer:
   type: number
-  value: '-3'
+  value: '-1'
 solution: |
-  Переносим: $(5-9)x = 13 - (1)$, то есть $-4x=12$, откуда $x=-3$.
+  Переносим: $(4-5)x = 5 - (4)$, то есть $-1x=1$, откуда $x=-1$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $4x + (-5) = 7x + (-17)$.
+  Найдите корень уравнения $2x + (-5) = 4x + (3)$.
 answer:
   type: number
-  value: '4'
+  value: '-4'
 solution: |
-  Переносим: $(4-7)x = -17 - (-5)$, то есть $-3x=-12$, откуда $x=4$.
+  Переносим: $(2-4)x = 3 - (-5)$, то есть $-2x=8$, откуда $x=-4$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

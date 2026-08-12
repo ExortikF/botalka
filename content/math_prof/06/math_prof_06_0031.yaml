@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 2
 statement: |
-  Найдите корень уравнения $\sqrt{5x + 36}=9$.
+  Найдите корень уравнения $\sqrt{6x - 27}=3$.
 answer:
   type: number
-  value: '9'
+  value: '6'
 solution: |
-  Возведём обе части в квадрат: $5x + 36=81$, откуда $x=9$.
+  Возведём обе части в квадрат: $6x - 27=9$, откуда $x=6$.
 hints:
   - 'Возведите обе части в квадрат.'
 source:

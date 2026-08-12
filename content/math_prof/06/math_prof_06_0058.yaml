@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $7x + (-9) = 6x + (-1)$.
+  Найдите корень уравнения $5x + (-1) = 6x + (-3)$.
 answer:
   type: number
-  value: '8'
+  value: '2'
 solution: |
-  Переносим: $(7-6)x = -1 - (-9)$, то есть $1x=8$, откуда $x=8$.
+  Переносим: $(5-6)x = -3 - (-1)$, то есть $-1x=-2$, откуда $x=2$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

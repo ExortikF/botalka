@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $3^{\,x+6}=9$.
+  Найдите корень уравнения $2^{\,x+5}=32$.
 answer:
   type: number
-  value: '-4'
+  value: '0'
 solution: |
-  $9=3^{2}$, значит $x+6=2$ и $x=-4$.
+  $32=2^{5}$, значит $x+5=5$ и $x=0$.
 hints:
   - 'Приведите обе части к одному основанию.'
 source:

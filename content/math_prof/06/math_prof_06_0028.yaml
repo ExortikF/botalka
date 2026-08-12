@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 2
 statement: |
-  Найдите корень уравнения $\sqrt{6x - 29}=5$.
+  Найдите корень уравнения $\sqrt{6x + 6}=6$.
 answer:
   type: number
-  value: '9'
+  value: '5'
 solution: |
-  Возведём обе части в квадрат: $6x - 29=25$, откуда $x=9$.
+  Возведём обе части в квадрат: $6x + 6=36$, откуда $x=5$.
 hints:
   - 'Возведите обе части в квадрат.'
 source:

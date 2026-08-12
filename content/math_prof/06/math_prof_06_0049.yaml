@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 6
 difficulty: 1
 statement: |
-  Найдите корень уравнения $8x + (-6) = 9x + (-14)$.
+  Найдите корень уравнения $4x + (4) = 5x + (0)$.
 answer:
   type: number
-  value: '8'
+  value: '4'
 solution: |
-  Переносим: $(8-9)x = -14 - (-6)$, то есть $-1x=-8$, откуда $x=8$.
+  Переносим: $(4-5)x = 0 - (4)$, то есть $-1x=-4$, откуда $x=4$.
 source:
   kind: own
   ref: 'tpl:eq_linear'

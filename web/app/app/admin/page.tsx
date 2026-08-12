@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { BarChart3, Pencil, Plus, Trash2 } from "lucide-react";
 import MathText from "../../Math";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
 import TaskForm, { type AdminTask, EMPTY_TASK } from "./TaskForm";
@@ -97,9 +98,14 @@ export default function AdminPage() {
               : "загрузка…"}
           </p>
         </div>
-        <button className="btn" onClick={() => setEditing({ ...EMPTY_TASK })}>
-          <Plus size={16} /> Добавить задачу
-        </button>
+        <div className="flex gap-2">
+          <Link className="btn-ghost" href="/app/admin/dashboard">
+            <BarChart3 size={16} /> Дашборд
+          </Link>
+          <button className="btn" onClick={() => setEditing({ ...EMPTY_TASK })}>
+            <Plus size={16} /> Добавить задачу
+          </button>
+        </div>
       </header>
 
       {stats && (

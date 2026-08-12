@@ -3,12 +3,12 @@ subject: math_prof
 task_type: 7
 difficulty: 2
 statement: |
-  Найдите значение выражения $\log_{5}15625-\log_{5}5$.
+  Найдите значение выражения $\log_{5}3750-\log_{5}6$.
 answer:
   type: number
-  value: '5'
+  value: '4'
 solution: |
-  $\log_{5}15625-\log_{5}5=\log_{5}\dfrac{15625}{5}=\log_{5}3125=5$.
+  $\log_{5}3750-\log_{5}6=\log_{5}\dfrac{3750}{6}=\log_{5}625=4$.
 hints:
   - 'Разность логарифмов с одним основанием — логарифм частного.'
 source:
