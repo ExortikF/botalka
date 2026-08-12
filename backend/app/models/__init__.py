@@ -3,6 +3,7 @@ from app.models.content import AnswerType, SourceKind, Subject, Task, TaskStatus
 from app.models.progress import Attempt, Duel, DuelKind, DuelState, Quiz, QuizMode
 from app.models.feedback import Idea, IdeaStatus
 from app.models.exams import MockAttempt, MockExam, MockStatus, ReportStatus, TaskReport
+from app.models.shop import ItemKind, Rarity, ShopItem, UserItem
 from app.models.social import Friendship, FriendshipState
 from app.models.user import User
 
@@ -14,6 +15,10 @@ __all__ = [
     "Duel",
     "DuelKind",
     "Friendship",
+    "ItemKind",
+    "Rarity",
+    "ShopItem",
+    "UserItem",
     "Idea",
     "IdeaStatus",
     "MockAttempt",

@@ -12,6 +12,9 @@ type LeaderRow = {
   display_name: string;
   rating: number;
   rank: string;
+  rank_color: string;
+  nick_color: string | null;
+  prefix: string | null;
   duels: number;
   wins: number;
   solved_week: number;
@@ -129,7 +132,10 @@ export default function RatingPage() {
                         >
                           {initials(row.display_name)}
                         </span>
+                        <span style={{ color: row.nick_color ?? undefined }}>
+                        {row.prefix && `${row.prefix} `}
                         {row.display_name}
+                      </span>
                         {row.is_you && <span className="muted text-xs">— это ты</span>}
                       </span>
                     </td>

@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from app.api.deps import DbSession, PlayerUser
+from app.api.shop import cosmetics_of
 from app.models import (
     Attempt,
     CoinTransaction,
@@ -101,6 +102,7 @@ class ProfileOut(BaseModel):
     rank_color: str
     coins: int
     coins_week: int
+    cosmetics: dict
     incoming_duels: list[dict]
     duels_played: int
     duels_won: int
@@ -336,6 +338,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         rank_color=rank_color(user.rating),
         coins=user.coins,
         coins_week=coins_week,
+        cosmetics=(await cosmetics_of(session, user.id)).model_dump(),
         incoming_duels=incoming,
         duels_played=len(online),
         duels_won=duels_won,
@@ -425,6 +428,8 @@ class LeaderRow(BaseModel):
     rating: int
     rank: str
     rank_color: str
+    nick_color: str | None
+    prefix: str | None
     duels: int
     wins: int
     solved_week: int
@@ -485,9 +490,16 @@ async def leaderboard(
         candidates = [u for u in users if not u.is_guest and played.get(u.id, 0) > 0]
         candidates.sort(key=lambda u: (-u.rating, -played.get(u.id, 0)))
 
+    worn: dict[int, dict] = {}
+    for candidate in candidates[: limit + 5]:
+        cos = await cosmetics_of(session, candidate.id)
+        worn[candidate.id] = {"nick_color": cos.nick_color, "prefix": cos.prefix}
+
     rows = [
         LeaderRow(
             place=i + 1,
+            nick_color=worn.get(u.id, {}).get("nick_color"),
+            prefix=worn.get(u.id, {}).get("prefix"),
             user_id=u.id,
             display_name=u.display_name,
             rating=u.rating,

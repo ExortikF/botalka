@@ -25,6 +25,12 @@ type Profile = {
   rank_color: string;
   coins: number;
   coins_week: number;
+  cosmetics: {
+    nick_color: string | null;
+    prefix: string | null;
+    frame: string | null;
+    avatar: string | null;
+  };
   incoming_duels: { code: string; from: string; rounds: number }[];
   duels_played: number;
   duels_won: number;
@@ -86,14 +92,30 @@ export default function ProfilePage() {
     <div className="space-y-8">
       <section className="card flex flex-wrap items-center gap-5 p-7">
         <span
-          className="h flex h-16 w-16 items-center justify-center rounded-2xl text-xl"
-          style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+          className="h flex h-16 w-16 items-center justify-center rounded-2xl text-2xl"
+          style={{
+            background: "var(--accent-100)",
+            color: "var(--accent-700)",
+            border:
+              profile.cosmetics.frame && profile.cosmetics.frame !== "none"
+                ? "4px solid"
+                : undefined,
+            borderColor:
+              profile.cosmetics.frame === "gradient"
+                ? "#7c3aed"
+                : (profile.cosmetics.frame ?? undefined),
+          }}
         >
-          {initials(profile.display_name)}
+          {profile.cosmetics.avatar && profile.cosmetics.avatar !== "initials"
+            ? profile.cosmetics.avatar
+            : initials(profile.display_name)}
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="flex flex-wrap items-center gap-3 text-2xl">
-            {profile.display_name}
+            <span style={{ color: profile.cosmetics.nick_color ?? undefined }}>
+              {profile.cosmetics.prefix && `${profile.cosmetics.prefix} `}
+              {profile.display_name}
+            </span>
             <span
               className="rounded-full px-3 py-1 text-xs font-semibold"
               style={{ background: `${profile.rank_color}1a`, color: profile.rank_color }}

@@ -7,7 +7,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import admin, auth, catalog, duel_ws, duels, friends, mocks, profile, quiz
+from app.api import (
+    admin,
+    auth,
+    catalog,
+    duel_ws,
+    duels,
+    friends,
+    mocks,
+    profile,
+    quiz,
+    shop,
+)
 from app.core.config import settings
 from app.core.db import engine
 
@@ -47,6 +58,7 @@ app.include_router(duels.router)
 app.include_router(friends.router)
 app.include_router(duel_ws.router)
 app.include_router(mocks.router)
+app.include_router(shop.router)
 
 
 @app.get("/health")
