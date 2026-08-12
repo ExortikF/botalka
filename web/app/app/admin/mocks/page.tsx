@@ -41,6 +41,7 @@ export default function AdminMocksPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState(235);
+  const [subjectSlug, setSubjectSlug] = useState("math_prof");
   const [numbers, setNumbers] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
   const [publish, setPublish] = useState(true);
 
@@ -87,6 +88,7 @@ export default function AdminMocksPage() {
           title,
           description,
           duration_minutes: duration,
+          subject_slug: subjectSlug,
           auto_numbers: mode === "auto" ? numbers : [],
           task_ids: mode === "manual" ? picked.map((t) => t.id) : [],
           status: publish ? "live" : "draft",
@@ -140,6 +142,19 @@ export default function AdminMocksPage() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </label>
+          <label className="block">
+            <span className="eyebrow mb-1.5 block">Предмет</span>
+            <select
+              className="input"
+              value={subjectSlug}
+              onChange={(e) => setSubjectSlug(e.target.value)}
+            >
+              <option value="math_prof">Математика (профиль)</option>
+              <option value="rus">Русский язык</option>
+              <option value="inf">Информатика</option>
+            </select>
+          </label>
+
           <label className="block">
             <span className="eyebrow mb-1.5 block">Время, минут</span>
             <input

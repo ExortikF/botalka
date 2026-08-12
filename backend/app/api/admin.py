@@ -563,6 +563,7 @@ async def resolve_report(
 
 class MockIn(BaseModel):
     title: str = Field(min_length=3, max_length=200)
+    subject_slug: str = "math_prof"
     description: str | None = None
     duration_minutes: int = Field(default=235, ge=10, le=360)
     status: MockStatus = MockStatus.DRAFT
@@ -573,6 +574,7 @@ class MockIn(BaseModel):
 
 class MockOut(BaseModel):
     id: int
+    subject_slug: str
     title: str
     description: str | None
     duration_minutes: int
@@ -598,6 +600,7 @@ async def _mock_out(session: DbSession, exam: MockExam) -> MockOut:
     ) or 0
     return MockOut(
         id=exam.id,
+        subject_slug=exam.subject_slug,
         title=exam.title,
         description=exam.description,
         duration_minutes=exam.duration_minutes,
@@ -637,7 +640,7 @@ async def list_mocks_admin(session: DbSession, admin: AdminUser) -> list[MockOut
 @router.post("/mocks", response_model=MockOut, status_code=status.HTTP_201_CREATED)
 async def create_mock(payload: MockIn, session: DbSession, admin: AdminUser) -> MockOut:
     task_ids = payload.task_ids or await _collect_tasks(
-        session, payload.auto_numbers or list(range(1, 13)), "math_prof"
+        session, payload.auto_numbers or list(range(1, 13)), payload.subject_slug
     )
     if len(task_ids) < 3:
         raise HTTPException(
@@ -646,6 +649,7 @@ async def create_mock(payload: MockIn, session: DbSession, admin: AdminUser) -> 
         )
 
     exam = MockExam(
+        subject_slug=payload.subject_slug,
         title=payload.title.strip(),
         description=(payload.description or "").strip() or None,
         task_ids=task_ids,
@@ -673,7 +677,7 @@ async def update_mock(
     if payload.task_ids:
         exam.task_ids = payload.task_ids
     elif payload.auto_numbers:
-        exam.task_ids = await _collect_tasks(session, payload.auto_numbers, "math_prof")
+        exam.task_ids = await _collect_tasks(session, payload.auto_numbers, payload.subject_slug)
 
     await session.commit()
     return await _mock_out(session, exam)

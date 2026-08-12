@@ -21,9 +21,18 @@ from app.models import Attempt, MockAttempt, MockExam, MockStatus, Task, TaskTyp
 
 router = APIRouter(prefix="/api/mocks", tags=["mocks"])
 
+SUBJECT_TITLES = {
+    "math_prof": "Математика (профиль)",
+    "math_base": "Математика (база)",
+    "rus": "Русский язык",
+    "inf": "Информатика",
+}
+
 
 class MockCard(BaseModel):
     id: int
+    subject_slug: str
+    subject_title: str
     title: str
     description: str | None
     tasks_count: int
@@ -98,6 +107,8 @@ async def list_mocks(session: DbSession, user: PlayerUser) -> list[MockCard]:
         cards.append(
             MockCard(
                 id=exam.id,
+                subject_slug=exam.subject_slug,
+                subject_title=SUBJECT_TITLES.get(exam.subject_slug, exam.subject_slug),
                 title=exam.title,
                 description=exam.description,
                 tasks_count=len(exam.task_ids),

@@ -400,7 +400,6 @@ class LeaderRow(BaseModel):
     rating: int
     rank: str
     rank_color: str
-    incoming_duels: list[dict]
     duels: int
     wins: int
     solved_week: int
