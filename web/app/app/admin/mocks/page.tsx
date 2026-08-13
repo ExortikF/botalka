@@ -42,7 +42,9 @@ export default function AdminMocksPage() {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState(235);
   const [subjectSlug, setSubjectSlug] = useState("math_prof");
-  const [numbers, setNumbers] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
+  const [numbers, setNumbers] = useState<number[]>(
+    Array.from({ length: 12 }, (_, i) => i + 1),
+  );
   const [publish, setPublish] = useState(true);
 
   /** Режим набора: автоматически по номерам или вручную выбранные задачи. */
@@ -60,7 +62,9 @@ export default function AdminMocksPage() {
 
   useEffect(() => {
     load();
-    getTaskTypes().then(setTypes).catch(() => setTypes([]));
+    getTaskTypes()
+      .then(setTypes)
+      .catch(() => setTypes([]));
   }, [load]);
 
   function loadPool(number: number, q = "") {
@@ -112,7 +116,11 @@ export default function AdminMocksPage() {
   }
 
   function toggleNumber(n: number) {
-    setNumbers((prev) => (prev.includes(n) ? prev.filter((x) => x !== n) : [...prev, n].sort((a, b) => a - b)));
+    setNumbers((prev) =>
+      prev.includes(n)
+        ? prev.filter((x) => x !== n)
+        : [...prev, n].sort((a, b) => a - b),
+    );
   }
 
   return (
@@ -121,7 +129,8 @@ export default function AdminMocksPage() {
         <div>
           <h1 className="text-3xl">Конструктор пробников</h1>
           <p className="muted mt-1 text-sm">
-            Вариант собирается по одной случайной задаче на каждый отмеченный номер.
+            Вариант собирается по одной случайной задаче на каждый отмеченный
+            номер.
           </p>
         </div>
         <Link className="btn-ghost" href="/app/admin">
@@ -220,8 +229,8 @@ export default function AdminMocksPage() {
               ))}
             </div>
             <p className="muted mt-2 text-xs">
-              Отмечено номеров: {numbers.length}. Из каждого берётся одна случайная задача.
-              Номера без задач выбрать нельзя.
+              Отмечено номеров: {numbers.length}. Из каждого берётся одна
+              случайная задача. Номера без задач выбрать нельзя.
             </p>
           </div>
         ) : (
@@ -255,9 +264,14 @@ export default function AdminMocksPage() {
                     placeholder="Поиск по условию"
                     value={pickQuery}
                     onChange={(e) => setPickQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && loadPool(pickNumber, pickQuery)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && loadPool(pickNumber, pickQuery)
+                    }
                   />
-                  <button className="btn-ghost" onClick={() => loadPool(pickNumber, pickQuery)}>
+                  <button
+                    className="btn-ghost"
+                    onClick={() => loadPool(pickNumber, pickQuery)}
+                  >
                     <Search size={15} />
                   </button>
                 </div>
@@ -270,13 +284,21 @@ export default function AdminMocksPage() {
                         <button
                           onClick={() => togglePicked(task)}
                           className="flex w-full items-start gap-3 rounded-xl p-3 text-left text-sm transition"
-                          style={{ background: chosen ? "var(--accent-100)" : "var(--surface)" }}
+                          style={{
+                            background: chosen
+                              ? "var(--accent-100)"
+                              : "var(--surface)",
+                          }}
                         >
                           <span
                             className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border"
                             style={{
-                              borderColor: chosen ? "var(--accent)" : "var(--divider)",
-                              background: chosen ? "var(--accent)" : "transparent",
+                              borderColor: chosen
+                                ? "var(--accent)"
+                                : "var(--divider)",
+                              background: chosen
+                                ? "var(--accent)"
+                                : "transparent",
                               color: "#fff",
                             }}
                           >
@@ -284,14 +306,18 @@ export default function AdminMocksPage() {
                           </span>
                           <span className="min-w-0">
                             <MathText className="block" text={task.statement} />
-                            <span className="muted text-xs">ответ {task.answer_value}</span>
+                            <span className="muted text-xs">
+                              ответ {task.answer_value}
+                            </span>
                           </span>
                         </button>
                       </li>
                     );
                   })}
                   {pool.length === 0 && (
-                    <li className="muted text-sm">По этому номеру задач не нашлось.</li>
+                    <li className="muted text-sm">
+                      По этому номеру задач не нашлось.
+                    </li>
                   )}
                 </ul>
               </>
@@ -299,7 +325,8 @@ export default function AdminMocksPage() {
 
             <p className="muted text-sm">
               Выбрано задач: {picked.length}
-              {picked.length > 0 && ` (номера ${[...new Set(picked.map((t) => t.number))].sort((a, b) => a - b).join(", ")})`}
+              {picked.length > 0 &&
+                ` (номера ${[...new Set(picked.map((t) => t.number))].sort((a, b) => a - b).join(", ")})`}
             </p>
             <AddTaskInline
               types={types}
@@ -349,10 +376,13 @@ export default function AdminMocksPage() {
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">{mock.title}</p>
                     <p className="muted text-sm">
-                      {mock.task_ids.length} заданий · {mock.duration_minutes} мин ·{" "}
-                      {STATUS_LABEL[mock.status]} · прохождений {mock.attempts}
+                      {mock.task_ids.length} заданий · {mock.duration_minutes}{" "}
+                      мин · {STATUS_LABEL[mock.status]} · прохождений{" "}
+                      {mock.attempts}
                     </p>
-                    <p className="muted text-xs">номера: {mock.numbers.join(", ")}</p>
+                    <p className="muted text-xs">
+                      номера: {mock.numbers.join(", ")}
+                    </p>
                   </div>
                   <button
                     className="muted p-2 hover:text-[var(--accent-2)]"

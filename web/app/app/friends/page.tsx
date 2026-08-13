@@ -1,11 +1,15 @@
 "use client";
 
+import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Check, Copy, Flame, Swords, UserPlus, X } from "lucide-react";
 import { api, createDuel } from "@/lib/api";
 import { plural } from "@/lib/exam";
 import { initials } from "@/lib/format";
+import { nickStyle } from "@/lib/cosmetics";
+import UserAvatar from "../Avatar";
 
 type Friend = {
   id: number;
@@ -13,6 +17,12 @@ type Friend = {
   streak_days: number;
   solved: number;
   friendship_id: number;
+  cosmetics: {
+    nick_color: string | null;
+    prefix: string | null;
+    frame: string | null;
+    avatar: string | null;
+  };
 };
 
 type Request = {
@@ -90,8 +100,8 @@ export default function FriendsPage() {
       <header>
         <h1 className="text-3xl">Друзья</h1>
         <p className="muted mt-2">
-          Добавляй по коду и вызывай на дуэль в один клик. Поиска по всем пользователям
-          нет — только по коду, который человек сам тебе дал.
+          Добавляй по коду и вызывай на дуэль в один клик. Поиска по всем
+          пользователям нет — только по коду, который человек сам тебе дал.
         </p>
       </header>
 
@@ -104,7 +114,9 @@ export default function FriendsPage() {
               {copied ? <Check size={15} /> : <Copy size={15} />}
             </button>
           </div>
-          <p className="muted mt-2 text-sm">Отправь его тому, кого хочешь добавить.</p>
+          <p className="muted mt-2 text-sm">
+            Отправь его тому, кого хочешь добавить.
+          </p>
         </div>
 
         <div>
@@ -123,7 +135,11 @@ export default function FriendsPage() {
               maxLength={8}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
             />
-            <button className="btn" type="submit" disabled={busy || !code.trim()}>
+            <button
+              className="btn"
+              type="submit"
+              disabled={busy || !code.trim()}
+            >
               <UserPlus size={16} />
             </button>
           </form>
@@ -142,11 +158,19 @@ export default function FriendsPage() {
             <article
               key={request.friendship_id}
               className="card flex items-center gap-4 p-4"
-              style={{ background: "var(--accent-2-100)", borderColor: "var(--accent-2-200)" }}
+              style={{
+                background: "var(--accent-2-100)",
+                borderColor: "var(--accent-2-200)",
+              }}
             >
               <Avatar name={request.display_name} />
-              <span className="min-w-0 flex-1 font-medium">{request.display_name}</span>
-              <button className="btn text-sm" onClick={() => accept(request.friendship_id)}>
+              <span className="min-w-0 flex-1 font-medium">
+                {request.display_name}
+              </span>
+              <button
+                className="btn text-sm"
+                onClick={() => accept(request.friendship_id)}
+              >
                 Принять
               </button>
               <button
@@ -165,34 +189,62 @@ export default function FriendsPage() {
         <div className="flex items-baseline justify-between">
           <h2 className="text-xl">Мои друзья</h2>
           <span className="muted text-sm">
-            {data.friends.length} {plural(data.friends.length, "друг", "друга", "друзей")}
+            {data.friends.length}{" "}
+            {plural(data.friends.length, "друг", "друга", "друзей")}
           </span>
         </div>
 
         {data.friends.length === 0 ? (
           <p className="muted text-sm">
-            Пока никого. Обменяйтесь кодами — и сможете вызывать друг друга на дуэль.
+            Пока никого. Обменяйтесь кодами — и сможете вызывать друг друга на
+            дуэль.
           </p>
         ) : (
           <ul className="space-y-2">
             {data.friends.map((friend) => (
               <li key={friend.id}>
                 <article className="card flex items-center gap-4 p-4">
-                  <Avatar name={friend.display_name} />
+                  <UserAvatar
+                    name={friend.display_name}
+                    avatar={friend.cosmetics?.avatar}
+                    frame={friend.cosmetics?.frame}
+                    size={40}
+                    rounded="rounded-full"
+                  />
                   <span className="min-w-0 flex-1">
-                    <span className="block font-medium">{friend.display_name}</span>
+                    <Link
+                      className="block font-medium hover:underline"
+                      href={`/app/u/${friend.id}`}
+                      style={nickStyle(friend.cosmetics?.nick_color).style}
+                    >
+                      <span
+                        className={
+                          nickStyle(friend.cosmetics?.nick_color).className
+                        }
+                      >
+                        {friend.cosmetics?.prefix &&
+                          `${friend.cosmetics.prefix} `}
+                        {friend.display_name}
+                      </span>
+                    </Link>
                     <span className="muted flex items-center gap-2 text-sm">
                       решено {friend.solved}
                       {friend.streak_days > 0 && (
                         <>
                           ·
-                          <Flame size={12} style={{ color: "var(--accent-2)" }} />
+                          <Flame
+                            size={12}
+                            style={{ color: "var(--accent-2)" }}
+                          />
                           {friend.streak_days}
                         </>
                       )}
                     </span>
                   </span>
-                  <button className="btn btn-accent2 text-sm" onClick={() => challenge(friend)}>
+                  <button
+                    className="btn btn-accent2 text-sm"
+                    onClick={() => challenge(friend)}
+                  >
                     <Swords size={15} /> Вызвать
                   </button>
                   <button
@@ -213,7 +265,10 @@ export default function FriendsPage() {
         <section className="space-y-2">
           <h2 className="eyebrow">Отправленные заявки</h2>
           {outgoing.map((request) => (
-            <article key={request.friendship_id} className="card flex items-center gap-4 p-4">
+            <article
+              key={request.friendship_id}
+              className="card flex items-center gap-4 p-4"
+            >
               <Avatar name={request.display_name} />
               <span className="min-w-0 flex-1">{request.display_name}</span>
               <span className="muted text-sm">ждём ответа</span>

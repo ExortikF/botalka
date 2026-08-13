@@ -6,7 +6,11 @@ import { Check, Copy, Swords } from "lucide-react";
 import { getDuel, type Duel, type DuelSide } from "@/lib/api";
 import { initials } from "@/lib/format";
 
-export default function DuelPage({ params }: { params: Promise<{ code: string }> }) {
+export default function DuelPage({
+  params,
+}: {
+  params: Promise<{ code: string }>;
+}) {
   const { code } = use(params);
   const [duel, setDuel] = useState<Duel | null>(null);
   const [error, setError] = useState("");
@@ -21,7 +25,9 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
   useEffect(load, [load]);
 
   async function copyLink() {
-    await navigator.clipboard.writeText(`${window.location.origin}/app/duels/${code}`);
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/app/duels/${code}`,
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -48,13 +54,18 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
         <Swords size={22} style={{ color: "var(--accent-2)" }} />
         <div>
           <h1 className="text-2xl">Дуэль</h1>
-          <p className="muted text-sm">{duel.total} раундов · один набор задач на двоих</p>
+          <p className="muted text-sm">
+            {duel.total} раундов · один набор задач на двоих
+          </p>
         </div>
       </header>
 
       <section className="card p-7">
         <div className="flex items-center justify-between gap-6">
-          <Player side={duel.challenger} highlight={duel.winner === "challenger"} />
+          <Player
+            side={duel.challenger}
+            highlight={duel.winner === "challenger"}
+          />
 
           <div className="text-center">
             <p className="h text-3xl">
@@ -66,7 +77,11 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
           </div>
 
           {duel.opponent ? (
-            <Player side={duel.opponent} highlight={duel.winner === "opponent"} right />
+            <Player
+              side={duel.opponent}
+              highlight={duel.winner === "opponent"}
+              right
+            />
           ) : (
             <div className="text-right">
               <span
@@ -105,14 +120,19 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
       {duel.can_play && (
         <section className="card space-y-3 p-6">
           <h2 className="text-lg">
-            {duel.your_side === "challenger" ? "Пройди свою половину" : "Тебя вызвали"}
+            {duel.your_side === "challenger"
+              ? "Пройди свою половину"
+              : "Тебя вызвали"}
           </h2>
           <p className="muted text-sm leading-relaxed">
             {duel.your_side === "challenger"
               ? "Реши задачи, потом отправь ссылку сопернику. Время учитывается — при равном счёте побеждает тот, кто быстрее."
               : `${duel.challenger.name} вызывает тебя. Задачи те же самые, что решал соперник.`}
           </p>
-          <Link className="btn btn-accent2" href={`/app/quiz/run?duel=${duel.code}`}>
+          <Link
+            className="btn btn-accent2"
+            href={`/app/quiz/run?duel=${duel.code}`}
+          >
             {duel.your_side === "challenger" ? "Начать" : "Принять вызов"}
           </Link>
         </section>
@@ -125,7 +145,11 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
             <input
               className="input flex-1"
               readOnly
-              value={typeof window === "undefined" ? "" : `${window.location.origin}/app/duels/${code}`}
+              value={
+                typeof window === "undefined"
+                  ? ""
+                  : `${window.location.origin}/app/duels/${code}`
+              }
               onFocus={(e) => e.target.select()}
             />
             <button className="btn-ghost" onClick={copyLink}>
@@ -141,7 +165,8 @@ export default function DuelPage({ params }: { params: Promise<{ code: string }>
 
       {!duel.can_play && duel.state !== "finished" && you?.finished && (
         <p className="muted text-sm">
-          Ты свою половину прошёл{them ? " — ждём соперника." : ". Отправь ссылку другу."}
+          Ты свою половину прошёл
+          {them ? " — ждём соперника." : ". Отправь ссылку другу."}
         </p>
       )}
 
@@ -174,7 +199,9 @@ function Player({
       >
         {initials(side.name)}
       </span>
-      <p className="mt-2 max-w-[8rem] truncate text-sm font-medium">{side.name}</p>
+      <p className="mt-2 max-w-[8rem] truncate text-sm font-medium">
+        {side.name}
+      </p>
       <p className="muted text-xs">
         {side.finished
           ? `${Math.round((side.time_ms ?? 0) / 1000)} с`

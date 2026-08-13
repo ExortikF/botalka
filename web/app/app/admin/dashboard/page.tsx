@@ -76,7 +76,8 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-3xl">Дашборд</h1>
           <p className="muted mt-1 text-sm">
-            Личные данные сюда не попадают: ни Telegram-id, ни ников, ни контактов.
+            Личные данные сюда не попадают: ни Telegram-id, ни ников, ни
+            контактов.
           </p>
         </div>
         <Link className="btn-ghost" href="/app/admin">
@@ -146,7 +147,10 @@ export default function AdminDashboard() {
                 >
                   <span
                     className="block h-full rounded-full"
-                    style={{ width: `${percent}%`, background: "var(--accent)" }}
+                    style={{
+                      width: `${percent}%`,
+                      background: "var(--accent)",
+                    }}
                   />
                 </span>
                 <span className="w-20 shrink-0 text-right">
@@ -175,8 +179,8 @@ export default function AdminDashboard() {
       <section className="space-y-3">
         <h2 className="text-xl">Задачи с подозрительной решаемостью</h2>
         <p className="muted text-sm">
-          0% почти всегда значит ошибку в эталонном ответе, 100% — что задача слишком
-          лёгкая. Смотреть при трёх и более попытках.
+          0% почти всегда значит ошибку в эталонном ответе, 100% — что задача
+          слишком лёгкая. Смотреть при трёх и более попытках.
         </p>
         <div className="grid gap-4 lg:grid-cols-2">
           <TaskList title="Проваливают чаще всего" tasks={data.hardest} bad />
@@ -189,7 +193,10 @@ export default function AdminDashboard() {
         <div className="card overflow-x-auto">
           <table className="w-full text-sm" style={{ minWidth: "44rem" }}>
             <thead>
-              <tr className="muted text-left" style={{ borderBottom: "1px solid var(--divider)" }}>
+              <tr
+                className="muted text-left"
+                style={{ borderBottom: "1px solid var(--divider)" }}
+              >
                 <Th>Имя</Th>
                 <Th>Вход</Th>
                 <Th>Решено</Th>
@@ -202,10 +209,15 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {data.users.map((user) => (
-                <tr key={user.id} style={{ borderBottom: "1px solid var(--divider)" }}>
+                <tr
+                  key={user.id}
+                  style={{ borderBottom: "1px solid var(--divider)" }}
+                >
                   <Td>{user.display_name}</Td>
                   <Td>
-                    <span className="muted">{user.kind === "guest" ? "гость" : "Telegram"}</span>
+                    <span className="muted">
+                      {user.kind === "guest" ? "гость" : "Telegram"}
+                    </span>
                   </Td>
                   <Td>{user.solved}</Td>
                   <Td>{user.accuracy === null ? "—" : `${user.accuracy}%`}</Td>
@@ -250,7 +262,15 @@ function Metric({
   );
 }
 
-function TaskList({ title, tasks, bad }: { title: string; tasks: ProblemTask[]; bad?: boolean }) {
+function TaskList({
+  title,
+  tasks,
+  bad,
+}: {
+  title: string;
+  tasks: ProblemTask[];
+  bad?: boolean;
+}) {
   return (
     <div className="card p-5">
       <p className="eyebrow mb-3">{title}</p>
@@ -259,7 +279,10 @@ function TaskList({ title, tasks, bad }: { title: string; tasks: ProblemTask[]; 
       ) : (
         <ul className="space-y-2 text-sm">
           {tasks.map((task) => (
-            <li key={task.id} className="flex items-start justify-between gap-3">
+            <li
+              key={task.id}
+              className="flex items-start justify-between gap-3"
+            >
               <span className="min-w-0">
                 <span className="muted mr-2">№{task.number}</span>
                 {task.statement}…

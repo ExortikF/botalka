@@ -22,6 +22,8 @@ KIND_TITLES = {
     ItemKind.PREFIX: "Значок перед ником",
     ItemKind.FRAME: "Рамка аватара",
     ItemKind.AVATAR: "Аватарка",
+    ItemKind.CARD_BG: "Фон профиля",
+    ItemKind.NAME_PLATE: "Декор плиты",
 }
 
 
@@ -49,6 +51,8 @@ class Cosmetics(BaseModel):
     prefix: str | None = None
     frame: str | None = None
     avatar: str | None = None
+    card_bg: str | None = None
+    name_plate: str | None = None
 
 
 async def cosmetics_of(session: DbSession, user_id: int) -> Cosmetics:
@@ -70,17 +74,22 @@ async def cosmetics_of(session: DbSession, user_id: int) -> Cosmetics:
             result.frame = item.value
         elif item.kind is ItemKind.AVATAR:
             result.avatar = item.value
+        elif item.kind is ItemKind.CARD_BG:
+            result.card_bg = item.value
+        elif item.kind is ItemKind.NAME_PLATE:
+            result.name_plate = item.value
     return result
 
 
 @router.get("", response_model=ShopOut)
 async def list_items(session: DbSession, user: PlayerUser) -> ShopOut:
+    stmt = select(ShopItem).where(ShopItem.active.is_(True))
+    if not user.is_admin:
+        # эксклюзив не просто нельзя купить — его не должно быть видно
+        stmt = stmt.where(ShopItem.admin_only.is_(False))
+
     items = list(
-        await session.scalars(
-            select(ShopItem)
-            .where(ShopItem.active.is_(True))
-            .order_by(ShopItem.kind, ShopItem.sort_order, ShopItem.price)
-        )
+        await session.scalars(stmt.order_by(ShopItem.kind, ShopItem.sort_order, ShopItem.price))
     )
     owned = {
         row.item_id: row
@@ -118,6 +127,9 @@ async def _item(session: DbSession, code: str) -> ShopItem:
 @router.post("/{code}/buy", response_model=ShopOut)
 async def buy(code: str, session: DbSession, user: PlayerUser) -> ShopOut:
     item = await _item(session, code)
+
+    if item.admin_only and not user.is_admin:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "товар не найден")
 
     already = await session.scalar(
         select(UserItem).where(UserItem.user_id == user.id, UserItem.item_id == item.id)

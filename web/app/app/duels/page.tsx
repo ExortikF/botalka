@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Minus, Plus, Swords } from "lucide-react";
-import { createDuel, getMyDuels, type DuelListItem } from "@/lib/api";
+import { Link2, Minus, Plus, Swords, Trophy, Users } from "lucide-react";
+import { api, createDuel, getMyDuels, type DuelListItem } from "@/lib/api";
 import { plural } from "@/lib/exam";
+
+type Friend = { id: number; display_name: string };
 
 const OUTCOME: Record<string, { label: string; color: string }> = {
   win: { label: "победа", color: "var(--accent)" },
@@ -19,16 +21,24 @@ export default function DuelsPage() {
   const [length, setLength] = useState(7);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [opponent, setOpponent] = useState<number | null>(null);
 
   useEffect(() => {
-    getMyDuels().then(setDuels).catch(() => setDuels([]));
+    getMyDuels()
+      .then(setDuels)
+      .catch(() => setDuels([]));
+    api<{ friends: Friend[] }>("/api/friends")
+      .then((data) => setFriends(data.friends))
+      .catch(() => setFriends([]));
   }, []);
 
-  async function create() {
+  /** opponentId задан — вызов уйдёт другу в «Тебя вызвали», иначе останется ссылкой. */
+  async function create(opponentId: number | null) {
     setCreating(true);
     setError("");
     try {
-      const duel = await createDuel([], length);
+      const duel = await createDuel([], length, opponentId ?? undefined);
       router.push(`/app/duels/${duel.code}`);
     } catch (e) {
       setError((e as Error).message);
@@ -44,14 +54,17 @@ export default function DuelsPage() {
       <header>
         <h1 className="text-3xl">Дуэли</h1>
         <p className="muted mt-2">
-          Вы оба решаете один и тот же набор задач. Побеждает тот, кто ответил верно
-          больше раз; при равном счёте — кто справился быстрее.
+          Вы оба решаете один и тот же набор задач. Побеждает тот, кто ответил
+          верно больше раз; при равном счёте — кто справился быстрее.
         </p>
       </header>
 
       <section
         className="relative overflow-hidden p-10 text-center text-white"
-        style={{ background: "var(--accent)", borderRadius: "var(--radius-lg)" }}
+        style={{
+          background: "var(--accent)",
+          borderRadius: "var(--radius-lg)",
+        }}
       >
         <div
           aria-hidden
@@ -65,11 +78,17 @@ export default function DuelsPage() {
         />
 
         <div className="relative">
-          <Swords size={44} className="mx-auto" />
+          <span
+            className="mx-auto flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+            style={{ background: "rgba(255,255,255,.2)" }}
+          >
+            <Trophy size={13} /> Рейтинговый режим
+          </span>
+          <Swords size={44} className="mx-auto mt-5" />
           <h2 className="h mt-4 text-4xl">Онлайн-матч</h2>
           <p className="mx-auto mt-3 max-w-md opacity-90">
-            Семь раундов, вопрос приходит обоим одновременно. Очко забирает тот, кто
-            ответил верно и быстрее. Только этот режим меняет рейтинг.
+            Соперника подбираем по рейтингу. Семь раундов, вопрос приходит обоим
+            одновременно, очко забирает тот, кто ответил верно и быстрее.
           </p>
           <Link
             className="mt-7 inline-block rounded-2xl bg-white px-10 py-4 text-lg font-bold shadow-lg transition hover:scale-[1.03]"
@@ -82,13 +101,19 @@ export default function DuelsPage() {
       </section>
 
       <section className="card space-y-4 p-7">
-        <div className="flex items-center gap-3">
-          <Swords size={20} style={{ color: "var(--accent-2)" }} />
-          <h2 className="text-xl">Вызвать друга</h2>
+        <div className="flex flex-wrap items-center gap-3">
+          <Users size={20} style={{ color: "var(--accent-2)" }} />
+          <h2 className="text-xl">Дуэль с другом</h2>
+          <span
+            className="rounded-full px-2.5 py-1 text-xs font-semibold"
+            style={{ background: "var(--surface)", color: "var(--n-600)" }}
+          >
+            без рейтинга
+          </span>
         </div>
         <p className="muted text-sm leading-relaxed">
-          Создай вызов, пройди свою половину и отправь ссылку. Друг решит те же задачи
-          когда ему удобно — быть онлайн одновременно не нужно.
+          Друг решает те же задачи когда ему удобно — быть онлайн одновременно
+          не нужно. Рейтинг такие дуэли не меняют: их слишком легко подкрутить.
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -118,10 +143,55 @@ export default function DuelsPage() {
           <span className="muted text-xs">от 3 до 30</span>
         </div>
 
-        <button className="btn btn-accent2" onClick={create} disabled={creating}>
-          {creating ? "Создаём…" : "Создать вызов"}
-        </button>
-        {error && <p className="text-sm" style={{ color: "var(--accent-2)" }}>{error}</p>}
+        {friends.length > 0 && (
+          <div className="space-y-2">
+            <p className="eyebrow">Позвать напрямую</p>
+            <div className="flex flex-wrap gap-2">
+              {friends.map((friend) => (
+                <button
+                  key={friend.id}
+                  className={
+                    opponent === friend.id ? "btn text-sm" : "btn-ghost text-sm"
+                  }
+                  onClick={() =>
+                    setOpponent(opponent === friend.id ? null : friend.id)
+                  }
+                >
+                  {friend.display_name}
+                </button>
+              ))}
+            </div>
+            <p className="muted text-xs">
+              Вызов появится у друга в профиле — ссылку отправлять не нужно.
+            </p>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-3">
+          <button
+            className="btn btn-accent2"
+            onClick={() => create(opponent)}
+            disabled={creating}
+          >
+            <Swords size={16} />
+            {creating
+              ? "Создаём…"
+              : opponent
+                ? `Вызвать: ${friends.find((f) => f.id === opponent)?.display_name}`
+                : "Создать вызов"}
+          </button>
+          {opponent === null && (
+            <span className="muted flex items-center gap-1.5 self-center text-xs">
+              <Link2 size={13} /> получишь ссылку, которую можно кинуть кому
+              угодно
+            </span>
+          )}
+        </div>
+        {error && (
+          <p className="text-sm" style={{ color: "var(--accent-2)" }}>
+            {error}
+          </p>
+        )}
       </section>
 
       <section className="space-y-3">
@@ -129,13 +199,16 @@ export default function DuelsPage() {
           <h2 className="text-xl">Мои дуэли</h2>
           {finished.length > 0 && (
             <span className="muted text-sm">
-              {wins} {plural(wins, "победа", "победы", "побед")} из {finished.length}
+              {wins} {plural(wins, "победа", "победы", "побед")} из{" "}
+              {finished.length}
             </span>
           )}
         </div>
 
         {duels.length === 0 ? (
-          <p className="muted text-sm">Дуэлей пока нет — создай первый вызов.</p>
+          <p className="muted text-sm">
+            Дуэлей пока нет — создай первый вызов.
+          </p>
         ) : (
           <ul className="space-y-2">
             {duels.map((duel) => {
@@ -151,7 +224,10 @@ export default function DuelsPage() {
                         {duel.opponent_name ?? "Ждём соперника"}
                       </span>
                       <span className="muted text-sm">
-                        {duel.role === "challenger" ? "ты вызвал" : "тебя вызвали"} ·{" "}
+                        {duel.role === "challenger"
+                          ? "ты вызвал"
+                          : "тебя вызвали"}{" "}
+                        ·{" "}
                         {new Date(duel.created_at).toLocaleDateString("ru", {
                           day: "numeric",
                           month: "long",
@@ -168,7 +244,10 @@ export default function DuelsPage() {
                         <span className="muted text-sm">не завершена</span>
                       )}
                       {outcome && (
-                        <span className="block text-xs" style={{ color: outcome.color }}>
+                        <span
+                          className="block text-xs"
+                          style={{ color: outcome.color }}
+                        >
                           {outcome.label}
                         </span>
                       )}

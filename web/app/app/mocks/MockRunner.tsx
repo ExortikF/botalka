@@ -87,7 +87,9 @@ export default function MockRunner({
         setRun(data);
         setLeft(data.seconds_left);
         setAnswers(
-          Object.fromEntries(Object.entries(data.answers).map(([k, v]) => [Number(k), v])),
+          Object.fromEntries(
+            Object.entries(data.answers).map(([k, v]) => [Number(k), v]),
+          ),
         );
       })
       .catch((e: Error) => setError(e.message));
@@ -97,7 +99,11 @@ export default function MockRunner({
     if (!run || finishing) return;
     setFinishing(true);
     try {
-      setResult(await api<Result>(`/api/mocks/attempt/${run.attempt_id}/finish`, { method: "POST" }));
+      setResult(
+        await api<Result>(`/api/mocks/attempt/${run.attempt_id}/finish`, {
+          method: "POST",
+        }),
+      );
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -176,15 +182,23 @@ export default function MockRunner({
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="rounded-full px-3 py-1 text-xs font-medium"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              style={{
+                background: "var(--accent-100)",
+                color: "var(--accent-700)",
+              }}
             >
               Задание № {task.number}
             </span>
             <span className="muted text-sm">{task.title}</span>
           </div>
 
-          <MathText className="block text-lg leading-relaxed" text={task.statement} />
-          {task.source && <p className="muted text-xs">Источник: {task.source}</p>}
+          <MathText
+            className="block text-lg leading-relaxed"
+            text={task.statement}
+          />
+          {task.source && (
+            <p className="muted text-xs">Источник: {task.source}</p>
+          )}
 
           <input
             className="input"
@@ -203,7 +217,9 @@ export default function MockRunner({
             </button>
             <button
               className="btn text-sm"
-              onClick={() => setIndex(Math.min(run.tasks.length - 1, index + 1))}
+              onClick={() =>
+                setIndex(Math.min(run.tasks.length - 1, index + 1))
+              }
               disabled={index === run.tasks.length - 1}
             >
               Дальше
@@ -217,7 +233,10 @@ export default function MockRunner({
             </button>
           </div>
 
-          <div className="border-t pt-3" style={{ borderColor: "var(--divider)" }}>
+          <div
+            className="border-t pt-3"
+            style={{ borderColor: "var(--divider)" }}
+          >
             <ReportButton taskId={task.id} givenAnswer={answers[task.id]} />
           </div>
         </article>
@@ -249,14 +268,16 @@ export default function MockRunner({
               })}
             </div>
             <p className="muted mt-3 text-xs">
-              Закрашены те, где есть ответ. Порядок любой, ответы можно менять до сдачи.
+              Закрашены те, где есть ответ. Порядок любой, ответы можно менять
+              до сдачи.
             </p>
           </div>
 
           <button
             className="btn btn-accent2 w-full"
             onClick={() => {
-              if (confirm("Сдать работу? После этого ответы изменить нельзя.")) finish();
+              if (confirm("Сдать работу? После этого ответы изменить нельзя."))
+                finish();
             }}
             disabled={finishing}
           >
@@ -268,7 +289,9 @@ export default function MockRunner({
       {draftOpen && (
         <DrawingPad
           strokes={drafts[task.id] ?? []}
-          onChange={(next) => setDrafts((prev) => ({ ...prev, [task.id]: next }))}
+          onChange={(next) =>
+            setDrafts((prev) => ({ ...prev, [task.id]: next }))
+          }
           onClose={() => setDraftOpen(false)}
           height={820}
         />
@@ -307,12 +330,14 @@ function MockResult({ result }: { result: Result }) {
         </div>
 
         {result.timed_out && (
-          <p className="muted mt-3 text-sm">Время вышло — работа сдана автоматически.</p>
+          <p className="muted mt-3 text-sm">
+            Время вышло — работа сдана автоматически.
+          </p>
         )}
         <p className="muted mx-auto mt-3 max-w-lg text-sm">
-          Тестовый балл посчитан по официальной шкале перевода. За всю работу целиком
-          (части 1 и 2) можно набрать {result.max_primary} первичных баллов — здесь
-          только часть 1.
+          Тестовый балл посчитан по официальной шкале перевода. За всю работу
+          целиком (части 1 и 2) можно набрать {result.max_primary} первичных
+          баллов — здесь только часть 1.
         </p>
         <div className="mt-5 flex justify-center gap-3">
           <Link className="btn" href="/app/mocks">
@@ -330,13 +355,18 @@ function MockResult({ result }: { result: Result }) {
           {wrong.map((item) => (
             <article key={item.task_id} className="card space-y-3 p-6 text-sm">
               <p className="eyebrow">Задание № {item.number}</p>
-              <MathText className="block text-base leading-relaxed" text={item.statement} />
+              <MathText
+                className="block text-base leading-relaxed"
+                text={item.statement}
+              />
               <p>
                 <span style={{ color: "var(--accent-2)" }}>
                   Твой ответ: {item.your_answer || "—"}
                 </span>
                 {" · "}
-                <span style={{ color: "var(--accent-700)" }}>верный: {item.correct_answer}</span>
+                <span style={{ color: "var(--accent-700)" }}>
+                  верный: {item.correct_answer}
+                </span>
               </p>
               {item.solution && (
                 <div

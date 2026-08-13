@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { Check, Coins, Lock } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, getMe, type User } from "@/lib/api";
+import {
+  auroraClass,
+  cardBackground,
+  frameStyle,
+  nickStyle,
+  plateStyle,
+} from "@/lib/cosmetics";
+import Avatar from "../Avatar";
 
 type Item = {
   code: string;
@@ -11,7 +19,7 @@ type Item = {
   title: string;
   value: string;
   price: number;
-  rarity: "common" | "rare" | "epic" | "legendary";
+  rarity: "common" | "rare" | "epic" | "legendary" | "mythic";
   owned: boolean;
   equipped: boolean;
 };
@@ -23,24 +31,48 @@ const RARITY: Record<Item["rarity"], { label: string; color: string }> = {
   rare: { label: "редкая", color: "#0088b0" },
   epic: { label: "эпическая", color: "#7c3aed" },
   legendary: { label: "легендарная", color: "#b8860b" },
+  mythic: { label: "только для админов", color: "#00a37a" },
 };
 
-const KIND_ORDER = ["avatar", "frame", "nick_color", "prefix"];
+const KIND_ORDER = [
+  "avatar",
+  "frame",
+  "nick_color",
+  "prefix",
+  "name_plate",
+  "card_bg",
+];
 
 export default function ShopPage() {
   const [shop, setShop] = useState<Shop | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+  const [me, setMe] = useState<User | null>(null);
 
   useEffect(() => {
-    api<Shop>("/api/shop").then(setShop).catch(() => setShop(null));
+    api<Shop>("/api/shop")
+      .then(setShop)
+      .catch(() => setShop(null));
+    getMe()
+      .then(setMe)
+      .catch(() => setMe(null));
   }, []);
+
+  async function adminAction(path: string, body?: unknown) {
+    await api(`/api/admin/self/${path}`, {
+      method: "POST",
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    setShop(await api<Shop>("/api/shop"));
+  }
 
   async function act(item: Item, action: "buy" | "equip") {
     setBusy(item.code);
     setError("");
     try {
-      setShop(await api<Shop>(`/api/shop/${item.code}/${action}`, { method: "POST" }));
+      setShop(
+        await api<Shop>(`/api/shop/${item.code}/${action}`, { method: "POST" }),
+      );
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -69,11 +101,50 @@ export default function ShopPage() {
       </header>
 
       <p className="muted -mt-4 text-sm">
-        Только внешний вид. На задачи, подсказки и рейтинг ничего из этого не влияет.
+        Только внешний вид. На задачи, подсказки и рейтинг ничего из этого не
+        влияет.
       </p>
 
+      {me?.is_admin && (
+        <section
+          className="card flex flex-wrap items-center gap-3 p-4"
+          style={{ borderColor: "var(--accent-2-200)" }}
+        >
+          <span className="eyebrow" style={{ color: "var(--accent-2)" }}>
+            Только для админа
+          </span>
+          <button
+            className="btn-ghost text-sm"
+            onClick={() => adminAction("coins", { amount: 1000 })}
+          >
+            +1000 монет
+          </button>
+          <button
+            className="btn-ghost text-sm"
+            onClick={() => adminAction("coins", { amount: 10000 })}
+          >
+            +10 000 монет
+          </button>
+          <button
+            className="btn-ghost text-sm"
+            onClick={() => {
+              if (confirm("Сбросить свои покупки?"))
+                adminAction("reset-purchases");
+            }}
+          >
+            Сбросить покупки
+          </button>
+        </section>
+      )}
+
       {error && (
-        <p className="rounded-xl p-3 text-sm" style={{ background: "var(--accent-2-100)", color: "var(--accent-2)" }}>
+        <p
+          className="rounded-xl p-3 text-sm"
+          style={{
+            background: "var(--accent-2-100)",
+            color: "var(--accent-2)",
+          }}
+        >
           {error}
         </p>
       )}
@@ -88,7 +159,9 @@ export default function ShopPage() {
                 <li key={item.code}>
                   <article
                     className="card flex h-full flex-col items-center gap-3 p-5 text-center"
-                    style={{ borderColor: item.equipped ? "var(--accent)" : undefined }}
+                    style={{
+                      borderColor: item.equipped ? "var(--accent)" : undefined,
+                    }}
                   >
                     <Preview item={item} />
 
@@ -101,7 +174,11 @@ export default function ShopPage() {
 
                     {item.owned ? (
                       <button
-                        className={item.equipped ? "btn-ghost w-full text-sm" : "btn w-full text-sm"}
+                        className={
+                          item.equipped
+                            ? "btn-ghost w-full text-sm"
+                            : "btn w-full text-sm"
+                        }
                         onClick={() => act(item, "equip")}
                         disabled={busy === item.code}
                       >
@@ -134,39 +211,71 @@ export default function ShopPage() {
   );
 }
 
-/** Как вещь выглядит: аватарка, рамка, цвет ника или значок. */
+/** Как вещь выглядит вживую — теми же стилями, что и в профиле. */
 function Preview({ item }: { item: Item }) {
   if (item.kind === "avatar")
-    return (
-      <span
-        className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl"
-        style={{ background: "var(--accent-100)" }}
-      >
-        {item.value === "initials" ? <span className="h text-lg">ТУ</span> : item.value}
-      </span>
-    );
+    return <Avatar name="Тестовый Ученик" avatar={item.value} size={64} />;
 
-  if (item.kind === "frame")
+  if (item.kind === "name_plate") {
+    const plate = plateStyle(item.value);
     return (
       <span
-        className="flex h-16 w-16 items-center justify-center rounded-full"
+        className={`flex h-16 w-full items-center gap-2 rounded-xl px-3 text-sm ${plate.className}`}
         style={{
           background: "var(--surface)",
-          border: item.value === "none" ? "2px dashed var(--divider)" : "4px solid",
-          borderColor: item.value === "gradient" ? "#7c3aed" : item.value,
-          boxShadow: item.value === "gradient" ? "0 0 0 3px #d6006c inset" : undefined,
+          border:
+            item.value === "none" ? "2px dashed var(--divider)" : undefined,
+          ...plate.style,
+        }}
+      >
+        <Avatar name="Тестовый Ученик" size={32} rounded="rounded-full" />
+        <span className="h">Боталка</span>
+      </span>
+    );
+  }
+
+  if (item.kind === "frame") {
+    const frame = frameStyle(item.value);
+    return (
+      <span
+        className={`flex h-16 w-16 items-center justify-center rounded-full ${frame.className}`}
+        style={{
+          background: "var(--surface)",
+          ...(item.value === "none"
+            ? { border: "2px dashed var(--divider)" }
+            : frame.style),
         }}
       >
         <span className="h text-sm">ТУ</span>
       </span>
     );
+  }
 
-  if (item.kind === "nick_color")
+  if (item.kind === "nick_color") {
+    const nick = nickStyle(item.value);
     return (
-      <span className="h text-xl" style={{ color: item.value }}>
-        Тестовый
+      <span className={`h text-xl ${nick.className}`} style={nick.style}>
+        Боталка
       </span>
     );
+  }
+
+  if (item.kind === "card_bg") {
+    const bg = cardBackground(item.value);
+    return (
+      <span
+        className={`flex h-16 w-full items-center justify-center rounded-xl text-sm ${auroraClass(item.value)}`}
+        style={{
+          ...bg.style,
+          color: bg.dark ? "#fff" : "var(--text)",
+          border:
+            item.value === "none" ? "2px dashed var(--divider)" : undefined,
+        }}
+      >
+        {item.value === "none" ? "обычный" : "фон"}
+      </span>
+    );
+  }
 
   return <span className="text-4xl">{item.value}</span>;
 }

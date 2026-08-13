@@ -8,11 +8,19 @@ import { useMemo } from "react";
  * Всё, что вне долларов, остаётся обычным текстом и не интерпретируется как HTML —
  * условие задачи приходит из банка, но подставлять сырой HTML всё равно не будем.
  */
-export default function MathText({ text, className }: { text: string; className?: string }) {
+export default function MathText({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
   const parts = useMemo(() => {
     const chunks: { math: boolean; value: string }[] = [];
     // нечётные куски между одиночными $ — формулы
-    text.split("$").forEach((chunk, i) => chunks.push({ math: i % 2 === 1, value: chunk }));
+    text
+      .split("$")
+      .forEach((chunk, i) => chunks.push({ math: i % 2 === 1, value: chunk }));
     return chunks;
   }, [text]);
 

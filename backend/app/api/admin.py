@@ -846,3 +846,34 @@ async def pick_tasks(
         )
         for t in await session.scalars(stmt)
     ]
+
+
+# ------------------------------------------- отладка магазина (только для себя)
+
+class CoinsIn(BaseModel):
+    amount: int = Field(default=1000, ge=-100000, le=100000)
+
+
+@router.post("/self/coins")
+async def grant_self_coins(payload: CoinsIn, session: DbSession, admin: AdminUser) -> dict:
+    """Начислить монеты **себе**. Чужой баланс трогать нельзя даже админу —
+    иначе однажды это случится по ошибке и разбираться будет невозможно."""
+    from app.core.coins import award
+    from app.models import CoinReason
+
+    await award(session, admin, CoinReason.ADMIN, amount=payload.amount, note="ручное начисление")
+    await session.commit()
+    await session.refresh(admin)
+    return {"coins": admin.coins}
+
+
+@router.post("/self/reset-purchases")
+async def reset_self_purchases(session: DbSession, admin: AdminUser) -> dict:
+    """Сбросить свои покупки — чтобы прогонять магазин заново."""
+    from app.models import UserItem
+
+    mine = list(await session.scalars(select(UserItem).where(UserItem.user_id == admin.id)))
+    for row in mine:
+        await session.delete(row)
+    await session.commit()
+    return {"removed": len(mine)}

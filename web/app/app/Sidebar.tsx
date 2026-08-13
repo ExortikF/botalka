@@ -20,7 +20,8 @@ import {
 import type { User } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { EXAM, daysUntilExam, formatExamDate, plural } from "@/lib/exam";
-import { initials } from "@/lib/format";
+import { nickStyle } from "@/lib/cosmetics";
+import Avatar from "./Avatar";
 import { setSoundEnabled, soundEnabled } from "@/lib/sound";
 import IdeaButton from "./IdeaButton";
 
@@ -42,7 +43,11 @@ const NAV: NavItem[] = [
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
 ];
 
-const ADMIN_ITEM: NavItem = { href: "/app/admin", label: "Админка", icon: Shield };
+const ADMIN_ITEM: NavItem = {
+  href: "/app/admin",
+  label: "Админка",
+  icon: Shield,
+};
 
 export default function Sidebar({ user }: { user: User | null }) {
   const pathname = usePathname();
@@ -65,28 +70,34 @@ export default function Sidebar({ user }: { user: User | null }) {
         </Link>
 
         <nav className="space-y-1">
-          {(user?.is_admin ? [...NAV, ADMIN_ITEM] : NAV).map(({ href, label, icon: Icon, soon }) => {
-            const active = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={soon ? "#" : href}
-                aria-disabled={soon}
-                onClick={(e) => soon && e.preventDefault()}
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
-                style={{
-                  background: active ? "var(--accent-100)" : "transparent",
-                  color: active ? "var(--accent-700)" : soon ? "var(--n-400)" : "var(--text)",
-                  cursor: soon ? "default" : "pointer",
-                  fontWeight: active ? 600 : 400,
-                }}
-              >
-                <Icon size={18} />
-                {label}
-                {soon && <span className="ml-auto text-[11px]">скоро</span>}
-              </Link>
-            );
-          })}
+          {(user?.is_admin ? [...NAV, ADMIN_ITEM] : NAV).map(
+            ({ href, label, icon: Icon, soon }) => {
+              const active = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={soon ? "#" : href}
+                  aria-disabled={soon}
+                  onClick={(e) => soon && e.preventDefault()}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
+                  style={{
+                    background: active ? "var(--accent-100)" : "transparent",
+                    color: active
+                      ? "var(--accent-700)"
+                      : soon
+                        ? "var(--n-400)"
+                        : "var(--text)",
+                    cursor: soon ? "default" : "pointer",
+                    fontWeight: active ? 600 : 400,
+                  }}
+                >
+                  <Icon size={18} />
+                  {label}
+                  {soon && <span className="ml-auto text-[11px]">скоро</span>}
+                </Link>
+              );
+            },
+          )}
         </nav>
       </div>
 
@@ -122,7 +133,10 @@ export default function Sidebar({ user }: { user: User | null }) {
             </span>
           </button>
 
-          <div className="border-t pt-2" style={{ borderColor: "var(--divider)" }}>
+          <div
+            className="border-t pt-2"
+            style={{ borderColor: "var(--divider)" }}
+          >
             <IdeaButton />
           </div>
         </div>
@@ -130,7 +144,9 @@ export default function Sidebar({ user }: { user: User | null }) {
         <div>
           <p className="eyebrow">До экзамена</p>
           <p className="h mt-1 text-2xl">
-            {days === null ? "—" : `${days} ${plural(days, "день", "дня", "дней")}`}
+            {days === null
+              ? "—"
+              : `${days} ${plural(days, "день", "дня", "дней")}`}
           </p>
           <p className="muted mt-0.5 text-xs">
             {EXAM.subject} · {formatExamDate()}
@@ -139,15 +155,25 @@ export default function Sidebar({ user }: { user: User | null }) {
         </div>
 
         {user && (
-          <div className="flex items-center gap-3 border-t pt-4" style={{ borderColor: "var(--divider)" }}>
-            <span
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
-            >
-              {initials(user.display_name)}
-            </span>
+          <div
+            className="flex items-center gap-3 border-t pt-4"
+            style={{ borderColor: "var(--divider)" }}
+          >
+            <Avatar
+              name={user.display_name}
+              avatar={user.cosmetics?.avatar}
+              frame={user.cosmetics?.frame}
+              size={38}
+              rounded="rounded-full"
+            />
             <span className="min-w-0">
-              <span className="block truncate text-sm">{user.display_name}</span>
+              <span
+                className={`block truncate text-sm ${nickStyle(user.cosmetics?.nick_color).className}`}
+                style={nickStyle(user.cosmetics?.nick_color).style}
+              >
+                {user.cosmetics?.prefix && `${user.cosmetics.prefix} `}
+                {user.display_name}
+              </span>
               {user.coins > 0 && (
                 <span
                   className="mr-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
@@ -161,8 +187,14 @@ export default function Sidebar({ user }: { user: User | null }) {
                 <span
                   className="mt-0.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
                   style={{
-                    background: user.streak_days >= 7 ? "var(--accent-2-100)" : "var(--surface)",
-                    color: user.streak_days >= 7 ? "var(--accent-2)" : "var(--n-700)",
+                    background:
+                      user.streak_days >= 7
+                        ? "var(--accent-2-100)"
+                        : "var(--surface)",
+                    color:
+                      user.streak_days >= 7
+                        ? "var(--accent-2)"
+                        : "var(--n-700)",
                   }}
                 >
                   <Flame

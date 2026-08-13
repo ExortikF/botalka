@@ -11,6 +11,14 @@ export type User = {
   rating: number;
   coins: number;
   streak_days: number;
+  cosmetics: {
+    nick_color: string | null;
+    prefix: string | null;
+    frame: string | null;
+    avatar: string | null;
+    card_bg: string | null;
+    name_plate: string | null;
+  };
 };
 
 export type Task = {
@@ -87,7 +95,8 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const getMe = () => api<User>("/api/auth/me");
-export const logout = () => api<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
+export const logout = () =>
+  api<{ ok: boolean }>("/api/auth/logout", { method: "POST" });
 export const getTaskTypes = (subject = "math_prof") =>
   api<TaskType[]>(`/api/task-types?subject=${subject}`);
 export const getStats = () => api<StatsRow[]>("/api/stats");
@@ -162,8 +171,8 @@ export const sendAnswer = (
     }),
   });
 
-export const getQuizResult = (quizId: number) => api<QuizResult>(`/api/quiz/${quizId}/result`);
-
+export const getQuizResult = (quizId: number) =>
+  api<QuizResult>(`/api/quiz/${quizId}/result`);
 
 // ---------------------------------------------------------------- дуэли по ссылке
 
@@ -197,7 +206,11 @@ export type DuelListItem = {
   created_at: string;
 };
 
-export const createDuel = (taskTypeIds: number[] = [], length = 7, opponentId?: number) =>
+export const createDuel = (
+  taskTypeIds: number[] = [],
+  length = 7,
+  opponentId?: number,
+) =>
   api<Duel>("/api/duels", {
     method: "POST",
     body: JSON.stringify({
@@ -209,5 +222,6 @@ export const createDuel = (taskTypeIds: number[] = [], length = 7, opponentId?: 
   });
 
 export const getDuel = (code: string) => api<Duel>(`/api/duels/${code}`);
-export const playDuel = (code: string) => api<Quiz>(`/api/duels/${code}/play`, { method: "POST" });
+export const playDuel = (code: string) =>
+  api<Quiz>(`/api/duels/${code}/play`, { method: "POST" });
 export const getMyDuels = () => api<DuelListItem[]>("/api/duels");

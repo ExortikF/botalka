@@ -37,7 +37,9 @@ export default function ReportButton({
   }
 
   if (sent)
-    return <p className="muted text-xs">Спасибо, жалоба отправлена — разберёмся.</p>;
+    return (
+      <p className="muted text-xs">Спасибо, жалоба отправлена — разберёмся.</p>
+    );
 
   if (!open)
     return (
@@ -50,7 +52,10 @@ export default function ReportButton({
     );
 
   return (
-    <div className="space-y-2 rounded-xl p-3" style={{ background: "var(--surface)" }}>
+    <div
+      className="space-y-2 rounded-xl p-3"
+      style={{ background: "var(--surface)" }}
+    >
       <p className="text-xs font-medium">Что не так с задачей?</p>
       <textarea
         className="input text-sm"
@@ -61,10 +66,17 @@ export default function ReportButton({
         onChange={(e) => setMessage(e.target.value)}
       />
       <div className="flex gap-2">
-        <button className="btn px-3 py-1.5 text-sm" onClick={send} disabled={message.trim().length < 3}>
+        <button
+          className="btn px-3 py-1.5 text-sm"
+          onClick={send}
+          disabled={message.trim().length < 3}
+        >
           Отправить
         </button>
-        <button className="btn-ghost px-3 py-1.5 text-sm" onClick={() => setOpen(false)}>
+        <button
+          className="btn-ghost px-3 py-1.5 text-sm"
+          onClick={() => setOpen(false)}
+        >
           Отмена
         </button>
       </div>

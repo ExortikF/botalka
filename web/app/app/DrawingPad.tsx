@@ -57,7 +57,9 @@ export default function DrawingPad({
       ctx.beginPath();
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = stroke.width;
-      stroke.points.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+      stroke.points.forEach((p, i) =>
+        i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y),
+      );
       ctx.stroke();
     }
   }
@@ -111,7 +113,10 @@ export default function DrawingPad({
     const current = strokesRef.current;
     const last = current[current.length - 1];
     if (!last) return;
-    onChange([...current.slice(0, -1), { ...last, points: [...last.points, point] }]);
+    onChange([
+      ...current.slice(0, -1),
+      { ...last, points: [...last.points, point] },
+    ]);
   }
 
   function stop() {
@@ -141,7 +146,11 @@ export default function DrawingPad({
               onClick={() => setColor(c)}
               aria-label={`Цвет ${c}`}
               className="h-6 w-6 rounded-full transition"
-              style={{ background: c, outline: color === c ? `2px solid ${c}` : "none", outlineOffset: 2 }}
+              style={{
+                background: c,
+                outline: color === c ? `2px solid ${c}` : "none",
+                outlineOffset: 2,
+              }}
             />
           ))}
         </div>
@@ -160,17 +169,31 @@ export default function DrawingPad({
             >
               <span
                 className="block rounded-full"
-                style={{ width: w + 2, height: w + 2, background: "var(--text)" }}
+                style={{
+                  width: w + 2,
+                  height: w + 2,
+                  background: "var(--text)",
+                }}
               />
             </button>
           ))}
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <button className="btn-ghost px-3 py-1.5" onClick={undo} disabled={strokes.length === 0} title="Отменить">
+          <button
+            className="btn-ghost px-3 py-1.5"
+            onClick={undo}
+            disabled={strokes.length === 0}
+            title="Отменить"
+          >
             <Undo2 size={15} />
           </button>
-          <button className="btn-ghost px-3 py-1.5" onClick={redo} disabled={undone.length === 0} title="Вернуть">
+          <button
+            className="btn-ghost px-3 py-1.5"
+            onClick={redo}
+            disabled={undone.length === 0}
+            title="Вернуть"
+          >
             <Redo2 size={15} />
           </button>
           <button
@@ -185,7 +208,11 @@ export default function DrawingPad({
             <Eraser size={15} />
           </button>
           {onClose && (
-            <button className="btn-ghost px-3 py-1.5" onClick={onClose} title="Свернуть черновик">
+            <button
+              className="btn-ghost px-3 py-1.5"
+              onClick={onClose}
+              title="Свернуть черновик"
+            >
               <ChevronDown size={15} />
             </button>
           )}

@@ -3,7 +3,15 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { BarChart3, ClipboardList, Flag, Lightbulb, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  BarChart3,
+  ClipboardList,
+  Flag,
+  Lightbulb,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import MathText from "../../Math";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
 import TaskForm, { type AdminTask, EMPTY_TASK } from "./TaskForm";
@@ -14,7 +22,13 @@ type Stats = {
   live: number;
   draft: number;
   broken: number;
-  by_type: { number: number; title: string; live: number; draft: number; broken: number }[];
+  by_type: {
+    number: number;
+    title: string;
+    live: number;
+    draft: number;
+    broken: number;
+  }[];
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -38,7 +52,11 @@ function AdminTasks() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [types, setTypes] = useState<TaskType[]>([]);
   const [editing, setEditing] = useState<AdminTask | null>(null);
-  const [filter, setFilter] = useState<{ q: string; status: string; type: string }>({
+  const [filter, setFilter] = useState<{
+    q: string;
+    status: string;
+    type: string;
+  }>({
     q: "",
     status: "",
     type: "",
@@ -56,14 +74,18 @@ function AdminTasks() {
         setDenied(false);
       })
       .catch(() => setDenied(true));
-    api<Stats>("/api/admin/stats").then(setStats).catch(() => setStats(null));
+    api<Stats>("/api/admin/stats")
+      .then(setStats)
+      .catch(() => setStats(null));
   }, [filter]);
 
   const params = useSearchParams();
   const requestedTask = params.get("task");
 
   useEffect(() => {
-    getTaskTypes().then(setTypes).catch(() => setTypes([]));
+    getTaskTypes()
+      .then(setTypes)
+      .catch(() => setTypes([]));
   }, []);
 
   // ?task=42 — открыть сразу форму этой задачи, например из жалобы
@@ -89,7 +111,10 @@ function AdminTasks() {
         <p className="muted mt-2 text-sm leading-relaxed">
           Войди через Telegram, затем выполни в терминале:
         </p>
-        <pre className="mt-3 overflow-x-auto rounded-xl p-4 text-sm" style={{ background: "var(--surface)" }}>
+        <pre
+          className="mt-3 overflow-x-auto rounded-xl p-4 text-sm"
+          style={{ background: "var(--surface)" }}
+        >
           docker compose exec backend python -m app.cli.make_admin ТВОЙ_TG_ID
         </pre>
       </div>
@@ -148,7 +173,8 @@ function AdminTasks() {
                 title={`${row.title}: ${row.live} опубликовано, ${row.draft} черновиков`}
                 className="rounded-lg px-3 py-1.5 text-sm"
                 style={{
-                  background: row.live >= 20 ? "var(--accent-200)" : "var(--surface)",
+                  background:
+                    row.live >= 20 ? "var(--accent-200)" : "var(--surface)",
                   color: row.live === 0 ? "var(--accent-2)" : "var(--text)",
                 }}
               >
@@ -157,7 +183,8 @@ function AdminTasks() {
             ))}
           </div>
           <p className="muted mt-3 text-xs">
-            Цель — минимум 20 задач на номер. Подсвечены те, где цель достигнута.
+            Цель — минимум 20 задач на номер. Подсвечены те, где цель
+            достигнута.
           </p>
         </section>
       )}
@@ -197,20 +224,29 @@ function AdminTasks() {
       </section>
 
       <section className="space-y-2">
-        {list?.items.length === 0 && <p className="muted">Ничего не найдено.</p>}
+        {list?.items.length === 0 && (
+          <p className="muted">Ничего не найдено.</p>
+        )}
         {list?.items.map((task) => (
           <article key={task.id} className="card flex items-start gap-4 p-4">
             <span
               className="rounded-lg px-2.5 py-1 text-xs font-medium"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              style={{
+                background: "var(--accent-100)",
+                color: "var(--accent-700)",
+              }}
             >
               № {task.task_type_number}
             </span>
 
             <div className="min-w-0 flex-1">
-              <MathText className="block text-sm leading-relaxed" text={task.statement} />
+              <MathText
+                className="block text-sm leading-relaxed"
+                text={task.statement}
+              />
               <p className="muted mt-1 text-xs">
-                {task.slug} · ответ {task.answer_value} · {STATUS_LABEL[task.status]}
+                {task.slug} · ответ {task.answer_value} ·{" "}
+                {STATUS_LABEL[task.status]}
                 {task.source && ` · ${task.source}`}
               </p>
             </div>

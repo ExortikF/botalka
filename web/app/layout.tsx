@@ -21,7 +21,11 @@ export const metadata: Metadata = {
     "Короткие квизы вместо многочасовых занятий, разбор каждой ошибки и дуэли 1 на 1.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ru" className={`${heading.variable} ${body.variable}`}>
       <body>{children}</body>

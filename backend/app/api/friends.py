@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, or_, select
 
 from app.api.deps import DbSession, PlayerUser
+from app.api.shop import cosmetics_of
 from app.models import Attempt, Friendship, FriendshipState, User
 
 router = APIRouter(prefix="/api/friends", tags=["friends"])
@@ -42,6 +43,7 @@ class FriendOut(BaseModel):
     streak_days: int
     solved: int
     friendship_id: int
+    cosmetics: dict = {}
 
 
 class RequestOut(BaseModel):
@@ -96,6 +98,7 @@ async def my_friends(session: DbSession, user: PlayerUser) -> FriendsPageOut:
                     streak_days=other.streak_days,
                     solved=await _solved(session, other.id),
                     friendship_id=row.id,
+                    cosmetics=(await cosmetics_of(session, other.id)).model_dump(),
                 )
             )
         else:

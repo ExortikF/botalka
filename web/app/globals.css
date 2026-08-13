@@ -156,3 +156,204 @@ h3,
 .katex {
   font-size: 1.02em;
 }
+
+
+/* ------------------------------------------------------------------ косметика
+   Анимации для дорогих товаров магазина. Держим их здесь, а не в компонентах:
+   ник рисуется в четырёх разных местах, и правило должно быть одно. */
+
+@keyframes nick-rainbow-shift {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.nick-rainbow {
+  background-image: linear-gradient(
+    90deg,
+    #ff4d4d, #ffa500, #ffd400, #34c759, #00d5ff, #7c3aed, #ff4d4d
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nick-rainbow-shift 4s linear infinite;
+}
+
+@keyframes nick-glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 6px var(--glow), 0 0 14px var(--glow);
+  }
+  50% {
+    text-shadow: 0 0 10px var(--glow), 0 0 26px var(--glow);
+  }
+}
+
+.nick-glow {
+  animation: nick-glow-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes nick-shine-sweep {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.nick-shine {
+  background-size: 200% auto;
+  animation: nick-shine-sweep 3s linear infinite;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes frame-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.frame-rotate {
+  animation: frame-spin 3.5s linear infinite;
+}
+
+@keyframes frame-pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--pulse) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.frame-pulse {
+  animation: frame-pulse-ring 2s ease-out infinite;
+}
+
+@keyframes aurora-drift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.bg-aurora {
+  animation: aurora-drift 12s ease infinite;
+}
+
+/* Реакция на верный ответ — короткая вспышка карточки */
+@keyframes correct-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(31, 157, 85, 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 16px rgba(31, 157, 85, 0);
+  }
+}
+
+.flash-correct {
+  animation: correct-flash 0.6s ease-out;
+}
+
+@keyframes coin-fly {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.coin-pop {
+  animation: coin-fly 0.5s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nick-rainbow,
+  .nick-glow,
+  .nick-shine,
+  .frame-rotate,
+  .frame-pulse,
+  .bg-aurora,
+  .flash-correct,
+  .coin-pop {
+    animation: none;
+  }
+}
+
+
+/* аватарки и плиты — вторая волна косметики */
+@keyframes holo-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.avatar-holo {
+  background-image: linear-gradient(120deg, #a78bfa, #22d3ee, #f472b6, #a78bfa);
+  background-size: 300% 300%;
+  animation: holo-shift 6s ease infinite;
+}
+
+.avatar-shine {
+  animation: nick-shine-sweep 3s linear infinite;
+}
+
+.avatar-admin {
+  background-image: linear-gradient(135deg, #00ffa3, #00d5ff);
+  box-shadow: 0 0 14px rgba(0, 255, 163, 0.55);
+}
+
+.nick-matrix {
+  color: #00ffa3;
+  text-shadow: 0 0 8px rgba(0, 255, 163, 0.75);
+  font-family: var(--font-body), monospace;
+  letter-spacing: 0.04em;
+}
+
+.plate-glass {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+@keyframes neon-breathe {
+  0%, 100% { box-shadow: 0 0 8px var(--neon), inset 0 0 6px var(--neon); }
+  50% { box-shadow: 0 0 20px var(--neon), inset 0 0 12px var(--neon); }
+}
+
+.plate-neon {
+  border: 2px solid var(--neon);
+  animation: neon-breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes stars-drift {
+  to { background-position: 240px 120px; }
+}
+
+.plate-stars {
+  background-image:
+    radial-gradient(1.5px 1.5px at 20px 30px, var(--star), transparent),
+    radial-gradient(1.5px 1.5px at 90px 70px, var(--star), transparent),
+    radial-gradient(1px 1px at 160px 20px, var(--star), transparent),
+    radial-gradient(1.5px 1.5px at 210px 90px, var(--star), transparent);
+  background-size: 240px 120px;
+  animation: stars-drift 18s linear infinite;
+}
+
+.plate-matrix {
+  border: 1px solid #00ffa3;
+  box-shadow: inset 0 0 24px rgba(0, 255, 163, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-holo, .avatar-shine, .plate-neon, .plate-stars { animation: none; }
+}

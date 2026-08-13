@@ -75,22 +75,33 @@ export default function IdeasPage() {
                   </span>
                 </div>
 
-                <p className="rounded-xl p-3 text-sm" style={{ background: "var(--surface)" }}>
+                <p
+                  className="rounded-xl p-3 text-sm"
+                  style={{ background: "var(--surface)" }}
+                >
                   {idea.message}
                 </p>
 
                 {idea.status === "new" ? (
                   <div className="flex gap-2">
-                    <button className="btn text-sm" onClick={() => act(idea.id, "accept")}>
+                    <button
+                      className="btn text-sm"
+                      onClick={() => act(idea.id, "accept")}
+                    >
                       <Check size={15} /> В работу
                     </button>
-                    <button className="btn-ghost text-sm" onClick={() => act(idea.id, "decline")}>
+                    <button
+                      className="btn-ghost text-sm"
+                      onClick={() => act(idea.id, "decline")}
+                    >
                       <X size={15} /> Не берём
                     </button>
                   </div>
                 ) : (
                   <p className="muted text-sm">
-                    {idea.status === "accepted" ? "Взято в работу" : "Отклонено"}
+                    {idea.status === "accepted"
+                      ? "Взято в работу"
+                      : "Отклонено"}
                   </p>
                 )}
               </article>

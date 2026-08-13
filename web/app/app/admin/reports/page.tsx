@@ -41,8 +41,8 @@ export default function ReportsPage() {
         <div>
           <h1 className="text-3xl">Жалобы на задачи</h1>
           <p className="muted mt-1 text-sm">
-            Приходят из кнопки «Нашли ошибку?» под условием. Задача при этом остаётся
-            в выдаче — снимать её решаешь ты.
+            Приходят из кнопки «Нашли ошибку?» под условием. Задача при этом
+            остаётся в выдаче — снимать её решаешь ты.
           </p>
         </div>
         <Link className="btn-ghost" href="/app/admin">
@@ -70,7 +70,10 @@ export default function ReportsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <span
                     className="rounded-lg px-2.5 py-1 text-xs font-medium"
-                    style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+                    style={{
+                      background: "var(--accent-100)",
+                      color: "var(--accent-700)",
+                    }}
                   >
                     № {report.task_number}
                   </span>
@@ -84,7 +87,10 @@ export default function ReportsPage() {
                   </span>
                 </div>
 
-                <MathText className="block text-sm leading-relaxed" text={report.statement} />
+                <MathText
+                  className="block text-sm leading-relaxed"
+                  text={report.statement}
+                />
 
                 <p
                   className="rounded-xl p-3 text-sm"
@@ -95,15 +101,22 @@ export default function ReportsPage() {
 
                 <p className="muted text-xs">
                   Верный ответ в банке: {report.correct_answer}
-                  {report.given_answer && ` · ученик вводил: ${report.given_answer}`}
+                  {report.given_answer &&
+                    ` · ученик вводил: ${report.given_answer}`}
                 </p>
 
                 {report.status === "new" ? (
                   <div className="flex gap-2">
-                    <Link className="btn-ghost text-sm" href={`/app/admin?task=${report.task_id}`}>
+                    <Link
+                      className="btn-ghost text-sm"
+                      href={`/app/admin?task=${report.task_id}`}
+                    >
                       Открыть задачу
                     </Link>
-                    <button className="btn text-sm" onClick={() => act(report.id, "resolve")}>
+                    <button
+                      className="btn text-sm"
+                      onClick={() => act(report.id, "resolve")}
+                    >
                       <Check size={15} /> Исправлено
                     </button>
                     <button

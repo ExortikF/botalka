@@ -30,7 +30,13 @@ type Slot = {
 type Props = {
   subject: string;
   taskTypeIds: number[];
-  selection: { task_type_id: number; count?: number; easy?: number; medium?: number; hard?: number }[];
+  selection: {
+    task_type_id: number;
+    count?: number;
+    easy?: number;
+    medium?: number;
+    hard?: number;
+  }[];
   preset: QuizPreset | null;
   length: number;
   /** Если задан — это прохождение дуэли: задачи берутся из неё, а не собираются заново. */
@@ -69,7 +75,12 @@ export default function QuizRunner({
       .then((q) => {
         setQuiz(q);
         setSlots(
-          Object.fromEntries(q.tasks.map((t) => [t.id, { answer: "", hintsShown: 0, result: null }])),
+          Object.fromEntries(
+            q.tasks.map((t) => [
+              t.id,
+              { answer: "", hintsShown: 0, result: null },
+            ]),
+          ),
         );
         setPhase("playing");
         startedAt.current = Date.now();
@@ -81,7 +92,14 @@ export default function QuizRunner({
     // taskTypeIds приходит новым массивом на каждый рендер — сравниваем по строке,
     // иначе эффект перезапускается и создаёт новый квиз
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject, taskTypeIds.join(","), JSON.stringify(selection), preset, length, duelCode]);
+  }, [
+    subject,
+    taskTypeIds.join(","),
+    JSON.stringify(selection),
+    preset,
+    length,
+    duelCode,
+  ]);
 
   const task = quiz?.tasks[index];
   const slot = task ? slots[task.id] : undefined;
@@ -193,14 +211,20 @@ export default function QuizRunner({
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="rounded-full px-3 py-1 text-xs font-medium"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              style={{
+                background: "var(--accent-100)",
+                color: "var(--accent-700)",
+              }}
             >
               Задание № {task.task_type_number}
             </span>
             <span className="muted text-sm">{task.task_type_title}</span>
           </div>
 
-          <MathText className="block text-lg leading-relaxed" text={task.statement} />
+          <MathText
+            className="block text-lg leading-relaxed"
+            text={task.statement}
+          />
 
           {task.source && (
             <p className="muted text-xs">Источник: {task.source}</p>
@@ -232,10 +256,18 @@ export default function QuizRunner({
                   value={slot.answer}
                   onChange={(e) => patch(task.id, { answer: e.target.value })}
                 />
-                <button className="btn" type="submit" disabled={sending || !slot.answer.trim()}>
+                <button
+                  className="btn"
+                  type="submit"
+                  disabled={sending || !slot.answer.trim()}
+                >
                   Ответить
                 </button>
-                <button type="button" className="btn-ghost" onClick={goNextUnanswered}>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={goNextUnanswered}
+                >
                   Пропустить
                 </button>
               </form>
@@ -244,7 +276,9 @@ export default function QuizRunner({
                 {slot.hintsShown < task.hints.length && (
                   <button
                     className="muted flex items-center gap-2 text-sm hover:underline"
-                    onClick={() => patch(task.id, { hintsShown: slot.hintsShown + 1 })}
+                    onClick={() =>
+                      patch(task.id, { hintsShown: slot.hintsShown + 1 })
+                    }
                   >
                     <Lightbulb size={15} />
                     Подсказка — задача будет отмечена как решённая с подсказкой
@@ -269,8 +303,14 @@ export default function QuizRunner({
             />
           )}
 
-          <div className="border-t pt-3" style={{ borderColor: "var(--divider)" }}>
-            <ReportButton taskId={task.id} givenAnswer={slot.answer || undefined} />
+          <div
+            className="border-t pt-3"
+            style={{ borderColor: "var(--divider)" }}
+          >
+            <ReportButton
+              taskId={task.id}
+              givenAnswer={slot.answer || undefined}
+            />
           </div>
         </article>
 
@@ -303,7 +343,10 @@ export default function QuizRunner({
               })}
             </div>
             <ul className="muted mt-4 space-y-1.5 text-xs">
-              <Legend color="var(--accent-200)" text={`верно · ${countBy(quiz, slots, true)}`} />
+              <Legend
+                color="var(--accent-200)"
+                text={`верно · ${countBy(quiz, slots, true)}`}
+              />
               <Legend
                 color="var(--accent-2-200)"
                 text={`ошибка · ${countBy(quiz, slots, false)}`}
@@ -326,7 +369,9 @@ export default function QuizRunner({
       {draftOpen && (
         <DrawingPad
           strokes={drafts[task.id] ?? []}
-          onChange={(next) => setDrafts((prev) => ({ ...prev, [task.id]: next }))}
+          onChange={(next) =>
+            setDrafts((prev) => ({ ...prev, [task.id]: next }))
+          }
           onClose={() => setDraftOpen(false)}
           height={820}
         />
@@ -335,14 +380,22 @@ export default function QuizRunner({
   );
 }
 
-function countBy(quiz: Quiz, slots: Record<number, Slot>, correct: boolean): number {
-  return quiz.tasks.filter((t) => slots[t.id]?.result?.is_correct === correct).length;
+function countBy(
+  quiz: Quiz,
+  slots: Record<number, Slot>,
+  correct: boolean,
+): number {
+  return quiz.tasks.filter((t) => slots[t.id]?.result?.is_correct === correct)
+    .length;
 }
 
 function Legend({ color, text }: { color: string; text: string }) {
   return (
     <li className="flex items-center gap-2">
-      <span className="inline-block h-3 w-3 rounded" style={{ background: color }} />
+      <span
+        className="inline-block h-3 w-3 rounded"
+        style={{ background: color }}
+      />
       {text}
     </li>
   );
@@ -362,14 +415,20 @@ function Feedback({
       <div
         className="rounded-xl p-4"
         style={{
-          background: result.is_correct ? "var(--accent-100)" : "var(--accent-2-100)",
+          background: result.is_correct
+            ? "var(--accent-100)"
+            : "var(--accent-2-100)",
         }}
       >
         <p
           className="flex flex-wrap items-center gap-3 font-semibold"
-          style={{ color: result.is_correct ? "var(--accent-700)" : "var(--accent-2)" }}
+          style={{
+            color: result.is_correct ? "var(--accent-700)" : "var(--accent-2)",
+          }}
         >
-          {result.is_correct ? "Верно" : `Неверно. Правильный ответ: ${result.correct_answer}`}
+          {result.is_correct
+            ? "Верно"
+            : `Неверно. Правильный ответ: ${result.correct_answer}`}
           {result.coins > 0 && (
             <span
               className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
@@ -404,7 +463,9 @@ function Feedback({
 function Result({ result }: { result: QuizResult }) {
   const percent = Math.round((result.score / result.total) * 100);
   const wrong = result.items.filter((i) => !i.is_correct);
-  const withHint = result.items.filter((i) => i.is_correct && i.used_hint).length;
+  const withHint = result.items.filter(
+    (i) => i.is_correct && i.used_hint,
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -412,7 +473,10 @@ function Result({ result }: { result: QuizResult }) {
         <div className="flex items-center gap-5">
           <span
             className="h flex h-20 w-20 items-center justify-center rounded-2xl text-2xl"
-            style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+            style={{
+              background: "var(--accent-100)",
+              color: "var(--accent-700)",
+            }}
           >
             {result.score}/{result.total}
           </span>
@@ -440,16 +504,24 @@ function Result({ result }: { result: QuizResult }) {
           {wrong.map((item) => (
             <article key={item.task_id} className="card space-y-3 p-6 text-sm">
               <p className="eyebrow">Задание № {item.task_type_number}</p>
-              <MathText className="block text-base leading-relaxed" text={item.statement} />
+              <MathText
+                className="block text-base leading-relaxed"
+                text={item.statement}
+              />
               <p>
                 <span style={{ color: "var(--accent-2)" }}>
                   Твой ответ: {item.your_answer || "—"}
                 </span>
                 {" · "}
-                <span style={{ color: "var(--accent-700)" }}>верный: {item.correct_answer}</span>
+                <span style={{ color: "var(--accent-700)" }}>
+                  верный: {item.correct_answer}
+                </span>
               </p>
               {item.solution && (
-                <div className="border-t pt-3 leading-relaxed" style={{ borderColor: "var(--divider)" }}>
+                <div
+                  className="border-t pt-3 leading-relaxed"
+                  style={{ borderColor: "var(--divider)" }}
+                >
                   <MathText text={item.solution} />
                 </div>
               )}

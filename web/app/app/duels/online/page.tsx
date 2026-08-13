@@ -43,7 +43,10 @@ export default function OnlineDuelPage() {
   const ws = useRef<WebSocket | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState("");
-  const [opponent, setOpponent] = useState<{ name: string; rating: number } | null>(null);
+  const [opponent, setOpponent] = useState<{
+    name: string;
+    rating: number;
+  } | null>(null);
   const [round, setRound] = useState<RoundMsg | null>(null);
   const [result, setResult] = useState<RoundResult | null>(null);
   const [over, setOver] = useState<Over | null>(null);
@@ -159,7 +162,11 @@ export default function OnlineDuelPage() {
     return (
       <div className="space-y-6">
         <div className="card flex items-center justify-between gap-6 p-5">
-          <Side name="Ты" score={round.score.you} highlight={result?.you.point} />
+          <Side
+            name="Ты"
+            score={round.score.you}
+            highlight={result?.you.point}
+          />
           <div className="text-center">
             <p className="h text-2xl">
               {result ? result.score.you : round.score.you} :{" "}
@@ -178,7 +185,10 @@ export default function OnlineDuelPage() {
         </div>
 
         <div className="text-center">
-          <p className="h text-3xl" style={{ color: left <= 10 ? "var(--accent-2)" : undefined }}>
+          <p
+            className="h text-3xl"
+            style={{ color: left <= 10 ? "var(--accent-2)" : undefined }}
+          >
             {result ? "—" : left}
           </p>
           <p className="muted text-xs">секунд до конца раунда</p>
@@ -188,20 +198,28 @@ export default function OnlineDuelPage() {
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="rounded-full px-3 py-1 text-xs font-medium"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              style={{
+                background: "var(--accent-100)",
+                color: "var(--accent-700)",
+              }}
             >
               Задание № {round.task.number}
             </span>
             <span className="muted text-sm">{round.task.title}</span>
           </div>
 
-          <MathText className="block text-lg leading-relaxed" text={round.task.statement} />
+          <MathText
+            className="block text-lg leading-relaxed"
+            text={round.task.statement}
+          />
 
           {result ? (
             <div
               className="rounded-xl p-4"
               style={{
-                background: result.you.point ? "var(--accent-100)" : "var(--accent-2-100)",
+                background: result.you.point
+                  ? "var(--accent-100)"
+                  : "var(--accent-2-100)",
               }}
             >
               <p className="font-semibold">
@@ -236,7 +254,11 @@ export default function OnlineDuelPage() {
                   disabled={sent}
                   onChange={(e) => setAnswer(e.target.value)}
                 />
-                <button className="btn" type="submit" disabled={sent || !answer.trim()}>
+                <button
+                  className="btn"
+                  type="submit"
+                  disabled={sent || !answer.trim()}
+                >
                   Ответить
                 </button>
               </form>
@@ -255,18 +277,21 @@ export default function OnlineDuelPage() {
       <header>
         <h1 className="text-3xl">Онлайн-дуэль</h1>
         <p className="muted mt-2">
-          Семь раундов, вопрос приходит обоим одновременно. Очко забирает тот, кто
-          ответил верно и раньше. Рейтинг меняется только здесь.
+          Семь раундов, вопрос приходит обоим одновременно. Очко забирает тот,
+          кто ответил верно и раньше. Рейтинг меняется только здесь.
         </p>
       </header>
 
       {phase === "queued" ? (
         <section className="card flex flex-col items-center gap-4 p-10 text-center">
-          <Loader2 className="animate-spin" style={{ color: "var(--accent)" }} />
+          <Loader2
+            className="animate-spin"
+            style={{ color: "var(--accent)" }}
+          />
           <p className="text-lg">Ищем соперника…</p>
           <p className="muted text-sm">
-            Игроков пока мало — если никого нет, позови друга, чтобы он тоже встал в
-            очередь.
+            Игроков пока мало — если никого нет, позови друга, чтобы он тоже
+            встал в очередь.
           </p>
           <button className="btn-ghost" onClick={cancel}>
             <X size={15} /> Отменить
@@ -279,8 +304,8 @@ export default function OnlineDuelPage() {
             <h2 className="text-xl">Найти соперника</h2>
           </div>
           <p className="muted text-sm leading-relaxed">
-            Подбор идёт среди всех, кто сейчас в очереди. Победа над более сильным
-            игроком даёт больше рейтинга.
+            Подбор идёт среди всех, кто сейчас в очереди. Победа над более
+            сильным игроком даёт больше рейтинга.
           </p>
           <button className="btn btn-accent2" onClick={connect}>
             Найти соперника
@@ -314,7 +339,10 @@ function Side({
   return (
     <div className={right ? "text-right" : ""}>
       <p className="font-medium">{name}</p>
-      <p className="muted text-sm" style={{ color: highlight ? "var(--accent)" : undefined }}>
+      <p
+        className="muted text-sm"
+        style={{ color: highlight ? "var(--accent)" : undefined }}
+      >
         {score} {highlight && "+1"}
       </p>
     </div>
@@ -331,7 +359,11 @@ function Result({
   onAgain: () => void;
 }) {
   const label =
-    over.result === "win" ? "Победа" : over.result === "loss" ? "Поражение" : "Ничья";
+    over.result === "win"
+      ? "Победа"
+      : over.result === "loss"
+        ? "Поражение"
+        : "Ничья";
 
   return (
     <div className="space-y-6">
@@ -347,14 +379,20 @@ function Result({
         </p>
 
         {over.forfeit && (
-          <p className="muted mt-2 text-sm">Соперник отключился — победа присуждена.</p>
+          <p className="muted mt-2 text-sm">
+            Соперник отключился — победа присуждена.
+          </p>
         )}
 
         <p
           className="mt-5 inline-block rounded-xl px-4 py-2 font-semibold"
           style={{
-            background: over.rating_delta >= 0 ? "var(--accent-100)" : "var(--accent-2-100)",
-            color: over.rating_delta >= 0 ? "var(--accent-700)" : "var(--accent-2)",
+            background:
+              over.rating_delta >= 0
+                ? "var(--accent-100)"
+                : "var(--accent-2-100)",
+            color:
+              over.rating_delta >= 0 ? "var(--accent-700)" : "var(--accent-2)",
           }}
         >
           рейтинг {over.rating_delta >= 0 ? "+" : ""}

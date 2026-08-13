@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import func, select
 
@@ -430,6 +430,8 @@ class LeaderRow(BaseModel):
     rank_color: str
     nick_color: str | None
     prefix: str | None
+    avatar: str | None
+    frame: str | None
     duels: int
     wins: int
     solved_week: int
@@ -493,13 +495,15 @@ async def leaderboard(
     worn: dict[int, dict] = {}
     for candidate in candidates[: limit + 5]:
         cos = await cosmetics_of(session, candidate.id)
-        worn[candidate.id] = {"nick_color": cos.nick_color, "prefix": cos.prefix}
+        worn[candidate.id] = cos.model_dump()
 
     rows = [
         LeaderRow(
             place=i + 1,
             nick_color=worn.get(u.id, {}).get("nick_color"),
             prefix=worn.get(u.id, {}).get("prefix"),
+            avatar=worn.get(u.id, {}).get("avatar"),
+            frame=worn.get(u.id, {}).get("frame"),
             user_id=u.id,
             display_name=u.display_name,
             rating=u.rating,
@@ -670,4 +674,112 @@ async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
             )
             for number, title, total, correct, avg_ms in rows
         ],
+    )
+
+
+# ------------------------------------------------------------ публичный профиль
+
+class PublicProfileOut(BaseModel):
+    """Чужой профиль. Только то, чем человек и так хвастается в лидерборде:
+    ни контактов, ни кода друга, ни истории ответов."""
+
+    user_id: int
+    display_name: str
+    rank: str
+    rank_color: str
+    rating: int
+    cosmetics: dict
+
+    solved_total: int
+    accuracy: int
+    streak_days: int
+    streak_record: int
+    achievements_unlocked: int
+    achievements_total: int
+    duels_played: int
+    duels_won: int
+    is_friend: bool
+    is_you: bool
+
+
+@router.get("/users/{user_id}", response_model=PublicProfileOut)
+async def public_profile(user_id: int, session: DbSession, viewer: PlayerUser) -> PublicProfileOut:
+    from app.models import Friendship, FriendshipState
+
+    target = await session.get(User, user_id)
+    if target is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "профиль не найден")
+
+    attempts = list(await session.scalars(select(Attempt).where(Attempt.user_id == target.id)))
+    solved = len({a.task_id for a in attempts if a.is_correct})
+    accuracy = (
+        round(100 * sum(a.is_correct for a in attempts) / len(attempts)) if attempts else 0
+    )
+
+    days = [a.created_at.astimezone(TZ).date() for a in attempts]
+    best_run = run = 0
+    for attempt in attempts:
+        run = run + 1 if attempt.is_correct else 0
+        best_run = max(best_run, run)
+
+    wrong = {a.task_id for a in attempts if not a.is_correct}
+    right = {a.task_id for a in attempts if a.is_correct}
+
+    online = list(
+        await session.scalars(
+            select(Duel).where(
+                Duel.kind == DuelKind.ONLINE,
+                Duel.state == DuelState.FINISHED,
+                (Duel.challenger_id == target.id) | (Duel.opponent_id == target.id),
+            )
+        )
+    )
+
+    counts: dict = {}
+    for day in days:
+        counts[day] = counts.get(day, 0) + 1
+
+    achievements = _build_achievements(
+        solved=solved,
+        streak_record=max(_longest_daily_run(days), target.streak_days),
+        best_run=best_run,
+        perfect=0,
+        numbers=0,
+        fixed=len(wrong & right),
+        accuracy=accuracy,
+        attempts=len(attempts),
+        duels_played=len(online),
+        duel_win_streak=0,
+        rating=target.rating,
+        fast_correct=sum(1 for a in attempts if a.is_correct and 0 < a.time_spent_ms < 15_000),
+        night_attempts=sum(1 for a in attempts if a.created_at.astimezone(TZ).hour < 5),
+        best_day=max(counts.values()) if counts else 0,
+        came_back=False,
+    )
+
+    friendship = await session.scalar(
+        select(Friendship).where(
+            Friendship.state == FriendshipState.ACCEPTED,
+            ((Friendship.from_user_id == viewer.id) & (Friendship.to_user_id == target.id))
+            | ((Friendship.from_user_id == target.id) & (Friendship.to_user_id == viewer.id)),
+        )
+    )
+
+    return PublicProfileOut(
+        user_id=target.id,
+        display_name=target.display_name,
+        rank=rank_for(target.rating),
+        rank_color=rank_color(target.rating),
+        rating=target.rating,
+        cosmetics=(await cosmetics_of(session, target.id)).model_dump(),
+        solved_total=solved,
+        accuracy=accuracy,
+        streak_days=target.streak_days,
+        streak_record=max(_longest_daily_run(days), target.streak_days),
+        achievements_unlocked=sum(a.unlocked for a in achievements),
+        achievements_total=len(achievements),
+        duels_played=len(online),
+        duels_won=sum(1 for d in online if d.winner_id == target.id),
+        is_friend=friendship is not None,
+        is_you=target.id == viewer.id,
     )

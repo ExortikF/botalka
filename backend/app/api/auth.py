@@ -26,6 +26,7 @@ class UserOut(BaseModel):
     rating: int
     coins: int
     streak_days: int
+    cosmetics: dict = {}
 
 
 class InitDataIn(BaseModel):
@@ -109,8 +110,21 @@ async def login_miniapp(
 
 
 @router.get("/me", response_model=UserOut)
-async def me(user: CurrentUser) -> User:
-    return user
+async def me(user: CurrentUser, session: DbSession) -> UserOut:
+    from app.api.shop import cosmetics_of
+
+    return UserOut(
+        id=user.id,
+        is_guest=user.is_guest,
+        is_admin=user.is_admin,
+        username=user.username,
+        display_name=user.display_name,
+        avatar_url=user.avatar_url,
+        rating=user.rating,
+        coins=user.coins,
+        streak_days=user.streak_days,
+        cosmetics=(await cosmetics_of(session, user.id)).model_dump(),
+    )
 
 
 @router.post("/logout")

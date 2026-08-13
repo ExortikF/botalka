@@ -13,7 +13,10 @@ let ctx: AudioContext | null = null;
 function context(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!ctx) {
-    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    const Ctor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
     if (!Ctor) return null;
     ctx = new Ctor();
   }
@@ -29,7 +32,12 @@ export function setSoundEnabled(on: boolean): void {
   window.localStorage.setItem(STORAGE_KEY, on ? "on" : "off");
 }
 
-function tone(frequency: number, startAt: number, duration: number, volume: number): void {
+function tone(
+  frequency: number,
+  startAt: number,
+  duration: number,
+  volume: number,
+): void {
   const audio = context();
   if (!audio) return;
 
@@ -42,7 +50,10 @@ function tone(frequency: number, startAt: number, duration: number, volume: numb
   // мягкая огибающая: резкий старт звучит как щелчок
   gain.gain.setValueAtTime(0, audio.currentTime + startAt);
   gain.gain.linearRampToValueAtTime(volume, audio.currentTime + startAt + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + startAt + duration);
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    audio.currentTime + startAt + duration,
+  );
 
   oscillator.connect(gain).connect(audio.destination);
   oscillator.start(audio.currentTime + startAt);
@@ -52,8 +63,8 @@ function tone(frequency: number, startAt: number, duration: number, volume: numb
 /** Одобрительная секунда вверх — играет при верном ответе. */
 export function playCorrect(): void {
   if (!soundEnabled()) return;
-  tone(660, 0, 0.14, 0.16);     // ми
-  tone(880, 0.1, 0.22, 0.14);   // ля
+  tone(660, 0, 0.14, 0.16); // ми
+  tone(880, 0.1, 0.22, 0.14); // ля
 }
 
 /** Глухой короткий тон на ошибку — тише и ниже, чтобы не раздражал. */

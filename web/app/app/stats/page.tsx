@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { plural } from "@/lib/exam";
 
-type MonthRow = { month: string; solved: number; correct: number; days_active: number };
+type MonthRow = {
+  month: string;
+  solved: number;
+  correct: number;
+  days_active: number;
+};
 type HourRow = { hour: number; attempts: number };
 type TypeRow = {
   number: number;
@@ -33,8 +38,18 @@ type StatsYear = {
 };
 
 const MONTHS = [
-  "янв", "фев", "мар", "апр", "май", "июн",
-  "июл", "авг", "сен", "окт", "ноя", "дек",
+  "янв",
+  "фев",
+  "мар",
+  "апр",
+  "май",
+  "июн",
+  "июл",
+  "авг",
+  "сен",
+  "окт",
+  "ноя",
+  "дек",
 ];
 
 function monthLabel(key: string): string {
@@ -55,7 +70,9 @@ export default function StatsPage() {
 
   const maxMonth = Math.max(1, ...stats.months.map((m) => m.solved));
   const maxHour = Math.max(1, ...stats.hours.map((h) => h.attempts));
-  const worst = [...stats.by_type].filter((t) => t.total >= 3).sort((a, b) => a.accuracy - b.accuracy);
+  const worst = [...stats.by_type]
+    .filter((t) => t.total >= 3)
+    .sort((a, b) => a.accuracy - b.accuracy);
 
   return (
     <div className="space-y-8">
@@ -65,7 +82,10 @@ export default function StatsPage() {
 
       <section
         className="relative overflow-hidden p-8 text-white"
-        style={{ background: "var(--accent)", borderRadius: "var(--radius-lg)" }}
+        style={{
+          background: "var(--accent)",
+          borderRadius: "var(--radius-lg)",
+        }}
       >
         <div
           aria-hidden
@@ -78,15 +98,23 @@ export default function StatsPage() {
           </p>
           <p className="h mt-2 text-6xl">{stats.forecast_secondary}</p>
           <p className="mt-2 max-w-lg opacity-90">
-            Столько тестовых баллов дала бы часть 1, если решать её с твоей нынешней
-            точностью {stats.accuracy}%. Это оценка, а не обещание: настоящий экзамен
-            сложнее домашнего квиза.
+            Столько тестовых баллов дала бы часть 1, если решать её с твоей
+            нынешней точностью {stats.accuracy}%. Это оценка, а не обещание:
+            настоящий экзамен сложнее домашнего квиза.
           </p>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        <Metric value={stats.days_total} label={plural(stats.days_total, "день с занятиями", "дня с занятиями", "дней с занятиями")} />
+        <Metric
+          value={stats.days_total}
+          label={plural(
+            stats.days_total,
+            "день с занятиями",
+            "дня с занятиями",
+            "дней с занятиями",
+          )}
+        />
         <Metric value={stats.attempts_total} label="ответов всего" />
         <Metric value={`${stats.accuracy}%`} label="верных" />
         <Metric value={stats.minutes_total} label="минут за решением" />
@@ -106,7 +134,8 @@ export default function StatsPage() {
             day: "numeric",
             month: "long",
           })}{" "}
-          — {stats.best_day.solved} {plural(stats.best_day.solved, "ответ", "ответа", "ответов")}.
+          — {stats.best_day.solved}{" "}
+          {plural(stats.best_day.solved, "ответ", "ответа", "ответов")}.
         </p>
       )}
 
@@ -117,7 +146,10 @@ export default function StatsPage() {
         ) : (
           <div className="flex items-end gap-2" style={{ height: 160 }}>
             {stats.months.map((month) => (
-              <div key={month.month} className="flex flex-1 flex-col items-center gap-2">
+              <div
+                key={month.month}
+                className="flex flex-1 flex-col items-center gap-2"
+              >
                 <span className="muted text-xs">{month.solved}</span>
                 <div
                   className="w-full rounded-t-lg"
@@ -140,17 +172,24 @@ export default function StatsPage() {
         <p className="muted mb-4 text-sm">По часам, время московское</p>
         <div className="flex items-end gap-1" style={{ height: 110 }}>
           {stats.hours.map((hour) => (
-            <div key={hour.hour} className="flex flex-1 flex-col items-center gap-1">
+            <div
+              key={hour.hour}
+              className="flex flex-1 flex-col items-center gap-1"
+            >
               <div
                 className="w-full rounded-t"
                 style={{
                   height: `${(hour.attempts / maxHour) * 80}px`,
-                  background: hour.attempts ? "var(--accent-300)" : "var(--surface)",
+                  background: hour.attempts
+                    ? "var(--accent-300)"
+                    : "var(--surface)",
                   minHeight: 3,
                 }}
                 title={`${hour.hour}:00 — ${hour.attempts}`}
               />
-              {hour.hour % 6 === 0 && <span className="muted text-[10px]">{hour.hour}</span>}
+              {hour.hour % 6 === 0 && (
+                <span className="muted text-[10px]">{hour.hour}</span>
+              )}
             </div>
           ))}
         </div>
@@ -183,7 +222,9 @@ export default function StatsPage() {
                     }}
                   />
                 </span>
-                <span className="w-12 shrink-0 text-right">{row.accuracy}%</span>
+                <span className="w-12 shrink-0 text-right">
+                  {row.accuracy}%
+                </span>
                 <span className="muted w-20 shrink-0 text-right">
                   {row.avg_seconds ? `${row.avg_seconds} с` : "—"}
                 </span>
@@ -202,7 +243,8 @@ export default function StatsPage() {
           <ul className="mt-3 space-y-1 text-sm">
             {worst.slice(0, 3).map((row) => (
               <li key={row.number}>
-                <b>№{row.number}</b> {row.title} — {row.accuracy}% из {row.total}
+                <b>№{row.number}</b> {row.title} — {row.accuracy}% из{" "}
+                {row.total}
               </li>
             ))}
           </ul>

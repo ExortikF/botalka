@@ -26,15 +26,25 @@ export default async function QuizRunPage({
   const selection = (params.selection ?? "")
     .split(",")
     .map((pair) => pair.split(":").map(Number))
-    .filter(([id, count]) => Number.isFinite(id) && Number.isFinite(count) && id > 0 && count > 0)
+    .filter(
+      ([id, count]) =>
+        Number.isFinite(id) && Number.isFinite(count) && id > 0 && count > 0,
+    )
     .map(([task_type_id, count]) => ({ task_type_id, count }));
 
   // формат "1:2:1:0" — из номера взять 2 лёгких, 1 среднюю, 0 сложных
   const bands = (params.bands ?? "")
     .split(",")
     .map((chunk) => chunk.split(":").map(Number))
-    .filter((p) => p.length === 4 && p.every((n) => Number.isFinite(n)) && p[0] > 0)
-    .map(([task_type_id, easy, medium, hard]) => ({ task_type_id, easy, medium, hard }));
+    .filter(
+      (p) => p.length === 4 && p.every((n) => Number.isFinite(n)) && p[0] > 0,
+    )
+    .map(([task_type_id, easy, medium, hard]) => ({
+      task_type_id,
+      easy,
+      medium,
+      hard,
+    }));
 
   const length = Number(params.length);
   const PRESETS: QuizPreset[] = ["weak", "mistakes", "unsolved"];

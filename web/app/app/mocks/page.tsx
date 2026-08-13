@@ -36,14 +36,19 @@ export default function MocksPage() {
         setActive((prev) => prev ?? data[0]?.subject_slug ?? "math_prof");
       })
       .catch(() => setMocks([]));
-    getSubjects().then(setSubjects).catch(() => setSubjects([]));
+    getSubjects()
+      .then(setSubjects)
+      .catch(() => setSubjects([]));
   }, []);
 
   if (!mocks) return <p className="muted">Загрузка…</p>;
 
   const countBySubject = new Map<string, number>();
   for (const mock of mocks) {
-    countBySubject.set(mock.subject_slug, (countBySubject.get(mock.subject_slug) ?? 0) + 1);
+    countBySubject.set(
+      mock.subject_slug,
+      (countBySubject.get(mock.subject_slug) ?? 0) + 1,
+    );
   }
 
   const shown = mocks.filter((m) => m.subject_slug === active);
@@ -109,8 +114,12 @@ export default function MocksPage() {
                       </span>
                     </p>
                     {mock.attempts > 0 && (
-                      <p className="mt-2 text-sm" style={{ color: "var(--accent-700)" }}>
-                        Лучший результат: {mock.best_score} из {mock.tasks_count}
+                      <p
+                        className="mt-2 text-sm"
+                        style={{ color: "var(--accent-700)" }}
+                      >
+                        Лучший результат: {mock.best_score} из{" "}
+                        {mock.tasks_count}
                       </p>
                     )}
                   </div>

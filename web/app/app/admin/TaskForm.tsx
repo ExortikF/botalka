@@ -50,7 +50,11 @@ const ANSWER_TYPES = [
   { value: "number", label: "Число", hint: "7 · −0,5 · 3.14" },
   { value: "number_tolerance", label: "Число с допуском", hint: "3,14 ± 0,01" },
   { value: "string", label: "Слово", hint: "регистр и «ё» не важны" },
-  { value: "digits", label: "Последовательность цифр", hint: "1324, порядок важен" },
+  {
+    value: "digits",
+    label: "Последовательность цифр",
+    hint: "1324, порядок важен",
+  },
   { value: "multi", label: "Набор чисел", hint: "2;5;7, порядок не важен" },
 ];
 
@@ -122,10 +126,15 @@ export default function TaskForm({
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-4">
-        <button className="muted flex items-center gap-2 text-sm" onClick={onCancel}>
+        <button
+          className="muted flex items-center gap-2 text-sm"
+          onClick={onCancel}
+        >
           <ArrowLeft size={16} /> К списку
         </button>
-        <h1 className="text-2xl">{form.id ? `Правка ${form.slug}` : "Новая задача"}</h1>
+        <h1 className="text-2xl">
+          {form.id ? `Правка ${form.slug}` : "Новая задача"}
+        </h1>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -172,26 +181,39 @@ export default function TaskForm({
                     onChange={(e) =>
                       set(
                         "hints",
-                        form.hints.map((h, j) => (i === j ? e.target.value : h)),
+                        form.hints.map((h, j) =>
+                          i === j ? e.target.value : h,
+                        ),
                       )
                     }
                   />
                   <button
                     className="btn-ghost px-3"
-                    onClick={() => set("hints", form.hints.filter((_, j) => j !== i))}
+                    onClick={() =>
+                      set(
+                        "hints",
+                        form.hints.filter((_, j) => j !== i),
+                      )
+                    }
                     aria-label="Удалить подсказку"
                   >
                     <X size={15} />
                   </button>
                 </div>
               ))}
-              <button className="btn-ghost text-sm" onClick={() => set("hints", [...form.hints, ""])}>
+              <button
+                className="btn-ghost text-sm"
+                onClick={() => set("hints", [...form.hints, ""])}
+              >
                 <Plus size={14} /> Добавить подсказку
               </button>
             </div>
           </Field>
 
-          <Field label="Ссылка на картинку" hint="для геометрии и графиков; пока просто URL">
+          <Field
+            label="Ссылка на картинку"
+            hint="для геометрии и графиков; пока просто URL"
+          >
             <input
               className="input"
               value={form.image_url ?? ""}
@@ -244,7 +266,10 @@ export default function TaskForm({
                 onChange={(e) =>
                   set(
                     "answer_synonyms",
-                    e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                    e.target.value
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean),
                   )
                 }
               />
@@ -266,7 +291,10 @@ export default function TaskForm({
             </div>
           </Field>
 
-          <Field label="Откуда задача" hint="показывается ученику мелким шрифтом">
+          <Field
+            label="Откуда задача"
+            hint="показывается ученику мелким шрифтом"
+          >
             <select
               className="input"
               value={form.source_kind}
@@ -289,7 +317,10 @@ export default function TaskForm({
                     inputMode="numeric"
                     value={form.source_year ?? ""}
                     onChange={(e) =>
-                      set("source_year", e.target.value ? Number(e.target.value) : null)
+                      set(
+                        "source_year",
+                        e.target.value ? Number(e.target.value) : null,
+                      )
                     }
                   />
                 </Field>
@@ -301,7 +332,10 @@ export default function TaskForm({
                   />
                 </Field>
               </div>
-              <Field label="Подпись" hint="если пусто — соберём из года и номера">
+              <Field
+                label="Подпись"
+                hint="если пусто — соберём из года и номера"
+              >
                 <input
                   className="input"
                   placeholder="ЕГЭ 2024, основная волна"
@@ -328,22 +362,38 @@ export default function TaskForm({
 
       <section className="card p-6">
         <p className="eyebrow mb-3">Предпросмотр</p>
-        <MathText className="block text-lg leading-relaxed" text={form.statement || "…"} />
+        <MathText
+          className="block text-lg leading-relaxed"
+          text={form.statement || "…"}
+        />
         {form.solution && (
-          <div className="mt-4 border-t pt-3 text-sm" style={{ borderColor: "var(--divider)" }}>
+          <div
+            className="mt-4 border-t pt-3 text-sm"
+            style={{ borderColor: "var(--divider)" }}
+          >
             <MathText text={form.solution} />
           </div>
         )}
       </section>
 
       {error && (
-        <p className="rounded-xl p-4 text-sm" style={{ background: "var(--accent-2-100)", color: "var(--accent-2)" }}>
+        <p
+          className="rounded-xl p-4 text-sm"
+          style={{
+            background: "var(--accent-2-100)",
+            color: "var(--accent-2)",
+          }}
+        >
           {error}
         </p>
       )}
 
       <div className="flex gap-3">
-        <button className="btn" onClick={save} disabled={saving || !form.statement.trim()}>
+        <button
+          className="btn"
+          onClick={save}
+          disabled={saving || !form.statement.trim()}
+        >
           {saving ? "Сохраняем…" : "Сохранить"}
         </button>
         <button className="btn-ghost" onClick={onCancel}>

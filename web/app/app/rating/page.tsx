@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
 import { api } from "@/lib/api";
-import { initials } from "@/lib/format";
+import { nickStyle } from "@/lib/cosmetics";
+import Avatar from "../Avatar";
 
 type LeaderRow = {
   place: number;
@@ -14,6 +15,8 @@ type LeaderRow = {
   rank: string;
   rank_color: string;
   nick_color: string | null;
+  avatar: string | null;
+  frame: string | null;
   prefix: string | null;
   duels: number;
   wins: number;
@@ -21,12 +24,26 @@ type LeaderRow = {
   is_you: boolean;
 };
 
-type Leaderboard = { board: string; rows: LeaderRow[]; your_place: number | null };
+type Leaderboard = {
+  board: string;
+  rows: LeaderRow[];
+  your_place: number | null;
+};
 
 const BOARDS = [
   { key: "rating", label: "Рейтинг дуэлей" },
   { key: "week", label: "Активность за неделю" },
 ];
+
+function NickName({ row }: { row: LeaderRow }) {
+  const nick = nickStyle(row.nick_color);
+  return (
+    <span className={nick.className} style={nick.style}>
+      {row.prefix && `${row.prefix} `}
+      {row.display_name}
+    </span>
+  );
+}
 
 export default function RatingPage() {
   const [board, setBoard] = useState("rating");
@@ -76,7 +93,10 @@ export default function RatingPage() {
               ? "Сюда попадают те, кто сыграл хотя бы один онлайн-матч. Будь первым."
               : "Как только кто-нибудь начнёт решать, здесь появятся результаты."}
           </p>
-          <Link className="btn mt-5" href={board === "rating" ? "/app/duels/online" : "/app/quiz"}>
+          <Link
+            className="btn mt-5"
+            href={board === "rating" ? "/app/duels/online" : "/app/quiz"}
+          >
             {board === "rating" ? "Найти соперника" : "Решать задачи"}
           </Link>
         </section>
@@ -84,8 +104,8 @@ export default function RatingPage() {
         <>
           {data.your_place && (
             <p className="muted text-sm">
-              Твоё место: <span className="h text-base">{data.your_place}</span> из{" "}
-              {data.rows.length >= 30 ? "топа" : data.rows.length}
+              Твоё место: <span className="h text-base">{data.your_place}</span>{" "}
+              из {data.rows.length >= 30 ? "топа" : data.rows.length}
             </p>
           )}
 
@@ -106,7 +126,9 @@ export default function RatingPage() {
                     </>
                   ) : (
                     <>
-                      <th className="px-4 py-3 font-medium">Решено за неделю</th>
+                      <th className="px-4 py-3 font-medium">
+                        Решено за неделю
+                      </th>
                       <th className="px-4 py-3 font-medium">Рейтинг</th>
                     </>
                   )}
@@ -122,22 +144,29 @@ export default function RatingPage() {
                     }}
                   >
                     <td className="px-4 py-3">
-                      <span className={row.place <= 3 ? "h text-base" : ""}>{row.place}</span>
+                      <span className={row.place <= 3 ? "h text-base" : ""}>
+                        {row.place}
+                      </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="flex items-center gap-2">
-                        <span
-                          className="flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-semibold"
-                          style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
-                        >
-                          {initials(row.display_name)}
-                        </span>
-                        <span style={{ color: row.nick_color ?? undefined }}>
-                        {row.prefix && `${row.prefix} `}
-                        {row.display_name}
-                      </span>
-                        {row.is_you && <span className="muted text-xs">— это ты</span>}
-                      </span>
+                      <Link
+                        className="flex items-center gap-2 hover:underline"
+                        href={
+                          row.is_you ? "/app/profile" : `/app/u/${row.user_id}`
+                        }
+                      >
+                        <Avatar
+                          name={row.display_name}
+                          avatar={row.avatar}
+                          frame={row.frame}
+                          size={28}
+                          rounded="rounded-full"
+                        />
+                        <NickName row={row} />
+                        {row.is_you && (
+                          <span className="muted text-xs">— это ты</span>
+                        )}
+                      </Link>
                     </td>
                     {board === "rating" ? (
                       <>

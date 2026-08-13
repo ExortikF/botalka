@@ -35,20 +35,29 @@ export default function QuizBuilder() {
   const [picked, setPicked] = useState<Record<number, Pick>>({});
 
   useEffect(() => {
-    getSubjects().then(setSubjects).catch(() => setSubjects([]));
-    getStats().then(setStats).catch(() => setStats([]));
+    getSubjects()
+      .then(setSubjects)
+      .catch(() => setSubjects([]));
+    getStats()
+      .then(setStats)
+      .catch(() => setStats([]));
   }, []);
 
   useEffect(() => {
     setPicked({});
-    getTaskTypes(subject).then(setTypes).catch(() => setTypes([]));
+    getTaskTypes(subject)
+      .then(setTypes)
+      .catch(() => setTypes([]));
   }, [subject]);
 
   const statsByNumber = new Map(stats.map((s) => [s.task_type_number, s]));
   const chosen = Object.entries(picked)
     .map(([id, pick]) => ({ task_type_id: Number(id), ...pick }))
     .filter((p) => p.easy + p.medium + p.hard > 0);
-  const totalTasks = chosen.reduce((sum, p) => sum + p.easy + p.medium + p.hard, 0);
+  const totalTasks = chosen.reduce(
+    (sum, p) => sum + p.easy + p.medium + p.hard,
+    0,
+  );
 
   function bump(type: TaskType, band: Band, delta: number) {
     const max = type[band];
@@ -154,7 +163,9 @@ export default function QuizBuilder() {
         <ul className="space-y-2">
           {types.map((type) => {
             const stat = statsByNumber.get(type.number);
-            const percent = stat?.total ? Math.round((stat.correct / stat.total) * 100) : null;
+            const percent = stat?.total
+              ? Math.round((stat.correct / stat.total) * 100)
+              : null;
             const pick = picked[type.id] ?? EMPTY;
             const chosenHere = pick.easy + pick.medium + pick.hard;
             const empty = type.tasks_count === 0;
@@ -164,8 +175,12 @@ export default function QuizBuilder() {
                 <div
                   className="card flex flex-wrap items-center gap-4 p-4 transition"
                   style={{
-                    borderColor: chosenHere ? "var(--accent)" : "var(--divider)",
-                    background: chosenHere ? "var(--accent-100)" : "var(--card)",
+                    borderColor: chosenHere
+                      ? "var(--accent)"
+                      : "var(--divider)",
+                    background: chosenHere
+                      ? "var(--accent-100)"
+                      : "var(--card)",
                     opacity: empty ? 0.55 : 1,
                   }}
                 >
@@ -208,14 +223,22 @@ export default function QuizBuilder() {
 
       <section
         className="card flex flex-wrap items-center justify-between gap-4 p-5"
-        style={{ position: "sticky", bottom: "1rem", boxShadow: "var(--shadow-md)" }}
+        style={{
+          position: "sticky",
+          bottom: "1rem",
+          boxShadow: "var(--shadow-md)",
+        }}
       >
         <span className="muted text-sm">
           {totalTasks === 0
             ? "Добавь задачи стрелочками — по сложности"
             : `В квизе будет ${totalTasks} ${plural(totalTasks, "задача", "задачи", "задач")}`}
         </span>
-        <button className="btn" onClick={startPicked} disabled={totalTasks === 0}>
+        <button
+          className="btn"
+          onClick={startPicked}
+          disabled={totalTasks === 0}
+        >
           Начать квиз
         </button>
       </section>
@@ -238,7 +261,10 @@ function Stepper({
   return (
     <span
       className="flex items-center gap-1 rounded-xl px-1.5 py-1"
-      style={{ background: value > 0 ? band.bg : "var(--surface)", opacity: disabled ? 0.4 : 1 }}
+      style={{
+        background: value > 0 ? band.bg : "var(--surface)",
+        opacity: disabled ? 0.4 : 1,
+      }}
       title={`${band.label}: доступно ${max}`}
     >
       <button

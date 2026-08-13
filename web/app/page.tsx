@@ -28,7 +28,9 @@ export default function Landing() {
       .catch(() => setMe(null));
 
     getTaskTypes()
-      .then((types) => setTasksCount(types.reduce((s, t) => s + t.tasks_count, 0)))
+      .then((types) =>
+        setTasksCount(types.reduce((s, t) => s + t.tasks_count, 0)),
+      )
       .catch(() => setTasksCount(null));
 
     getConfig()
@@ -52,15 +54,22 @@ export default function Landing() {
           >
             <span
               className="flex h-9 w-9 items-center justify-center rounded-full"
-              style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              style={{
+                background: "var(--accent-100)",
+                color: "var(--accent-700)",
+              }}
             >
               {me ? (
-                <span className="text-xs font-semibold">{initials(me.display_name)}</span>
+                <span className="text-xs font-semibold">
+                  {initials(me.display_name)}
+                </span>
               ) : (
                 <UserIcon size={17} />
               )}
             </span>
-            <span className="hidden sm:inline">{me ? me.display_name : "Профиль"}</span>
+            <span className="hidden sm:inline">
+              {me ? me.display_name : "Профиль"}
+            </span>
           </Link>
         </nav>
       </header>
@@ -68,7 +77,10 @@ export default function Landing() {
       <main className="mx-auto max-w-6xl px-6 pb-20">
         <section
           className="relative overflow-hidden px-8 py-14 text-white sm:px-12"
-          style={{ background: "var(--accent)", borderRadius: "var(--radius-lg)" }}
+          style={{
+            background: "var(--accent)",
+            borderRadius: "var(--radius-lg)",
+          }}
         >
           <div
             aria-hidden
@@ -78,20 +90,23 @@ export default function Landing() {
           <div className="relative max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
               ЕГЭ {EXAM.year}
-              {days !== null && ` · ${days} ${plural(days, "день", "дня", "дней")} до экзамена`}
+              {days !== null &&
+                ` · ${days} ${plural(days, "день", "дня", "дней")} до экзамена`}
             </p>
             <div className="my-5 h-px w-24 bg-white/40" />
             <h1 className="text-4xl leading-tight sm:text-5xl">
               Готовься к ЕГЭ так, будто это игра с самим собой
             </h1>
             <p className="mt-5 text-lg leading-relaxed opacity-90">
-              Короткие квизы вместо многочасовых занятий, разбор каждой ошибки и дуэли
-              1 на 1, где вопрос приходит обоим одновременно.
+              Короткие квизы вместо многочасовых занятий, разбор каждой ошибки и
+              дуэли 1 на 1, где вопрос приходит обоим одновременно.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <TelegramLogin onLogin={onLogin} onError={setError} />
-              <span className="text-sm opacity-80">Без пароля, вход за 10 секунд</span>
+              <span className="text-sm opacity-80">
+                Без пароля, вход за 10 секунд
+              </span>
             </div>
             {error && <p className="mt-3 text-sm text-white/90">{error}</p>}
 
@@ -99,8 +114,9 @@ export default function Landing() {
               <div className="mt-5 rounded-xl border border-white/30 p-4">
                 <p className="text-sm font-medium">Отладочный вход</p>
                 <p className="mt-1 text-sm opacity-80">
-                  Домен для виджета Telegram пока не настроен, поэтому кнопка выше не
-                  работает. Эти входят без Telegram — включено переменной DEV_LOGIN.
+                  Домен для виджета Telegram пока не настроен, поэтому кнопка
+                  выше не работает. Эти входят без Telegram — включено
+                  переменной DEV_LOGIN.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
@@ -150,17 +166,23 @@ export default function Landing() {
         <section
           id="duels"
           className="grid items-center gap-10 px-8 py-12 md:grid-cols-2 sm:px-12"
-          style={{ background: "var(--surface)", borderRadius: "var(--radius-lg)" }}
+          style={{
+            background: "var(--surface)",
+            borderRadius: "var(--radius-lg)",
+          }}
         >
           <div>
             <p className="eyebrow" style={{ color: "var(--accent-2)" }}>
               Чем это отличается от курсов
             </p>
-            <h2 className="mt-3 text-3xl leading-tight">Это не школа, а спортзал</h2>
+            <h2 className="mt-3 text-3xl leading-tight">
+              Это не школа, а спортзал
+            </h2>
             <p className="muted mt-4 leading-relaxed">
-              Никаких вебинаров по два часа и домашки на неделю. Заходишь на пятнадцать
-              минут, решаешь, видишь разбор своих ошибок и уходишь. Результат даёт не
-              длина занятия, а то, что ты приходишь каждый день.
+              Никаких вебинаров по два часа и домашки на неделю. Заходишь на
+              пятнадцать минут, решаешь, видишь разбор своих ошибок и уходишь.
+              Результат даёт не длина занятия, а то, что ты приходишь каждый
+              день.
             </p>
           </div>
           <dl className="grid grid-cols-2 gap-6">
@@ -177,8 +199,8 @@ export default function Landing() {
         <section className="py-16 text-center">
           <h2 className="text-3xl">Начни с одного квиза</h2>
           <p className="muted mx-auto mt-3 max-w-xl">
-            Десять задач, восемь минут. Регистрация не нужна — прогресс сохранится и
-            привяжется к аккаунту, если потом войдёшь.
+            Десять задач, восемь минут. Регистрация не нужна — прогресс
+            сохранится и привяжется к аккаунту, если потом войдёшь.
           </p>
           <div className="mt-7 flex justify-center">
             <Link className="btn" href="/app/quiz/run">
@@ -216,13 +238,18 @@ function Feature({
 }) {
   return (
     <article>
-      <span style={{ color: accent ? "var(--accent-2)" : "var(--accent)" }}>{icon}</span>
+      <span style={{ color: accent ? "var(--accent-2)" : "var(--accent)" }}>
+        {icon}
+      </span>
       <h3 className="mt-3 flex items-center gap-2 text-xl">
         {title}
         {soon && (
           <span
             className="rounded-full px-2 py-0.5 text-xs font-medium"
-            style={{ background: "var(--accent-2-100)", color: "var(--accent-2)" }}
+            style={{
+              background: "var(--accent-2-100)",
+              color: "var(--accent-2)",
+            }}
           >
             скоро
           </span>

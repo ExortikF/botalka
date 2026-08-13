@@ -77,7 +77,8 @@ export default function TelegramLogin({ onLogin, onError }: Props) {
   if (!botUsername) {
     return (
       <p className="muted text-sm">
-        Вход выключен: не задан <code>NEXT_PUBLIC_TELEGRAM_BOT_USERNAME</code> в <code>.env</code>.
+        Вход выключен: не задан <code>NEXT_PUBLIC_TELEGRAM_BOT_USERNAME</code> в{" "}
+        <code>.env</code>.
       </p>
     );
   }

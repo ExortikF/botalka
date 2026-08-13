@@ -23,6 +23,8 @@ class ItemKind(str, enum.Enum):
     PREFIX = "prefix"           # значок-приставка перед ником
     FRAME = "frame"             # рамка вокруг аватарки
     AVATAR = "avatar"           # сама аватарка
+    CARD_BG = "card_bg"         # фон карточки профиля
+    NAME_PLATE = "name_plate"   # декор плиты с ником
 
 
 class Rarity(str, enum.Enum):
@@ -30,6 +32,7 @@ class Rarity(str, enum.Enum):
     RARE = "rare"
     EPIC = "epic"
     LEGENDARY = "legendary"
+    MYTHIC = "mythic"     # только для админов, за монеты не купить
 
 
 class ShopItem(Base):
@@ -47,6 +50,8 @@ class ShopItem(Base):
     rarity: Mapped[Rarity] = mapped_column(Enum(Rarity, native_enum=False), default=Rarity.COMMON)
     sort_order: Mapped[int] = mapped_column(Integer, default=100)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # эксклюзив: в витрине обычных пользователей такого товара нет вообще
+    admin_only: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class UserItem(Base):

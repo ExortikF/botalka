@@ -54,17 +54,24 @@ export default function IdeaButton() {
           >
             <div className="flex items-start justify-between gap-4">
               <h3 className="text-xl">Предложи идею</h3>
-              <button className="muted" onClick={() => setOpen(false)} aria-label="Закрыть">
+              <button
+                className="muted"
+                onClick={() => setOpen(false)}
+                aria-label="Закрыть"
+              >
                 <X size={18} />
               </button>
             </div>
 
             {sent ? (
-              <p style={{ color: "var(--accent-700)" }}>Спасибо, идея записана.</p>
+              <p style={{ color: "var(--accent-700)" }}>
+                Спасибо, идея записана.
+              </p>
             ) : (
               <>
                 <p className="muted text-sm">
-                  Чего не хватает, что мешает, что стоит добавить — пиши как есть.
+                  Чего не хватает, что мешает, что стоит добавить — пиши как
+                  есть.
                 </p>
                 <textarea
                   className="input"
@@ -75,7 +82,11 @@ export default function IdeaButton() {
                   onChange={(e) => setMessage(e.target.value)}
                 />
                 <div className="flex gap-2">
-                  <button className="btn" onClick={send} disabled={message.trim().length < 5}>
+                  <button
+                    className="btn"
+                    onClick={send}
+                    disabled={message.trim().length < 5}
+                  >
                     Отправить
                   </button>
                   <button className="btn-ghost" onClick={() => setOpen(false)}>

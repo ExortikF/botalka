@@ -25,7 +25,11 @@ const ANSWER_TYPES = [
   { value: "number", label: "Число", hint: "7 · −0,5 · 3.14" },
   { value: "number_tolerance", label: "Число с допуском", hint: "3,14 ± 0,01" },
   { value: "string", label: "Слово", hint: "регистр и «ё» не важны" },
-  { value: "digits", label: "Последовательность цифр", hint: "1324, порядок важен" },
+  {
+    value: "digits",
+    label: "Последовательность цифр",
+    hint: "1324, порядок важен",
+  },
   { value: "multi", label: "Набор чисел", hint: "2;5;7, порядок не важен" },
 ];
 
@@ -68,7 +72,8 @@ export default function AddTaskInline({
           statement,
           answer_type: answerType,
           answer_value: answerValue,
-          answer_tolerance: answerType === "number_tolerance" ? tolerance : null,
+          answer_tolerance:
+            answerType === "number_tolerance" ? tolerance : null,
           solution: solution || null,
           difficulty,
           status: publish ? "live" : "draft",
@@ -108,7 +113,11 @@ export default function AddTaskInline({
     >
       <div className="flex items-center justify-between">
         <p className="font-medium">Новая задача — сразу в этот вариант</p>
-        <button className="muted" onClick={() => setOpen(false)} aria-label="Свернуть">
+        <button
+          className="muted"
+          onClick={() => setOpen(false)}
+          aria-label="Свернуть"
+        >
           <X size={16} />
         </button>
       </div>
@@ -218,7 +227,11 @@ export default function AddTaskInline({
       )}
 
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={publish} onChange={(e) => setPublish(e.target.checked)} />
+        <input
+          type="checkbox"
+          checked={publish}
+          onChange={(e) => setPublish(e.target.checked)}
+        />
         Добавить в общий банк {chosenType && `(номер ${chosenType.number})`}
       </label>
 
