@@ -117,19 +117,18 @@ async def list_items(session: DbSession, user: PlayerUser) -> ShopOut:
     )
 
 
-async def _item(session: DbSession, code: str) -> ShopItem:
+async def _item(session: DbSession, code: str, user: User) -> ShopItem:
+    """Товар по коду. Эксклюзив для обычного пользователя не существует:
+    отвечаем 404, а не 403, чтобы по коду ответа нельзя было выяснить каталог."""
     item = await session.scalar(select(ShopItem).where(ShopItem.code == code))
-    if item is None or not item.active:
+    if item is None or not item.active or (item.admin_only and not user.is_admin):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "товар не найден")
     return item
 
 
 @router.post("/{code}/buy", response_model=ShopOut)
 async def buy(code: str, session: DbSession, user: PlayerUser) -> ShopOut:
-    item = await _item(session, code)
-
-    if item.admin_only and not user.is_admin:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "товар не найден")
+    item = await _item(session, code, user)
 
     already = await session.scalar(
         select(UserItem).where(UserItem.user_id == user.id, UserItem.item_id == item.id)
@@ -154,7 +153,7 @@ async def buy(code: str, session: DbSession, user: PlayerUser) -> ShopOut:
 @router.post("/{code}/equip", response_model=ShopOut)
 async def equip(code: str, session: DbSession, user: PlayerUser) -> ShopOut:
     """Надеть или снять. В каждом виде косметики надета максимум одна вещь."""
-    item = await _item(session, code)
+    item = await _item(session, code, user)
 
     mine = await session.scalar(
         select(UserItem).where(UserItem.user_id == user.id, UserItem.item_id == item.id)
