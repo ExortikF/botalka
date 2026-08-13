@@ -182,6 +182,9 @@ export const sendAnswer = (
     }),
   });
 
+export const finishQuiz = (quizId: number) =>
+  api<QuizResult>(`/api/quiz/${quizId}/finish`, { method: "POST" });
+
 export const getQuizResult = (quizId: number) =>
   api<QuizResult>(`/api/quiz/${quizId}/result`);
 

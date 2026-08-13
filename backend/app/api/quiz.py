@@ -464,6 +464,49 @@ async def submit_answer(
     )
 
 
+@router.post("/quiz/{quiz_id}/finish", response_model=QuizResultOut)
+async def finish_quiz(quiz_id: int, session: DbSession, user: PlayerUser) -> QuizResultOut:
+    """Завершить квиз досрочно, не отвечая на оставшиеся задачи.
+
+    Нерешённые остаются нерешёнными — они не считаются ни верными, ни
+    ошибочными, чтобы брошенный квиз не портил статистику по номерам.
+
+    Бонус за идеальный квиз тут не даём: он про пройденный целиком набор.
+    А серия засчитывается, если сегодня был хотя бы один ответ — она про то,
+    занимался ли человек, а не про то, дорешал ли он до конца.
+    """
+    quiz = await session.get(Quiz, quiz_id)
+    if quiz is None or quiz.user_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "квиз не найден")
+
+    if quiz.finished_at is None:
+        answered = (
+            await session.scalar(
+                select(func.count(Attempt.id)).where(Attempt.quiz_id == quiz.id)
+            )
+        ) or 0
+
+        quiz.finished_at = datetime.now(UTC)
+        if answered > 0:
+            streak_before = user.streak_days
+            _bump_streak(user)
+            if user.streak_days != streak_before:
+                coins = await award(session, user, CoinReason.DAILY_FIRST_QUIZ)
+                bonus = min(user.streak_days, MAX_STREAK_BONUS)
+                coins += await award(
+                    session,
+                    user,
+                    CoinReason.STREAK_DAY,
+                    amount=bonus,
+                    note=f"серия {user.streak_days}",
+                )
+                quiz.coins_earned += coins
+
+        await session.commit()
+
+    return await quiz_result(quiz_id, session, user)
+
+
 @router.get("/quiz/{quiz_id}/result", response_model=QuizResultOut)
 async def quiz_result(quiz_id: int, session: DbSession, user: PlayerUser) -> QuizResultOut:
     quiz = await session.get(Quiz, quiz_id)

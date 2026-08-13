@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Coins, Flame, Lightbulb, PenLine, TrendingUp, X } from "lucide-react";
+import { Coins, Flag, Flame, Lightbulb, PenLine, TrendingUp, X } from "lucide-react";
 import MathText from "../../../Math";
 import DrawingPad, { type Stroke } from "../../DrawingPad";
 import ReportButton from "../../ReportButton";
@@ -10,6 +10,7 @@ import { playCorrect, playWrong } from "@/lib/sound";
 import { checkAchievements } from "@/lib/achievements";
 import { plural } from "@/lib/exam";
 import {
+  finishQuiz,
   getQuizResult,
   playDuel,
   sendAnswer,
@@ -162,13 +163,17 @@ export default function QuizRunner({
     }
   }
 
-  async function finish() {
+  /**
+   * Завершение квиза. `early` — досрочно, с нерешёнными задачами: они так и
+   * останутся нерешёнными и в статистику по номерам не попадут.
+   */
+  async function finish(early = false) {
     if (!quiz) return;
     if (duelCode) {
       window.location.href = `/app/duels/${duelCode}`;
       return;
     }
-    setResult(await getQuizResult(quiz.id));
+    setResult(early ? await finishQuiz(quiz.id) : await getQuizResult(quiz.id));
     setPhase("finished");
     checkAchievements();
   }
@@ -205,6 +210,24 @@ export default function QuizRunner({
           <span className="eyebrow">
             Вопрос {index + 1} из {quiz.tasks.length}
           </span>
+          {!duelCode && (
+            <button
+              className="btn-ghost text-sm"
+              onClick={() => {
+                const left = quiz.tasks.length - answeredCount;
+                if (
+                  left > 0 &&
+                  !confirm(
+                    `Завершить квиз? ${left} ${plural(left, "задача останется", "задачи останутся", "задач останутся")} нерешёнными.`,
+                  )
+                )
+                  return;
+                finish(true);
+              }}
+            >
+              <Flag size={14} /> Завершить
+            </button>
+          )}
         </span>
       </div>
 
@@ -374,7 +397,7 @@ export default function QuizRunner({
           </div>
 
           {allAnswered && (
-            <button className="btn w-full" onClick={finish}>
+            <button className="btn w-full" onClick={() => finish()}>
               Показать результат
             </button>
           )}
@@ -495,7 +518,10 @@ function Feedback({
 }
 
 function Result({ result }: { result: QuizResult }) {
-  const wrong = result.items.filter((i) => !i.is_correct);
+  // Отвечал и ошибся — это ошибка. Не отвечал вовсе — не ошибка, а пропуск:
+  // в «работу над ошибками» такие задачи не идут и статистику не портят.
+  const wrong = result.items.filter((i) => !i.is_correct && i.your_answer);
+  const skipped = result.items.filter((i) => !i.is_correct && !i.your_answer);
   const withHint = result.items.filter((i) => i.is_correct && i.used_hint).length;
   const perfect = result.score === result.total;
 
@@ -588,6 +614,37 @@ function Result({ result }: { result: QuizResult }) {
           В профиль
         </Link>
       </div>
+
+      {skipped.length > 0 && (
+        <section className="space-y-3">
+          <div className="section-head">
+            <h2 className="section-title">Не решал</h2>
+            <span className="section-note">
+              в ошибки не идут — просто остались без ответа
+            </span>
+          </div>
+          {skipped.map((item) => (
+            <article key={item.task_id} className="card space-y-3 p-6 text-sm">
+              <p className="eyebrow">Задание № {item.task_type_number}</p>
+              <MathText
+                className="block text-base leading-relaxed"
+                text={item.statement}
+              />
+              <p style={{ color: "var(--accent-700)" }}>
+                Ответ: {item.correct_answer}
+              </p>
+              {item.solution && (
+                <div
+                  className="border-t pt-3 leading-relaxed"
+                  style={{ borderColor: "var(--divider)" }}
+                >
+                  <MathText text={item.solution} />
+                </div>
+              )}
+            </article>
+          ))}
+        </section>
+      )}
 
       {wrong.length > 0 && (
         <section className="space-y-3">
