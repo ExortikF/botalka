@@ -58,6 +58,13 @@ type Profile = {
   mistakes_fixed: number;
   mistakes_open: number;
   weak_topics: { number: number; title: string; accuracy: number }[];
+  clan: {
+    id: number;
+    name: string;
+    tag: string;
+    color: string;
+    role: string;
+  } | null;
   rating_history: number[];
   tasks_total: number;
   activity: { day: string; solved: number }[];
@@ -71,6 +78,12 @@ const WORN = [
   { key: "name_plate", label: "Плита" },
   { key: "nick_color", label: "Ник" },
 ] as const;
+
+const CLAN_ROLE: Record<string, string> = {
+  leader: "глава",
+  officer: "офицер",
+  member: "участник",
+};
 
 const RARITY: Record<
   Achievement["rarity"],
@@ -160,6 +173,24 @@ export default function ProfilePage() {
               >
                 {profile.rank}
               </span>
+
+              {profile.clan && (
+                <Link
+                  href={`/app/clans/${profile.clan.id}`}
+                  className="h rounded-lg px-2.5 py-1 text-sm"
+                  style={
+                    bg.dark
+                      ? { background: "rgba(255,255,255,.2)", color: "#fff" }
+                      : {
+                          background: `${profile.clan.color}1a`,
+                          color: profile.clan.color,
+                        }
+                  }
+                  title={`${profile.clan.name} · ${CLAN_ROLE[profile.clan.role] ?? profile.clan.role}`}
+                >
+                  {profile.clan.tag}
+                </Link>
+              )}
             </div>
             <p className="mt-1" style={{ fontSize: 13.5, opacity: bg.dark ? 0.9 : 0.7 }}>
               {profile.is_guest ? "Гостевой аккаунт" : "Аккаунт Telegram"} · рейтинг{" "}

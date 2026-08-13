@@ -55,6 +55,13 @@ type PublicProfile = {
   duels_won: number;
   is_friend: boolean;
   is_you: boolean;
+  clan: {
+    id: number;
+    name: string;
+    tag: string;
+    color: string;
+    role: string;
+  } | null;
 };
 
 export default function PublicProfilePage({
@@ -124,6 +131,21 @@ export default function PublicProfilePage({
               {profile.cosmetics.prefix && `${profile.cosmetics.prefix} `}
               {profile.display_name}
             </span>
+            {profile.clan && (
+              <Link
+                href={`/app/clans/${profile.clan.id}`}
+                className="h flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm"
+                style={
+                  bg.dark
+                    ? { background: "rgba(255,255,255,.2)", color: "#fff" }
+                    : { background: `${profile.clan.color}1a`, color: profile.clan.color }
+                }
+                title={profile.clan.name}
+              >
+                {profile.clan.tag}
+              </Link>
+            )}
+
             <span
               className="rounded-full px-3 py-1 text-xs font-bold"
               style={

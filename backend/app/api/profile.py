@@ -96,6 +96,38 @@ class DayStatsOut(BaseModel):
     by_type: list[DayTypeRow]
 
 
+class ClanBadge(BaseModel):
+    """Клан в профиле: тег и цвет — то, чем в клане и хвастаются."""
+
+    id: int
+    name: str
+    tag: str
+    color: str
+    role: str
+
+
+async def clan_badge(session: DbSession, user_id: int) -> ClanBadge | None:
+    from app.models import Clan, ClanMember
+
+    member = await session.scalar(
+        select(ClanMember).where(ClanMember.user_id == user_id)
+    )
+    if member is None:
+        return None
+
+    clan = await session.get(Clan, member.clan_id)
+    if clan is None:
+        return None
+
+    return ClanBadge(
+        id=clan.id,
+        name=clan.name,
+        tag=clan.tag,
+        color=clan.color,
+        role=member.role.value,
+    )
+
+
 class WeakTopic(BaseModel):
     """Самое проседающее — то, с чего стоит начать занятие."""
 
@@ -139,6 +171,7 @@ class ProfileOut(BaseModel):
     mistakes_open: int
     weak_topics: list[WeakTopic]
     rating_history: list[int]
+    clan: ClanBadge | None
 
     tasks_total: int
 
@@ -441,6 +474,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         perfect_quizzes=perfect,
         weak_topics=weak,
         rating_history=rating_history,
+        clan=await clan_badge(session, user.id),
         numbers_covered=numbers_covered,
         attempts_total=len(attempts),
         attempts_correct=sum(a.is_correct for a in attempts),
@@ -799,6 +833,7 @@ class PublicProfileOut(BaseModel):
     achievements_unlocked: int
     achievements_total: int
     achievements: list[PublicAchievement]
+    clan: ClanBadge | None
     duels_played: int
     duels_won: int
     is_friend: bool
@@ -892,6 +927,7 @@ async def public_profile(user_id: int, session: DbSession, viewer: PlayerUser) -
         accuracy=accuracy,
         streak_days=target.streak_days,
         streak_record=max(_longest_daily_run(days), target.streak_days),
+        clan=await clan_badge(session, target.id),
         achievements_unlocked=len(earned),
         achievements_total=len(achievements),
         achievements=[

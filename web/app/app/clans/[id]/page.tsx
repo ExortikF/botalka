@@ -2,25 +2,51 @@
 
 import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Swords } from "lucide-react";
 import Avatar from "../../Avatar";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
-import type { Clan } from "../types";
+import type { Clan, War } from "../types";
 import { MIN_FOR_BOARD, POLICY, ROLE } from "../types";
 
 export default function ClanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [clan, setClan] = useState<Clan | null>(null);
+  const [mine, setMine] = useState<Clan | null>(null);
+  const [wars, setWars] = useState<War[]>([]);
+  const [stake, setStake] = useState(500);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(() => {
     api<Clan>(`/api/clans/${id}`)
       .then(setClan)
       .catch((e: Error) => setError(e.message));
+    api<Clan | null>("/api/clans/my")
+      .then(setMine)
+      .catch(() => setMine(null));
+    api<War[]>("/api/clans/wars")
+      .then(setWars)
+      .catch(() => setWars([]));
   }, [id]);
 
   useEffect(load, [load]);
+
+  async function challenge() {
+    setBusy(true);
+    setError("");
+    try {
+      await api("/api/clans/wars", {
+        method: "POST",
+        body: JSON.stringify({ clan_id: Number(id), stake }),
+      });
+      window.location.href = "/app/clans";
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function join() {
     setError("");
@@ -43,6 +69,19 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
     );
 
   if (!clan) return <p className="muted">Загрузка…</p>;
+
+  // Вызов бросает глава или офицер другого клана. Занятые войной и мелкие
+  // кланы отсекаем здесь же, чтобы кнопка не появлялась ради ошибки в ответе.
+  const busyWar = wars.some(
+    (war) => war.state === "pending" || war.state === "active",
+  );
+  const canChallenge =
+    mine !== null &&
+    mine.id !== clan.id &&
+    (mine.your_role === "leader" || mine.your_role === "officer") &&
+    mine.members_count >= MIN_FOR_BOARD &&
+    clan.members_count >= MIN_FOR_BOARD &&
+    !busyWar;
 
   return (
     <div className="page">
@@ -115,6 +154,50 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
           <p className="tile-label">решали на этой неделе</p>
         </div>
       </section>
+
+      {canChallenge && (
+        <section
+          className="card flex flex-wrap items-end gap-4"
+          style={{ padding: "22px 24px", borderColor: "var(--accent-2-200)" }}
+        >
+          <div className="min-w-[220px] flex-1">
+            <h2 className="section-title flex items-center gap-2">
+              <Swords size={18} style={{ color: "var(--accent-2)" }} /> Вызвать на
+              войну
+            </h2>
+            <p className="muted mt-1 text-sm">
+              Пять часов, 20 общих задач. Ставку платят обе стороны из казны,
+              победитель забирает {stake * 2}. В вашей казне {mine?.coins}.
+            </p>
+          </div>
+
+          <label style={{ width: 130 }}>
+            <span className="eyebrow">Ставка</span>
+            <input
+              className="input mt-1.5 w-full"
+              type="number"
+              min={50}
+              step={50}
+              value={stake}
+              onChange={(e) => setStake(Number(e.target.value))}
+            />
+          </label>
+
+          <button
+            className="btn btn-accent2"
+            disabled={busy || (mine?.coins ?? 0) < stake}
+            onClick={challenge}
+          >
+            <Swords size={16} /> {busy ? "Отправляем…" : "Бросить вызов"}
+          </button>
+        </section>
+      )}
+
+      {mine && mine.id !== clan.id && busyWar && (
+        <p className="muted text-sm">
+          Вызвать нельзя: у одного из кланов уже есть война или неотвеченный вызов.
+        </p>
+      )}
 
       {clan.members_count < MIN_FOR_BOARD && (
         <p className="muted text-sm">
