@@ -71,12 +71,12 @@ export default function SuggestPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header className="flex items-start gap-3">
         <Lightbulb size={22} style={{ color: "var(--accent-2)" }} />
         <div>
-          <h1 className="text-3xl">Предложить свою задачу</h1>
-          <p className="muted mt-1 text-sm leading-relaxed">
+          <h1 className="page-title">Предложить свою задачу</h1>
+          <p className="page-subtitle">
             Встретил хорошую задачу в варианте или придумал сам — пришли сюда. Мы
             проверим ответ и добавим в банк, а за принятую задачу начислим {REWARD} монет.
           </p>
@@ -168,7 +168,7 @@ export default function SuggestPage() {
 
       {mine.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-xl">Что я присылал</h2>
+          <h2 className="section-title">Что я присылал</h2>
           <ul className="space-y-2">
             {mine.map((row) => {
               const state = STATUS[row.status];

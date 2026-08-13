@@ -30,6 +30,8 @@ from app.models import (
     User,
 )
 
+WEAK_BELOW = 0.7  # ниже этой доли верных тема считается проседающей
+
 # Ранги по рейтингу — чтобы число само по себе что-то значило
 RANKS = [
     (1800, "Гуру задач", "#7c3aed"),
@@ -94,6 +96,14 @@ class DayStatsOut(BaseModel):
     by_type: list[DayTypeRow]
 
 
+class WeakTopic(BaseModel):
+    """Самое проседающее — то, с чего стоит начать занятие."""
+
+    number: int
+    title: str
+    accuracy: int
+
+
 class ProfileOut(BaseModel):
     display_name: str
     is_guest: bool
@@ -127,6 +137,7 @@ class ProfileOut(BaseModel):
     mistakes_total: int
     mistakes_fixed: int
     mistakes_open: int
+    weak_topics: list[WeakTopic]
 
     tasks_total: int
 
@@ -288,6 +299,33 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
     fixed = len(wrong_tasks & correct_tasks)
     mistakes_open = len(wrong_tasks - correct_tasks)
 
+    # Слабые темы: где процент верных ниже всего. Меньше трёх попыток не считаем —
+    # одна случайная ошибка не делает тему слабой, а выше порога это уже не слабое
+    # место, и показывать его под таким заголовком было бы враньём.
+    per_type = (
+        await session.execute(
+            select(
+                TaskType.number,
+                TaskType.title,
+                func.count(Attempt.id),
+                func.count(Attempt.id).filter(Attempt.is_correct.is_(True)),
+            )
+            .join(Task, Task.task_type_id == TaskType.id)
+            .join(Attempt, Attempt.task_id == Task.id)
+            .where(Attempt.user_id == user.id)
+            .group_by(TaskType.number, TaskType.title)
+        )
+    ).all()
+
+    weak = sorted(
+        (
+            WeakTopic(number=number, title=title, accuracy=round(100 * correct / total))
+            for number, title, total, correct in per_type
+            if total >= 3 and correct / total < WEAK_BELOW
+        ),
+        key=lambda topic: topic.accuracy,
+    )[:3]
+
     today = max(days) if days else date.today()
     counts: dict[date, int] = {}
     for day in days:
@@ -386,6 +424,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         streak_record=streak_record,
         best_correct_run=best_run,
         perfect_quizzes=perfect,
+        weak_topics=weak,
         numbers_covered=numbers_covered,
         attempts_total=len(attempts),
         attempts_correct=sum(a.is_correct for a in attempts),

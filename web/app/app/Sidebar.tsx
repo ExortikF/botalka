@@ -66,11 +66,20 @@ export default function Sidebar({ user }: { user: User | null }) {
 
   return (
     <aside
-      className="flex w-64 shrink-0 flex-col justify-between border-r p-5"
-      style={{ borderColor: "var(--divider)", background: "var(--card)" }}
+      className="sticky top-0 flex h-screen shrink-0 flex-col justify-between overflow-y-auto border-r"
+      style={{
+        width: 258,
+        padding: "22px 16px",
+        borderColor: "var(--divider)",
+        background: "var(--card)",
+      }}
     >
       <div>
-        <Link href="/" className="h mb-8 block text-3xl tracking-tight">
+        <Link
+          href="/"
+          className="h block"
+          style={{ fontSize: 25, fontWeight: 800, margin: "2px 0 26px 8px" }}
+        >
           Боталка<span style={{ color: "var(--accent)" }}>.</span>
         </Link>
 
@@ -84,8 +93,10 @@ export default function Sidebar({ user }: { user: User | null }) {
                   href={soon ? "#" : href}
                   aria-disabled={soon}
                   onClick={(e) => soon && e.preventDefault()}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
+                  className="flex items-center gap-[11px] rounded-[14px] transition"
                   style={{
+                    padding: "10px 12px",
+                    fontSize: 14.5,
                     background: active ? "var(--accent-100)" : "transparent",
                     color: active
                       ? "var(--accent-700)"
@@ -93,7 +104,7 @@ export default function Sidebar({ user }: { user: User | null }) {
                         ? "var(--n-400)"
                         : "var(--text)",
                     cursor: soon ? "default" : "pointer",
-                    fontWeight: active ? 600 : 400,
+                    fontWeight: active ? 700 : 400,
                   }}
                 >
                   <Icon size={18} />

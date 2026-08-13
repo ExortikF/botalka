@@ -48,12 +48,12 @@ export default function LeaguePage() {
   if (!league) return <p className="muted">Загрузка…</p>;
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <header className="flex items-start gap-3">
         <Shield size={22} style={{ color: league.division_color }} />
         <div>
-          <h1 className="text-3xl">Лига · {league.division_title}</h1>
-          <p className="muted mt-1 text-sm leading-relaxed">
+          <h1 className="page-title">Лига · {league.division_title}</h1>
+          <p className="page-subtitle">
             Очко за каждую новую верно решённую задачу за неделю. В конце недели{" "}
             {league.promote > 0 && league.next_division ? (
               <>

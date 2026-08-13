@@ -86,9 +86,9 @@ export default function QuizBuilder() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Квизы</h1>
+        <h1 className="page-title">Квизы</h1>
       </header>
 
       <section className="space-y-3">

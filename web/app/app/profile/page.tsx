@@ -57,10 +57,19 @@ type Profile = {
   mistakes_total: number;
   mistakes_fixed: number;
   mistakes_open: number;
+  weak_topics: { number: number; title: string; accuracy: number }[];
   tasks_total: number;
   activity: { day: string; solved: number }[];
   achievements: Achievement[];
 };
+
+/** Ярлыки для быстрых ссылок в магазин — порядок как на витрине. */
+const WORN = [
+  { key: "card_bg", label: "Фон" },
+  { key: "frame", label: "Рамка" },
+  { key: "name_plate", label: "Плита" },
+  { key: "nick_color", label: "Ник" },
+] as const;
 
 const RARITY: Record<
   Achievement["rarity"],
@@ -108,42 +117,78 @@ export default function ProfilePage() {
   const locked = profile.achievements.filter((a) => !a.unlocked);
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <section
-        className={`card flex flex-wrap items-center gap-5 p-7 ${auroraClass(profile.cosmetics.card_bg)} ${plate.className}`}
+        className={`card ${auroraClass(profile.cosmetics.card_bg)} ${plate.className}`}
         style={{
+          padding: "30px 32px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 22,
+          alignItems: "center",
+          justifyContent: "space-between",
           ...bg.style,
           ...plate.style,
           color: bg.dark ? "#fff" : undefined,
         }}
       >
-        <Avatar
-          name={profile.display_name}
-          avatar={profile.cosmetics.avatar}
-          frame={profile.cosmetics.frame}
-          size={64}
-        />
-        <div className="min-w-0 flex-1">
-          <h1 className="flex flex-wrap items-center gap-3 text-2xl">
-            <span className={nick.className} style={nick.style}>
-              {profile.cosmetics.prefix && `${profile.cosmetics.prefix} `}
-              {profile.display_name}
-            </span>
-            <span
-              className="rounded-full px-3 py-1 text-xs font-semibold"
+        <div className="flex items-center gap-[18px]">
+          <Avatar
+            name={profile.display_name}
+            avatar={profile.cosmetics.avatar}
+            frame={profile.cosmetics.frame}
+            size={74}
+            rounded="rounded-full"
+          />
+          <div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span
+                className={`h ${nick.className}`}
+                style={{ fontSize: 26, fontWeight: 800, ...nick.style }}
+              >
+                {profile.cosmetics.prefix && `${profile.cosmetics.prefix} `}
+                {profile.display_name}
+              </span>
+              <span
+                className="rounded-full px-[11px] py-1 text-xs font-bold"
+                style={
+                  bg.dark
+                    ? { background: "rgba(255,255,255,.24)" }
+                    : { background: `${profile.rank_color}1a`, color: profile.rank_color }
+                }
+              >
+                {profile.rank}
+              </span>
+            </div>
+            <p className="mt-1" style={{ fontSize: 13.5, opacity: bg.dark ? 0.9 : 0.7 }}>
+              {profile.is_guest ? "Гостевой аккаунт" : "Аккаунт Telegram"} · рейтинг{" "}
+              {profile.rating} · {plural(profile.duels_played, "дуэль", "дуэли", "дуэлей")}{" "}
+              {profile.duels_played}
+            </p>
+          </div>
+        </div>
+
+        {/* Что надето — и заодно вход в магазин: без этого купленное
+            видно только владельцу, а магазин никто не открывает. */}
+        <div className="flex max-w-[420px] flex-wrap gap-2">
+          {WORN.map(({ key, label }) => (
+            <Link
+              key={key}
+              href="/app/shop"
+              className="flex flex-col gap-0.5 rounded-[14px] px-[13px] py-2"
               style={{
-                background: `${profile.rank_color}1a`,
-                color: profile.rank_color,
+                background: bg.dark ? "rgba(255,255,255,.17)" : "var(--surface)",
+                color: bg.dark ? "#fff" : "var(--text)",
               }}
             >
-              {profile.rank}
-            </span>
-          </h1>
-          <p className="mt-1 text-sm" style={{ opacity: 0.75 }}>
-            {profile.is_guest
-              ? "Гостевой аккаунт — войди через Telegram, чтобы прогресс не потерялся"
-              : "Аккаунт Telegram"}
-          </p>
+              <span className="eyebrow" style={{ color: "inherit", opacity: 0.8, fontSize: 10 }}>
+                {label}
+              </span>
+              <span style={{ fontSize: 12.5, fontWeight: 700 }}>
+                {profile.cosmetics[key] ? "надето →" : "выбрать →"}
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -155,7 +200,7 @@ export default function ProfilePage() {
             borderColor: "var(--accent-2-200)",
           }}
         >
-          <h2 className="flex items-center gap-2 text-xl">
+          <h2 className="section-title flex items-center gap-2">
             <Swords size={18} style={{ color: "var(--accent-2)" }} />
             {profile.incoming_duels.length === 1
               ? "Тебя вызвали на дуэль"
@@ -181,7 +226,7 @@ export default function ProfilePage() {
         </section>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <Metric
           value={String(profile.streak_days)}
           unit={plural(profile.streak_days, "день", "дня", "дней")}
@@ -216,7 +261,7 @@ export default function ProfilePage() {
           accent={profile.mistakes_open > 0}
         />
         <div className="min-w-0 flex-1">
-          <h2 className="text-xl">Работа над ошибками</h2>
+          <h2 className="section-title">Работа над ошибками</h2>
           <p className="muted mt-1 text-sm leading-relaxed">
             {profile.mistakes_total === 0
               ? "Ошибок пока не было — как появятся, они соберутся здесь."
@@ -226,18 +271,41 @@ export default function ProfilePage() {
           </p>
           {profile.mistakes_open > 0 && (
             <Link
-              className="btn mt-4"
+              className="btn mt-3"
               href="/app/quiz/run?preset=mistakes&length=10"
             >
               Проработать
             </Link>
           )}
         </div>
+
+        {profile.weak_topics.length > 0 && (
+          <div
+            className="min-w-[220px] flex-1 pl-[26px]"
+            style={{ borderLeft: "1px solid var(--divider)" }}
+          >
+            <p className="eyebrow mb-2.5">Слабые темы</p>
+            <ul className="flex flex-col gap-[7px]">
+              {profile.weak_topics.map((topic) => (
+                <li
+                  key={topic.number}
+                  className="flex justify-between gap-3"
+                  style={{ fontSize: 13.5 }}
+                >
+                  <span className="truncate">{topic.title}</span>
+                  <span className="font-bold" style={{ color: "var(--accent-2)" }}>
+                    {topic.accuracy}%
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       <section className="card p-6">
         <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-xl">Активность за 30 дней</h2>
+          <h2 className="section-title">Активность за 30 дней</h2>
           <span className="muted text-sm">
             насыщенность — число решённых задач
           </span>
@@ -260,7 +328,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2 className="flex items-center gap-2 text-xl">
+          <h2 className="section-title flex items-center gap-2">
             <Swords size={18} style={{ color: "var(--accent-2)" }} /> Рейтинг
           </h2>
           <p className="muted mt-2 text-sm leading-relaxed">
@@ -279,7 +347,7 @@ export default function ProfilePage() {
 
       <section className="space-y-4">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-xl">Достижения</h2>
+          <h2 className="section-title">Достижения</h2>
           <span className="muted text-sm">
             {unlocked.length} из {profile.achievements.length}
           </span>
@@ -473,13 +541,13 @@ function Metric({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="card p-5">
-      <p className="h flex items-baseline gap-1.5 text-3xl">
+    <div className="tile">
+      <p className="tile-value">
         {icon}
         {value}
-        {unit && <span className="muted text-base">{unit}</span>}
+        {unit && <span className="tile-unit">{unit}</span>}
       </p>
-      <p className="muted mt-1 text-sm leading-snug">{label}</p>
+      <p className="tile-label">{label}</p>
     </div>
   );
 }

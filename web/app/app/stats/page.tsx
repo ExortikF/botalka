@@ -75,9 +75,9 @@ export default function StatsPage() {
     .sort((a, b) => a.accuracy - b.accuracy);
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Статистика за год</h1>
+        <h1 className="page-title">Статистика за год</h1>
       </header>
 
       <section
@@ -236,7 +236,7 @@ export default function StatsPage() {
 
       {worst.length > 0 && (
         <section className="card p-6">
-          <h2 className="text-xl">Что тянет вниз</h2>
+          <h2 className="section-title">Что тянет вниз</h2>
           <p className="muted mt-1 text-sm">
             Номера с худшей точностью при трёх и более попытках
           </p>

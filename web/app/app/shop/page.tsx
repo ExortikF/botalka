@@ -48,6 +48,7 @@ export default function ShopPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [me, setMe] = useState<User | null>(null);
+  const [kind, setKind] = useState("all");
 
   useEffect(() => {
     api<Shop>("/api/shop")
@@ -88,22 +89,43 @@ export default function ShopPage() {
     items: shop.items.filter((i) => i.kind === kind),
   })).filter((g) => g.items.length > 0);
 
+  const shown = kind === "all" ? groups : groups.filter((g) => g.kind === kind);
+
   return (
-    <div className="space-y-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-3xl">Магазин</h1>
+    <div className="page">
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="page-title">Магазин</h1>
+          <p className="page-subtitle">
+            Только внешний вид. На задачи, подсказки и рейтинг ничего из этого не
+            влияет.
+          </p>
+        </div>
         <span
-          className="flex items-center gap-2 rounded-full px-4 py-2 text-lg font-semibold"
-          style={{ background: "#fdf3dd", color: "#c98a00" }}
+          className="h flex items-center gap-[7px] rounded-full"
+          style={{
+            background: "#fdf3dd",
+            color: "#c98a00",
+            padding: "9px 18px",
+            fontSize: 17,
+          }}
         >
           <Coins size={18} /> {shop.coins}
         </span>
       </header>
 
-      <p className="muted -mt-4 text-sm">
-        Только внешний вид. На задачи, подсказки и рейтинг ничего из этого не
-        влияет.
-      </p>
+      <section className="flex flex-wrap gap-2">
+        {[{ kind: "all", title: "Всё" }, ...groups].map((tab) => (
+          <button
+            key={tab.kind}
+            className={`pill ${kind === tab.kind ? "pill-active" : "pill-idle"}`}
+            style={{ border: "1px solid var(--divider)" }}
+            onClick={() => setKind(tab.kind)}
+          >
+            {tab.title}
+          </button>
+        ))}
+      </section>
 
       {me?.is_admin && (
         <section
@@ -149,25 +171,31 @@ export default function ShopPage() {
         </p>
       )}
 
-      {groups.map((group) => (
+      {shown.map((group) => (
         <section key={group.kind} className="space-y-3">
-          <h2 className="eyebrow">{group.title}</h2>
+          <h2 className="section-title">{group.title}</h2>
           <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {group.items.map((item) => {
               const rarity = RARITY[item.rarity];
               return (
                 <li key={item.code}>
                   <article
-                    className="card flex h-full flex-col items-center gap-3 p-5 text-center"
+                    className="flex h-full flex-col items-center gap-[11px] p-4 text-center"
                     style={{
-                      borderColor: item.equipped ? "var(--accent)" : undefined,
+                      background: "var(--card)",
+                      borderRadius: 16,
+                      border: `2px solid ${item.equipped ? rarity.color : "rgba(20,23,28,.08)"}`,
+                      boxShadow: item.equipped ? `0 0 18px ${rarity.color}33` : undefined,
                     }}
                   >
                     <Preview item={item} />
 
                     <div className="flex-1">
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-xs" style={{ color: rarity.color }}>
+                      <p style={{ fontSize: 13.5, fontWeight: 600 }}>{item.title}</p>
+                      <p
+                        className="mt-0.5"
+                        style={{ fontSize: 11, fontWeight: 700, color: rarity.color }}
+                      >
                         {rarity.label}
                       </p>
                     </div>

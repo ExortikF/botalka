@@ -54,10 +54,10 @@ export default function MocksPage() {
   const shown = mocks.filter((m) => m.subject_slug === active);
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Пробники</h1>
-        <p className="muted mt-2">
+        <h1 className="page-title">Пробники</h1>
+        <p className="page-subtitle">
           Полный вариант на время. Ответы проверяются в конце — как на экзамене.
         </p>
       </header>

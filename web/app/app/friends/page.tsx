@@ -96,10 +96,10 @@ export default function FriendsPage() {
   const outgoing = data.requests.filter((r) => r.direction === "outgoing");
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Друзья</h1>
-        <p className="muted mt-2">
+        <h1 className="page-title">Друзья</h1>
+        <p className="page-subtitle">
           Добавляй по коду и вызывай на дуэль в один клик. Поиска по всем
           пользователям нет — только по коду, который человек сам тебе дал.
         </p>
@@ -114,7 +114,7 @@ export default function FriendsPage() {
               {copied ? <Check size={15} /> : <Copy size={15} />}
             </button>
           </div>
-          <p className="muted mt-2 text-sm">
+          <p className="muted mt-1 text-sm">
             Отправь его тому, кого хочешь добавить.
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function FriendsPage() {
 
       <section className="space-y-3">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-xl">Мои друзья</h2>
+          <h2 className="section-title">Мои друзья</h2>
           <span className="muted text-sm">
             {data.friends.length}{" "}
             {plural(data.friends.length, "друг", "друга", "друзей")}

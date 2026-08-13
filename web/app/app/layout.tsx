@@ -19,8 +19,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen" style={{ background: "var(--surface)" }}>
       <Sidebar user={user} />
-      <main className="min-w-0 flex-1 p-8">
-        <div className="mx-auto max-w-4xl">{children}</div>
+      <main
+        className="min-w-0 flex-1"
+        style={{ padding: "38px 46px 60px", maxWidth: 1240 }}
+      >
+        {children}
       </main>
       <AchievementToast />
     </div>

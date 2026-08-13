@@ -192,7 +192,7 @@ export default function QuizRunner({
   const allAnswered = answeredCount === quiz.tasks.length;
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <div className="flex items-center justify-between">
         <Link
           className="muted flex items-center gap-1.5 text-sm hover:underline"
@@ -505,7 +505,7 @@ function Result({ result }: { result: QuizResult }) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <section
         className="relative overflow-hidden p-8 text-center text-white"
         style={{
@@ -554,7 +554,7 @@ function Result({ result }: { result: QuizResult }) {
 
       {improved.length > 0 && (
         <section className="card space-y-3 p-6">
-          <h2 className="flex items-center gap-2 text-xl">
+          <h2 className="section-title flex items-center gap-2">
             <TrendingUp size={18} style={{ color: "var(--accent)" }} /> Что подтянулось
           </h2>
           <ul className="space-y-2 text-sm">
@@ -591,7 +591,7 @@ function Result({ result }: { result: QuizResult }) {
 
       {wrong.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-xl">Разбор ошибок</h2>
+          <h2 className="section-title">Разбор ошибок</h2>
           {wrong.map((item) => (
             <article key={item.task_id} className="card space-y-3 p-6 text-sm">
               <p className="eyebrow">Задание № {item.task_type_number}</p>

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Link2, Minus, Plus, Swords, Trophy, Users } from "lucide-react";
-import { api, createDuel, getMyDuels, type DuelListItem } from "@/lib/api";
+import { api, createDuel, getMe, getMyDuels, type DuelListItem, type User } from "@/lib/api";
+import { initials } from "@/lib/format";
 import { plural } from "@/lib/exam";
 
 type Friend = { id: number; display_name: string };
@@ -23,6 +24,7 @@ export default function DuelsPage() {
   const [error, setError] = useState("");
   const [friends, setFriends] = useState<Friend[]>([]);
   const [opponent, setOpponent] = useState<number | null>(null);
+  const [me, setMe] = useState<User | null>(null);
 
   useEffect(() => {
     getMyDuels()
@@ -31,6 +33,9 @@ export default function DuelsPage() {
     api<{ friends: Friend[] }>("/api/friends")
       .then((data) => setFriends(data.friends))
       .catch(() => setFriends([]));
+    getMe()
+      .then(setMe)
+      .catch(() => setMe(null));
   }, []);
 
   /** opponentId задан — вызов уйдёт другу в «Тебя вызвали», иначе останется ссылкой. */
@@ -49,23 +54,67 @@ export default function DuelsPage() {
   const finished = duels.filter((d) => d.outcome);
   const wins = finished.filter((d) => d.outcome === "win").length;
 
+  // Серия побед считается с последней дуэли назад — как в профиле.
+  let winStreak = 0;
+  for (const duel of finished) {
+    if (duel.outcome !== "win") break;
+    winStreak += 1;
+  }
+
+  const you = initials(me?.display_name ?? "");
+
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Дуэли</h1>
-        <p className="muted mt-2">
+        <h1 className="page-title">Дуэли</h1>
+        <p className="page-subtitle">
           Вы оба решаете один и тот же набор задач. Побеждает тот, кто ответил
           верно больше раз; при равном счёте — кто справился быстрее.
         </p>
       </header>
 
+      <section className="grid gap-3 sm:grid-cols-3">
+        <div className="tile text-center">
+          <p className="tile-value justify-center">{finished.length}</p>
+          <p className="tile-label">матчей сыграно</p>
+        </div>
+        <div className="tile text-center">
+          <p
+            className="tile-value justify-center"
+            style={{ color: "var(--accent)" }}
+          >
+            {finished.length > 0 ? Math.round((wins / finished.length) * 100) : 0}%
+          </p>
+          <p className="tile-label">процент побед</p>
+        </div>
+        <div className="tile text-center">
+          <p
+            className="tile-value justify-center"
+            style={{ color: "var(--accent-2)" }}
+          >
+            {winStreak}
+          </p>
+          <p className="tile-label">побед подряд сейчас</p>
+        </div>
+      </section>
+
       <section
-        className="relative overflow-hidden p-10 text-center text-white"
+        className="relative overflow-hidden text-center text-white"
         style={{
           background: "var(--accent)",
           borderRadius: "var(--radius-lg)",
+          padding: "38px 30px",
         }}
       >
+        {/* Сетка тетрадного листа — та же, что на черновике в квизе */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 1px,transparent 1px 26px),repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,transparent 1px 26px)",
+          }}
+        />
         <div
           aria-hidden
           className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-30"
@@ -84,8 +133,24 @@ export default function DuelsPage() {
           >
             <Trophy size={13} /> Рейтинговый режим
           </span>
-          <Swords size={44} className="mx-auto mt-5" />
-          <h2 className="h mt-4 text-4xl">Онлайн-матч</h2>
+          <div className="mt-[22px] flex items-center justify-center gap-[22px]">
+            <span
+              className="h flex h-14 w-14 items-center justify-center rounded-full text-[17px]"
+              style={{ background: "rgba(255,255,255,.22)" }}
+            >
+              {you}
+            </span>
+            <Swords size={26} />
+            <span
+              className="flex h-14 w-14 items-center justify-center rounded-full text-[22px]"
+              style={{ background: "rgba(255,255,255,.22)" }}
+            >
+              ?
+            </span>
+          </div>
+          <h2 className="h" style={{ fontSize: 33, fontWeight: 800, margin: "18px 0 0" }}>
+            Онлайн-матч
+          </h2>
           <p className="mx-auto mt-3 max-w-md opacity-90">
             Соперника подбираем по рейтингу. Семь раундов, вопрос приходит обоим
             одновременно, очко забирает тот, кто ответил верно и быстрее.
@@ -103,7 +168,7 @@ export default function DuelsPage() {
       <section className="card space-y-4 p-7">
         <div className="flex flex-wrap items-center gap-3">
           <Users size={20} style={{ color: "var(--accent-2)" }} />
-          <h2 className="text-xl">Дуэль с другом</h2>
+          <h2 className="section-title">Дуэль с другом</h2>
           <span
             className="rounded-full px-2.5 py-1 text-xs font-semibold"
             style={{ background: "var(--surface)", color: "var(--n-600)" }}
@@ -196,7 +261,7 @@ export default function DuelsPage() {
 
       <section className="space-y-3">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-xl">Мои дуэли</h2>
+          <h2 className="section-title">Мои дуэли</h2>
           {finished.length > 0 && (
             <span className="muted text-sm">
               {wins} {plural(wins, "победа", "победы", "побед")} из{" "}
