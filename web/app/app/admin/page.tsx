@@ -158,6 +158,9 @@ function AdminTasks() {
           <Link className="btn-ghost" href="/app/admin/suggestions">
             <Inbox size={16} /> Задачи от учеников
           </Link>
+          <Link className="btn-ghost" href="/app/admin/tournaments">
+            <Flag size={16} /> Турниры
+          </Link>
           <Link className="btn-ghost" href="/app/admin/mocks">
             <ClipboardList size={16} /> Пробники
           </Link>

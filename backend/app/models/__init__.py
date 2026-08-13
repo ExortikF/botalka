@@ -1,6 +1,15 @@
 from app.models.achievements import AchievementUnlock
 from app.models.league import LeagueMember
 from app.models.daily import DailyStart
+from app.models.tournaments import (
+    RuleEvent,
+    Tournament,
+    TournamentPrize,
+    TournamentResult,
+    TournamentRule,
+    TournamentScope,
+    TournamentStatus,
+)
 from app.models.coins import CoinReason, CoinTransaction
 from app.models.content import AnswerType, SourceKind, Subject, Task, TaskStatus, TaskType
 from app.models.progress import Attempt, Duel, DuelKind, DuelState, Quiz, QuizMode
@@ -43,5 +52,12 @@ __all__ = [
     "Task",
     "TaskStatus",
     "TaskType",
+    "RuleEvent",
+    "Tournament",
+    "TournamentPrize",
+    "TournamentResult",
+    "TournamentRule",
+    "TournamentScope",
+    "TournamentStatus",
     "User",
 ]

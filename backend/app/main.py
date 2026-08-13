@@ -21,6 +21,7 @@ from app.api import (
     quiz,
     shop,
     suggestions,
+    tournaments,
 )
 from app.core.config import settings
 from app.core.db import engine
@@ -65,6 +66,7 @@ app.include_router(duel_ws.router)
 app.include_router(mocks.router)
 app.include_router(shop.router)
 app.include_router(suggestions.router)
+app.include_router(tournaments.router)
 
 
 @app.get("/health")

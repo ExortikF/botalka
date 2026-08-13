@@ -18,6 +18,7 @@ class CoinReason(str, enum.Enum):
     DUEL_LOSS = "duel_loss"                 # утешительные: чтобы не боялись играть
     MOCK_FINISHED = "mock_finished"
     DAILY_TASK = "daily_task"                # задача дня
+    TOURNAMENT_PRIZE = "tournament_prize"     # приз за место в турнире
     SUGGESTION_APPROVED = "suggestion_approved"  # присланную задачу взяли в банк
     PURCHASE = "purchase"                   # трата в магазине
     ADMIN = "admin"                         # ручная правка

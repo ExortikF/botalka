@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Coins,
+  Flag,
   Flame,
   ShoppingBag,
   CalendarDays,
@@ -46,6 +47,7 @@ const NAV: NavItem[] = [
   { href: "/app/friends", label: "Друзья", icon: Users },
   { href: "/app/shop", label: "Магазин", icon: ShoppingBag },
   { href: "/app/league", label: "Лига", icon: Shield },
+  { href: "/app/tournaments", label: "Турниры", icon: Flag },
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
   { href: "/app/suggest", label: "Своя задача", icon: Lightbulb },
 ];

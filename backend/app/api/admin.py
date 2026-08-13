@@ -12,9 +12,21 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
+from sqlalchemy.orm import selectinload
 
 from app.api.deps import CurrentUser, DbSession
 from app.api.suggestions import approve_suggestion
+from app.api.tournaments import (
+    AwardOut,
+    TournamentIn,
+    TournamentOut,
+    apply_config,
+    finish_and_award,
+    _load as _load_tournament,
+    _out as _tournament_out,
+    _state,
+)
+from app.core.tournaments import standings
 from app.core.answers import check_answer
 from app.models import (
     AnswerType,
@@ -33,6 +45,8 @@ from app.models import (
     SourceKind,
     Subject,
     SuggestionStatus,
+    Tournament,
+    TournamentStatus,
     Task,
     TaskStatus,
     TaskSuggestion,
@@ -897,6 +911,123 @@ async def reject(
     row.status = SuggestionStatus.REJECTED
     row.moderator_note = payload.note
     row.reviewed_at = datetime.now(UTC)
+    await session.commit()
+    return {"ok": True}
+
+
+# ------------------------------------------------------------------- турниры
+
+
+class TournamentRow(BaseModel):
+    id: int
+    title: str
+    status: str
+    state: str
+    starts_at: datetime
+    ends_at: datetime
+    participants: int
+    rules: int
+    awarded: bool
+
+
+@router.get("/tournaments", response_model=list[TournamentRow])
+async def list_tournaments(session: DbSession, admin: AdminUser) -> list[TournamentRow]:
+    rows = list(
+        await session.scalars(
+            select(Tournament)
+            .options(selectinload(Tournament.rules), selectinload(Tournament.prizes))
+            .order_by(Tournament.id.desc())
+            .limit(50)
+        )
+    )
+    out = []
+    for row in rows:
+        table = await standings(session, row)
+        out.append(
+            TournamentRow(
+                id=row.id,
+                title=row.title,
+                status=row.status.value,
+                state=_state(row),
+                starts_at=row.starts_at,
+                ends_at=row.ends_at,
+                participants=len(table),
+                rules=len(row.rules),
+                awarded=row.awarded_at is not None,
+            )
+        )
+    return out
+
+
+@router.post("/tournaments", response_model=TournamentOut, status_code=status.HTTP_201_CREATED)
+async def create_tournament(
+    payload: TournamentIn, session: DbSession, admin: AdminUser
+) -> TournamentOut:
+    tournament = Tournament(
+        title=payload.title, starts_at=payload.starts_at, ends_at=payload.ends_at
+    )
+    session.add(tournament)
+    await session.flush()
+    tournament = await apply_config(session, tournament, payload)
+    return await _tournament_out(session, tournament, admin)
+
+
+@router.get("/tournaments/{tournament_id}", response_model=TournamentOut)
+async def get_tournament(
+    tournament_id: int, session: DbSession, admin: AdminUser
+) -> TournamentOut:
+    """Тот же вид, что видит ученик — чтобы настройка проверялась глазами."""
+    return await _tournament_out(session, await _load_tournament(session, tournament_id), admin)
+
+
+@router.put("/tournaments/{tournament_id}", response_model=TournamentOut)
+async def update_tournament(
+    tournament_id: int, payload: TournamentIn, session: DbSession, admin: AdminUser
+) -> TournamentOut:
+    tournament = await _load_tournament(session, tournament_id)
+    if tournament.awarded_at is not None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "награды уже выданы, править нельзя")
+    tournament = await apply_config(session, tournament, payload)
+    return await _tournament_out(session, tournament, admin)
+
+
+@router.post("/tournaments/{tournament_id}/publish", response_model=TournamentOut)
+async def publish_tournament(
+    tournament_id: int, session: DbSession, admin: AdminUser
+) -> TournamentOut:
+    tournament = await _load_tournament(session, tournament_id)
+    if not tournament.rules:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "нет ни одного правила начисления")
+    tournament.status = TournamentStatus.PUBLISHED
+    await session.commit()
+    return await _tournament_out(session, tournament, admin)
+
+
+@router.post("/tournaments/{tournament_id}/hide", response_model=TournamentOut)
+async def hide_tournament(
+    tournament_id: int, session: DbSession, admin: AdminUser
+) -> TournamentOut:
+    tournament = await _load_tournament(session, tournament_id)
+    tournament.status = TournamentStatus.DRAFT
+    await session.commit()
+    return await _tournament_out(session, tournament, admin)
+
+
+@router.post("/tournaments/{tournament_id}/finish", response_model=AwardOut)
+async def finish_tournament(
+    tournament_id: int, session: DbSession, admin: AdminUser
+) -> AwardOut:
+    """Подводит итоги и выдаёт награды. Кнопка ручная намеренно: раздача призов —
+    необратимое действие, его лучше делать глазами, а не по таймеру."""
+    return await finish_and_award(session, await _load_tournament(session, tournament_id))
+
+
+@router.delete("/tournaments/{tournament_id}")
+async def delete_tournament(tournament_id: int, session: DbSession, admin: AdminUser) -> dict:
+    tournament = await _load_tournament(session, tournament_id)
+    if tournament.awarded_at is not None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "награды выданы, удалять нельзя")
+    await session.delete(tournament)
     await session.commit()
     return {"ok": True}
 
