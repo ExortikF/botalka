@@ -18,6 +18,7 @@ export type Clan = {
   color: string;
   join_policy: string;
   max_members: number;
+  coins: number;
   members_count: number;
   points_week: number;
   average_week: number;
@@ -29,6 +30,38 @@ export type Clan = {
   requests: ClanMember[];
 };
 
+export type WarSide = {
+  clan_id: number;
+  name: string;
+  tag: string;
+  color: string;
+  score: number;
+};
+
+export type WarTask = {
+  task_id: number;
+  number: number;
+  title: string;
+  statement: string;
+  solved_by_us: boolean;
+  solved_by_them: boolean;
+  solver: string | null;
+};
+
+export type War = {
+  id: number;
+  state: "pending" | "active" | "finished" | "declined" | "expired";
+  stake: number;
+  us: WarSide;
+  them: WarSide;
+  you_challenged: boolean;
+  seconds_left: number | null;
+  tasks: WarTask[];
+  can_answer: boolean;
+  winner: string | null;
+  prize: number;
+};
+
 export type ClanRow = {
   place: number;
   id: number;
@@ -38,6 +71,7 @@ export type ClanRow = {
   members_count: number;
   average_week: number;
   points_week: number;
+  coins: number;
   is_yours: boolean;
 };
 

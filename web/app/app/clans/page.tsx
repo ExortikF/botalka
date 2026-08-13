@@ -4,15 +4,18 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Shield, Users } from "lucide-react";
 import { api } from "@/lib/api";
-import type { Clan, ClanRow } from "./types";
+import type { Clan, ClanRow, War as WarType } from "./types";
 import { MIN_FOR_BOARD, POLICY } from "./types";
 import MyClan from "./MyClan";
+import War from "./War";
+import WarPanel from "./WarPanel";
 
 const COLORS = ["#0088b0", "#d6006c", "#7c3aed", "#1f9d55", "#c98a00", "#1b1f3b"];
 
 export default function ClansPage() {
   const [rows, setRows] = useState<ClanRow[] | null>(null);
   const [mine, setMine] = useState<Clan | null>(null);
+  const [wars, setWars] = useState<WarType[]>([]);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
@@ -23,6 +26,9 @@ export default function ClansPage() {
     api<Clan | null>("/api/clans/my")
       .then(setMine)
       .catch(() => setMine(null));
+    api<WarType[]>("/api/clans/wars")
+      .then(setWars)
+      .catch(() => setWars([]));
   }, []);
 
   useEffect(load, [load]);
@@ -36,6 +42,8 @@ export default function ClansPage() {
       setError((e as Error).message);
     }
   }
+
+  const active = wars.find((war) => war.state === "active") ?? null;
 
   return (
     <div className="page">
@@ -77,6 +85,12 @@ export default function ClansPage() {
       )}
 
       {mine && <MyClan clan={mine} onChange={load} />}
+
+      {mine && (
+        <WarPanel clan={mine} wars={wars} rows={rows ?? []} onChange={load} />
+      )}
+
+      {active && <War war={active} onChange={load} />}
 
       <section className="space-y-3">
         <div className="section-head">
@@ -121,8 +135,8 @@ export default function ClansPage() {
                   </Link>
 
                   <span className="muted shrink-0 text-xs">
-                    {row.members_count}{" "}
-                    {row.members_count < MIN_FOR_BOARD && "· вне зачёта"}
+                    {row.members_count} чел. · казна {row.coins}
+                    {row.members_count < MIN_FOR_BOARD && " · вне зачёта"}
                   </span>
 
                   <span className="shrink-0 text-right">

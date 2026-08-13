@@ -74,6 +74,7 @@ class ClanOut(BaseModel):
     color: str
     join_policy: str
     max_members: int
+    coins: int
     members_count: int
     max_size: int
     points_week: int          # сумма решённых за неделю
@@ -95,6 +96,7 @@ class ClanRow(BaseModel):
     members_count: int
     average_week: int
     points_week: int
+    coins: int
     is_yours: bool
 
 
@@ -214,6 +216,7 @@ async def _out(session: DbSession, clan: Clan, user: User) -> ClanOut:
         color=clan.color,
         join_policy=clan.join_policy.value,
         max_members=clan.max_members,
+        coins=clan.coins,
         members_count=len(clan.members),
         max_size=clan.max_members,
         points_week=total,
@@ -267,6 +270,7 @@ async def leaderboard(session: DbSession, user: PlayerUser) -> list[ClanRow]:
             members_count=len(row["clan"].members),
             average_week=row["average"],
             points_week=row["total"],
+            coins=row["clan"].coins,
             is_yours=mine is not None and mine.clan_id == row["clan"].id,
         )
         for i, row in enumerate(rows)
