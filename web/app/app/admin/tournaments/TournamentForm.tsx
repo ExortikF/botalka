@@ -15,6 +15,21 @@ type RuleDraft = {
   exclude_hints: boolean;
 };
 
+type ProblemDraft = {
+  task_id: number;
+  points: number;
+  number: number;
+  statement: string;
+};
+
+type PickRow = {
+  id: number;
+  number: number;
+  statement: string;
+  answer_value: string;
+  difficulty: number;
+};
+
 type PrizeDraft = {
   place_from: number;
   place_to: number;
@@ -77,6 +92,11 @@ export default function TournamentForm({
   const [startsAt, setStartsAt] = useState(period[0]);
   const [endsAt, setEndsAt] = useState(period[1]);
   const [minRating, setMinRating] = useState<number | null>(null);
+  const [format, setFormat] = useState<"contest" | "marathon">("contest");
+  const [penaltyMinutes, setPenaltyMinutes] = useState(10);
+  const [problems, setProblems] = useState<ProblemDraft[]>([]);
+  const [pickNumber, setPickNumber] = useState(1);
+  const [picks, setPicks] = useState<PickRow[]>([]);
   const [rules, setRules] = useState<RuleDraft[]>([emptyRule()]);
   const [prizes, setPrizes] = useState<PrizeDraft[]>([
     { place_from: 1, place_to: 1, coins: 500, item_code: "" },
@@ -97,6 +117,16 @@ export default function TournamentForm({
         setStartsAt(toLocal(new Date(data.starts_at)));
         setEndsAt(toLocal(new Date(data.ends_at)));
         setMinRating(data.min_rating);
+        setFormat(data.format);
+        setPenaltyMinutes(data.penalty_minutes);
+        setProblems(
+          data.problems.map((problem) => ({
+            task_id: problem.task_id,
+            points: problem.points,
+            number: problem.task_type_number,
+            statement: problem.statement || "(условие скрыто до старта)",
+          })),
+        );
         setRules(
           data.rules.map((rule) => ({
             event: rule.event,
@@ -129,6 +159,12 @@ export default function TournamentForm({
       starts_at: new Date(startsAt).toISOString(),
       ends_at: new Date(endsAt).toISOString(),
       min_rating: minRating,
+      format,
+      penalty_minutes: penaltyMinutes,
+      problems: problems.map((problem) => ({
+        task_id: problem.task_id,
+        points: problem.points,
+      })),
       rules: rules.map((rule) => ({
         event: rule.event,
         points: rule.points,
@@ -168,6 +204,24 @@ export default function TournamentForm({
     }
   }
 
+  function move(index: number, delta: number) {
+    setProblems((list) => {
+      const next = [...list];
+      const target = index + delta;
+      if (target < 0 || target >= next.length) return list;
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
+  async function loadPicks() {
+    try {
+      setPicks(await api<PickRow[]>(`/api/admin/tasks/pick/${pickNumber}`));
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+
   function patchRule(index: number, patch: Partial<RuleDraft>) {
     setRules((list) =>
       list.map((rule, i) => (i === index ? { ...rule, ...patch } : rule)),
@@ -196,6 +250,33 @@ export default function TournamentForm({
           {error}
         </p>
       )}
+
+      <section className="card space-y-5" style={{ padding: "26px 28px" }}>
+        <h2 className="section-title">Формат</h2>
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            className={`pill ${format === "contest" ? "pill-active" : "pill-idle"}`}
+            style={{ border: "1px solid var(--divider)" }}
+            onClick={() => setFormat("contest")}
+          >
+            Контест — набор задач
+          </button>
+          <button
+            className={`pill ${format === "marathon" ? "pill-active" : "pill-idle"}`}
+            style={{ border: "1px solid var(--divider)" }}
+            onClick={() => setFormat("marathon")}
+          >
+            Марафон — очки за активность
+          </button>
+        </div>
+
+        <p className="muted text-sm leading-relaxed">
+          {format === "contest"
+            ? "Задачи закрыты до старта и открываются у всех одновременно. Место — по сумме баллов, при равенстве выигрывает меньшее штрафное время."
+            : "Отдельно садиться не нужно: очки капают за обычную активность за период по правилам ниже."}
+        </p>
+      </section>
 
       <section className="card space-y-5" style={{ padding: "26px 28px" }}>
         <h2 className="section-title">Общее</h2>
@@ -273,6 +354,154 @@ export default function TournamentForm({
         </div>
       </section>
 
+      {format === "contest" && (
+        <section className="card space-y-4" style={{ padding: "26px 28px" }}>
+          <div className="section-head">
+            <h2 className="section-title">Задачи контеста</h2>
+            <span className="section-note">
+              порядок = буквы A, B, C — ставь их по возрастанию сложности
+            </span>
+          </div>
+
+          {problems.length === 0 ? (
+            <p className="muted text-sm">Пока ни одной задачи.</p>
+          ) : (
+            <ul className="space-y-2">
+              {problems.map((problem, index) => (
+                <li
+                  key={problem.task_id}
+                  className="flex flex-wrap items-center gap-3 rounded-xl p-3"
+                  style={{ background: "var(--surface)" }}
+                >
+                  <span className="h w-6 text-center">
+                    {String.fromCharCode(65 + index)}
+                  </span>
+                  <span className="muted w-12 shrink-0 text-xs">
+                    № {problem.number}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm">
+                    {problem.statement}
+                  </span>
+                  <label className="flex items-center gap-2 text-sm">
+                    баллов
+                    <input
+                      className="input"
+                      style={{ width: 90 }}
+                      type="number"
+                      min={1}
+                      value={problem.points}
+                      onChange={(e) =>
+                        setProblems((list) =>
+                          list.map((item, i) =>
+                            i === index
+                              ? { ...item, points: Number(e.target.value) }
+                              : item,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                  <button
+                    className="muted p-1"
+                    title="Вверх"
+                    onClick={() => move(index, -1)}
+                    disabled={index === 0}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    className="muted p-1"
+                    title="Вниз"
+                    onClick={() => move(index, 1)}
+                    disabled={index === problems.length - 1}
+                  >
+                    ↓
+                  </button>
+                  <button
+                    className="muted p-2"
+                    title="Убрать"
+                    onClick={() =>
+                      setProblems((list) => list.filter((_, i) => i !== index))
+                    }
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div
+            className="space-y-3 rounded-xl p-4"
+            style={{ background: "var(--surface)" }}
+          >
+            <div className="flex flex-wrap items-end gap-3">
+              <label style={{ width: 150 }}>
+                <span className="eyebrow">Номер задания</span>
+                <input
+                  className="input mt-1.5 w-full"
+                  type="number"
+                  min={1}
+                  max={19}
+                  value={pickNumber}
+                  onChange={(e) => setPickNumber(Number(e.target.value))}
+                />
+              </label>
+              <button className="btn-ghost text-sm" onClick={loadPicks}>
+                Показать задачи
+              </button>
+              <label style={{ width: 150 }}>
+                <span className="eyebrow">Штраф за попытку, мин</span>
+                <input
+                  className="input mt-1.5 w-full"
+                  type="number"
+                  min={0}
+                  value={penaltyMinutes}
+                  onChange={(e) => setPenaltyMinutes(Number(e.target.value))}
+                />
+              </label>
+            </div>
+
+            {picks.length > 0 && (
+              <ul className="max-h-72 space-y-1 overflow-y-auto">
+                {picks.map((row) => {
+                  const added = problems.some((p) => p.task_id === row.id);
+                  return (
+                    <li key={row.id}>
+                      <button
+                        className="flex w-full items-center gap-3 rounded-lg p-2 text-left text-sm disabled:opacity-40"
+                        style={{ background: "var(--card)" }}
+                        disabled={added}
+                        onClick={() =>
+                          setProblems((list) => [
+                            ...list,
+                            {
+                              task_id: row.id,
+                              points: 100 * (list.length + 1),
+                              number: row.number,
+                              statement: row.statement,
+                            },
+                          ])
+                        }
+                      >
+                        <Plus size={14} className="shrink-0" />
+                        <span className="min-w-0 flex-1 truncate">
+                          {row.statement}
+                        </span>
+                        <span className="muted shrink-0 text-xs">
+                          ответ {row.answer_value} · сложность {row.difficulty}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
+
+      {format === "marathon" && (
       <section className="card space-y-4" style={{ padding: "26px 28px" }}>
         <div className="section-head">
           <h2 className="section-title">Правила начисления</h2>
@@ -415,6 +644,7 @@ export default function TournamentForm({
           <Plus size={15} /> Ещё правило
         </button>
       </section>
+      )}
 
       <section className="card space-y-4" style={{ padding: "26px 28px" }}>
         <div className="section-head">

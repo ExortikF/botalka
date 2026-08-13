@@ -15,6 +15,21 @@ export type Prize = {
   item_title: string | null;
 };
 
+export type Problem = {
+  letter: string;
+  task_id: number;
+  points: number;
+  task_type_number: number;
+  task_type_title: string;
+  statement: string;
+  image_url: string | null;
+  answer_type: string;
+  solved: boolean;
+  wrong: number;
+  minute: number | null;
+  solved_count: number;
+};
+
 export type Row = {
   place: number;
   user_id: number;
@@ -24,6 +39,9 @@ export type Row = {
   avatar: string | null;
   frame: string | null;
   points: number;
+  penalty: number;
+  solved: number;
+  cells: Record<string, string>;
   is_you: boolean;
   prize_coins: number;
   prize_item: string | null;
@@ -42,12 +60,36 @@ export type Tournament = {
   seconds_left: number | null;
   eligible: boolean;
   ineligible_reason: string | null;
+  format: "contest" | "marathon";
+  penalty_minutes: number;
+  started: boolean;
+  over: boolean;
+  seconds_to_start: number | null;
   rules: Rule[];
   prizes: Prize[];
+  problems: Problem[];
   rows: Row[];
   your_place: number | null;
   your_points: number;
+  your_penalty: number;
 };
+
+export type SubmitResult = {
+  is_correct: boolean;
+  upsolve: boolean;
+  wrong: number;
+  minute: number | null;
+  message: string;
+};
+
+/** «1:23:45» — на контесте важны и часы, и секунды до конца. */
+export function formatClock(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
 
 export const STATE_COLOR: Record<string, string> = {
   идёт: "var(--accent)",

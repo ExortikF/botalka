@@ -85,3 +85,71 @@ def test_difficulty_range():
     assert _task_matches(one, task(4), 1)
     assert not _task_matches(one, task(2), 1)
     assert not _task_matches(one, task(5), 1)
+
+
+# --------------------------------------------------------------- контест
+
+
+from datetime import timedelta
+
+from app.core.tournaments import score_contest
+from app.models import ContestProblem, ContestSubmission
+
+START = datetime(2026, 8, 13, 15, 0, tzinfo=UTC)
+
+
+def problems(*weights: int) -> dict[int, ContestProblem]:
+    return {
+        i: ContestProblem(task_id=i, points=points, position=i - 1)
+        for i, points in enumerate(weights, 1)
+    }
+
+
+def sub(user: int, task: int, minute: int, correct: bool) -> ContestSubmission:
+    return ContestSubmission(
+        user_id=user,
+        task_id=task,
+        is_correct=correct,
+        answer_raw="x",
+        created_at=START + timedelta(minutes=minute),
+    )
+
+
+def score(subs, weights=(100, 250), penalty=10):
+    return score_contest(problems(*weights), subs, START, penalty)
+
+
+def test_clean_solve_costs_only_time():
+    [row] = score([sub(1, 1, 12, True)])
+    assert (row.points, row.solved, row.penalty) == (100, 1, 12)
+
+
+def test_wrong_attempts_add_penalty():
+    """Две неверные и верная на 20-й: 20 + 2×10."""
+    [row] = score([sub(1, 1, 5, False), sub(1, 1, 9, False), sub(1, 1, 20, True)])
+    assert row.penalty == 40
+
+
+def test_wrong_attempts_on_unsolved_are_free():
+    """За брошенную задачу не штрафуем, иначе выгоднее не пробовать вовсе."""
+    [row] = score([sub(1, 1, 3, True), sub(1, 2, 8, False), sub(1, 2, 9, False)])
+    assert (row.points, row.penalty) == (100, 3)
+
+
+def test_more_points_wins_even_with_bigger_penalty():
+    table = score([sub(1, 2, 90, True), sub(2, 1, 2, True)])
+    assert [row.user_id for row in table] == [1, 2]
+
+
+def test_penalty_breaks_the_tie():
+    table = score([sub(1, 1, 40, True), sub(2, 1, 5, True)])
+    assert [row.user_id for row in table] == [2, 1]
+
+
+def test_submissions_after_solve_are_ignored():
+    [row] = score([sub(1, 1, 4, True), sub(1, 1, 30, False)])
+    assert row.penalty == 4
+
+
+def test_unknown_task_is_skipped():
+    assert score([sub(1, 99, 5, True)]) == []

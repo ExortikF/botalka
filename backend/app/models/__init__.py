@@ -2,7 +2,10 @@ from app.models.achievements import AchievementUnlock
 from app.models.league import LeagueMember
 from app.models.daily import DailyStart
 from app.models.tournaments import (
+    ContestProblem,
+    ContestSubmission,
     RuleEvent,
+    TournamentFormat,
     Tournament,
     TournamentPrize,
     TournamentResult,
@@ -52,7 +55,10 @@ __all__ = [
     "Task",
     "TaskStatus",
     "TaskType",
+    "ContestProblem",
+    "ContestSubmission",
     "RuleEvent",
+    "TournamentFormat",
     "Tournament",
     "TournamentPrize",
     "TournamentResult",

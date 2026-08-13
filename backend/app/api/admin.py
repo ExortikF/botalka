@@ -46,6 +46,7 @@ from app.models import (
     Subject,
     SuggestionStatus,
     Tournament,
+    TournamentFormat,
     TournamentStatus,
     Task,
     TaskStatus,
@@ -935,7 +936,11 @@ async def list_tournaments(session: DbSession, admin: AdminUser) -> list[Tournam
     rows = list(
         await session.scalars(
             select(Tournament)
-            .options(selectinload(Tournament.rules), selectinload(Tournament.prizes))
+            .options(
+                selectinload(Tournament.rules),
+                selectinload(Tournament.prizes),
+                selectinload(Tournament.problems),
+            )
             .order_by(Tournament.id.desc())
             .limit(50)
         )
@@ -952,7 +957,7 @@ async def list_tournaments(session: DbSession, admin: AdminUser) -> list[Tournam
                 starts_at=row.starts_at,
                 ends_at=row.ends_at,
                 participants=len(table),
-                rules=len(row.rules),
+                rules=len(row.problems) if row.format is TournamentFormat.CONTEST else len(row.rules),
                 awarded=row.awarded_at is not None,
             )
         )
@@ -996,7 +1001,10 @@ async def publish_tournament(
     tournament_id: int, session: DbSession, admin: AdminUser
 ) -> TournamentOut:
     tournament = await _load_tournament(session, tournament_id)
-    if not tournament.rules:
+    if tournament.format is TournamentFormat.CONTEST:
+        if not tournament.problems:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "в контесте нет ни одной задачи")
+    elif not tournament.rules:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "нет ни одного правила начисления")
     tournament.status = TournamentStatus.PUBLISHED
     await session.commit()

@@ -12,6 +12,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -23,6 +24,18 @@ class TournamentStatus(str, enum.Enum):
     DRAFT = "draft"          # виден только в админке
     PUBLISHED = "published"  # виден всем; идёт или ещё не начался
     FINISHED = "finished"    # итоги подведены, награды выданы
+
+
+class TournamentFormat(str, enum.Enum):
+    """Два разных соревнования под одной сущностью.
+
+    CONTEST — то, что понимают под контестом: набор задач, общий старт, место
+    по сумме баллов и штрафному времени. MARATHON — фоновая гонка: очки капают
+    за обычную активность за период, отдельно садиться не нужно.
+    """
+
+    CONTEST = "contest"
+    MARATHON = "marathon"
 
 
 class TournamentScope(str, enum.Enum):
@@ -58,6 +71,9 @@ class Tournament(Base):
     description: Mapped[str | None] = mapped_column(Text)
     color: Mapped[str] = mapped_column(String(16), default="#0088b0")
 
+    format: Mapped[TournamentFormat] = mapped_column(
+        Enum(TournamentFormat, native_enum=False), default=TournamentFormat.CONTEST
+    )
     scope: Mapped[TournamentScope] = mapped_column(
         Enum(TournamentScope, native_enum=False), default=TournamentScope.USER
     )
@@ -73,6 +89,10 @@ class Tournament(Base):
     # Условия входа. Пусто — участвуют все.
     min_rating: Mapped[int | None] = mapped_column(Integer)
 
+    # Штраф за неверную попытку, в минутах. Считается только по решённым в итоге
+    # задачам: наказывать за брошенную задачу не за что.
+    penalty_minutes: Mapped[int] = mapped_column(Integer, default=10)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -83,6 +103,11 @@ class Tournament(Base):
     )
     prizes: Mapped[list[TournamentPrize]] = relationship(
         back_populates="tournament", cascade="all, delete-orphan"
+    )
+    problems: Mapped[list[ContestProblem]] = relationship(
+        back_populates="tournament",
+        cascade="all, delete-orphan",
+        order_by="ContestProblem.position",
     )
 
 
@@ -149,3 +174,49 @@ class TournamentResult(Base):
     points: Mapped[int] = mapped_column(Integer)
     coins_awarded: Mapped[int] = mapped_column(Integer, default=0)
     item_awarded: Mapped[str | None] = mapped_column(String(64))
+
+
+class ContestProblem(Base):
+    """Задача контеста под своей буквой и со своим весом."""
+
+    __tablename__ = "contest_problems"
+    __table_args__ = (UniqueConstraint("tournament_id", "task_id"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tournament_id: Mapped[int] = mapped_column(
+        ForeignKey("tournaments.id", ondelete="CASCADE"), index=True
+    )
+    task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"))
+
+    position: Mapped[int] = mapped_column(Integer, default=0)  # порядок = буква A, B, C…
+    points: Mapped[int] = mapped_column(Integer, default=100)
+
+    tournament: Mapped[Tournament] = relationship(back_populates="problems")
+
+
+class ContestSubmission(Base):
+    """Попытка сдать задачу контеста.
+
+    Отдельно от Attempt намеренно: в контесте важны неверные попытки (они дают
+    штраф) и точное время сдачи, а Attempt пишется отовсюду и смешивать эти
+    потоки — значит однажды посчитать в таблице чей-то домашний квиз.
+    """
+
+    __tablename__ = "contest_submissions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tournament_id: Mapped[int] = mapped_column(
+        ForeignKey("tournaments.id", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), index=True)
+
+    answer_raw: Mapped[str] = mapped_column(String(512))
+    is_correct: Mapped[bool] = mapped_column(Boolean)
+    # Сдано после конца контеста — в таблицу не идёт, но человеку видно,
+    # что он дорешал.
+    upsolve: Mapped[bool] = mapped_column(Boolean, default=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), index=True
+    )

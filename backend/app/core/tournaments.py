@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,6 +22,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.quiz import STREAK_TZ
 from app.models import (
     Attempt,
+    ContestProblem,
+    ContestSubmission,
     Duel,
     DuelKind,
     DuelState,
@@ -31,6 +33,7 @@ from app.models import (
     Task,
     TaskType,
     Tournament,
+    TournamentFormat,
     TournamentRule,
 )
 
@@ -40,6 +43,21 @@ class Standing:
     user_id: int
     points: int = 0
     by_event: dict[str, int] = field(default_factory=dict)
+
+    # Только для контеста: штрафное время в минутах и разбор по задачам.
+    penalty: int = 0
+    solved: int = 0
+    problems: dict[int, "ProblemResult"] = field(default_factory=dict)
+
+
+@dataclass
+class ProblemResult:
+    """Как участник прошёл одну задачу контеста."""
+
+    solved: bool = False
+    wrong: int = 0            # неверных попыток до верной
+    minute: int | None = None  # минута контеста, когда сдал
+    points: int = 0
 
 
 def _day_of(moment: datetime) -> date:
@@ -74,10 +92,90 @@ def _task_matches(rule: TournamentRule, task: Task, number: int) -> bool:
     return True
 
 
+async def contest_standings(
+    session: AsyncSession, tournament: Tournament
+) -> list[Standing]:
+    """Таблица контеста: баллы за решённые задачи, при равенстве — штрафное время.
+
+    Штраф начисляется только по задачам, которые в итоге решены: наказывать за
+    брошенную задачу не за что, иначе выгоднее не пробовать вовсе. Считается как
+    минута сдачи плюс `penalty_minutes` за каждую неверную попытку до неё —
+    так же, как на школьных олимпиадах и Codeforces.
+    """
+    problems = {p.task_id: p for p in tournament.problems}
+    if not problems:
+        return []
+
+    subs = list(
+        await session.scalars(
+            select(ContestSubmission)
+            .where(
+                ContestSubmission.tournament_id == tournament.id,
+                ContestSubmission.upsolve.is_(False),
+            )
+            .order_by(ContestSubmission.id)
+        )
+    )
+
+    return score_contest(
+        problems=problems,
+        submissions=subs,
+        starts_at=tournament.starts_at,
+        penalty_minutes=tournament.penalty_minutes,
+    )
+
+
+def score_contest(
+    problems: dict[int, "ContestProblem"],
+    submissions: list["ContestSubmission"],
+    starts_at: datetime,
+    penalty_minutes: int,
+) -> list[Standing]:
+    """Чистый подсчёт: попытки уже отобраны, порядок — по возрастанию id.
+
+    Вынесено из работы с базой, чтобы формулу штрафа можно было проверить
+    тестами: именно она ломается незаметно.
+    """
+    rows: dict[int, Standing] = {}
+
+    for sub in submissions:
+        problem = problems.get(sub.task_id)
+        if problem is None:
+            continue
+
+        row = rows.setdefault(sub.user_id, Standing(user_id=sub.user_id))
+        result = row.problems.setdefault(sub.task_id, ProblemResult())
+        if result.solved:
+            continue  # после верного ответа задача закрыта
+
+        if not sub.is_correct:
+            result.wrong += 1
+            continue
+
+        minute = max(
+            0,
+            int((sub.created_at.replace(tzinfo=UTC) - starts_at).total_seconds() // 60),
+        )
+        result.solved = True
+        result.minute = minute
+        result.points = problem.points
+
+        row.points += problem.points
+        row.solved += 1
+        row.penalty += minute + result.wrong * penalty_minutes
+
+    ranked = [row for row in rows.values() if row.solved > 0]
+    ranked.sort(key=lambda row: (-row.points, row.penalty, row.user_id))
+    return ranked
+
+
 async def standings(
     session: AsyncSession, tournament: Tournament
 ) -> list[Standing]:
     """Таблица турнира, отсортированная по очкам. Пустые участники не попадают."""
+    if tournament.format is TournamentFormat.CONTEST:
+        return await contest_standings(session, tournament)
+
     rules = list(tournament.rules)
     if not rules:
         return []

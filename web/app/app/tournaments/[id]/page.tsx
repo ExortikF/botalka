@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Coins, Info, Trophy } from "lucide-react";
 import Avatar from "../../Avatar";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
 import type { Tournament } from "../types";
 import { formatLeft, placeLabel } from "../types";
+import Contest from "./Contest";
 
 export default function TournamentPage({
   params,
@@ -18,11 +19,13 @@ export default function TournamentPage({
   const [data, setData] = useState<Tournament | null>(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const load = useCallback(() => {
     api<Tournament>(`/api/tournaments/${id}`)
       .then(setData)
       .catch((e: Error) => setError(e.message));
   }, [id]);
+
+  useEffect(load, [load]);
 
   if (error)
     return (
@@ -108,14 +111,23 @@ export default function TournamentPage({
           <p className="tile-value" style={{ color: data.color }}>
             {data.your_points}
           </p>
-          <p className="tile-label">твоих очков</p>
+          <p className="tile-label">
+            {data.format === "contest" ? "твоих баллов" : "твоих очков"}
+          </p>
         </div>
         <div className="tile">
-          <p className="tile-value">{data.rows.length}</p>
-          <p className="tile-label">участников в таблице</p>
+          <p className="tile-value">
+            {data.format === "contest" ? data.your_penalty : data.rows.length}
+          </p>
+          <p className="tile-label">
+            {data.format === "contest" ? "штрафных минут" : "участников в таблице"}
+          </p>
         </div>
       </section>
 
+      {data.format === "contest" && <Contest data={data} onReload={load} />}
+
+      {data.format === "marathon" && (
       <section className="card" style={{ padding: "26px 28px" }}>
         <h2 className="section-title">Как считаются очки</h2>
         <ul className="mt-3 flex flex-col gap-2 text-sm">
@@ -138,6 +150,7 @@ export default function TournamentPage({
           ))}
         </ul>
       </section>
+      )}
 
       {data.prizes.length > 0 && (
         <section className="card" style={{ padding: "26px 28px" }}>
@@ -167,7 +180,15 @@ export default function TournamentPage({
 
       <section className="space-y-3">
         <div className="section-head">
-          <h2 className="section-title">Таблица</h2>
+          <h2 className="section-title">
+            Таблица
+            {data.format === "contest" && data.problems.length > 0 && (
+              <span className="muted ml-2 text-sm font-normal">
+                колонки — задачи {data.problems[0].letter}…
+                {data.problems[data.problems.length - 1].letter}
+              </span>
+            )}
+          </h2>
           {data.state !== "завершён" && (
             <span className="section-note">обновляется на лету</span>
           )}
@@ -216,6 +237,28 @@ export default function TournamentPage({
                         <Trophy size={12} style={{ color: "var(--accent-2)" }} />
                         {row.prize_coins > 0 && row.prize_coins}
                         {row.prize_item && " + предмет"}
+                      </span>
+                    )}
+
+                    {data.format === "contest" &&
+                      data.problems.map((problem) => (
+                        <span
+                          key={problem.letter}
+                          className="hidden w-8 shrink-0 text-center text-sm sm:block"
+                          style={{
+                            color: row.cells[problem.letter]?.startsWith("+")
+                              ? "var(--accent)"
+                              : "var(--accent-2)",
+                          }}
+                          title={`Задача ${problem.letter}`}
+                        >
+                          {row.cells[problem.letter] || "·"}
+                        </span>
+                      ))}
+
+                    {data.format === "contest" && (
+                      <span className="muted w-16 shrink-0 text-right text-xs">
+                        {row.penalty} мин
                       </span>
                     )}
 
