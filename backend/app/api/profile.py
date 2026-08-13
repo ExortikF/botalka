@@ -715,6 +715,17 @@ async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
 
 # ------------------------------------------------------------ публичный профиль
 
+class PublicAchievement(BaseModel):
+    """Полученное достижение чужого профиля. Прогресс по неполученным не отдаём:
+    насколько человек близок к следующему — его дело."""
+
+    code: str
+    title: str
+    description: str
+    rarity: str
+    unlocked_at: datetime | None
+
+
 class PublicProfileOut(BaseModel):
     """Чужой профиль. Только то, чем человек и так хвастается в лидерборде:
     ни контактов, ни кода друга, ни истории ответов."""
@@ -732,6 +743,7 @@ class PublicProfileOut(BaseModel):
     streak_record: int
     achievements_unlocked: int
     achievements_total: int
+    achievements: list[PublicAchievement]
     duels_played: int
     duels_won: int
     is_friend: bool
@@ -793,6 +805,19 @@ async def public_profile(user_id: int, session: DbSession, viewer: PlayerUser) -
         came_back=False,
     )
 
+    # Таблица выдачи — главный источник: в ней лежит дата, а часть достижений
+    # (идеальный квиз, серия побед) по чужим попыткам заново не пересчитать.
+    # Считанные на лету добавляем сверху: у аккаунтов, заведённых до таблицы,
+    # она может быть пустой.
+    dates = {
+        row.code: row.unlocked_at
+        for row in await session.scalars(
+            select(AchievementUnlock).where(AchievementUnlock.user_id == target.id)
+        )
+    }
+    earned = [a for a in achievements if a.unlocked or a.code in dates]
+    earned.sort(key=lambda a: (dates.get(a.code) is None, -(dates[a.code].timestamp() if dates.get(a.code) else 0)))
+
     friendship = await session.scalar(
         select(Friendship).where(
             Friendship.state == FriendshipState.ACCEPTED,
@@ -812,8 +837,18 @@ async def public_profile(user_id: int, session: DbSession, viewer: PlayerUser) -
         accuracy=accuracy,
         streak_days=target.streak_days,
         streak_record=max(_longest_daily_run(days), target.streak_days),
-        achievements_unlocked=sum(a.unlocked for a in achievements),
+        achievements_unlocked=len(earned),
         achievements_total=len(achievements),
+        achievements=[
+            PublicAchievement(
+                code=a.code,
+                title=a.title,
+                description=a.description,
+                rarity=a.rarity,
+                unlocked_at=dates.get(a.code),
+            )
+            for a in earned
+        ],
         duels_played=len(online),
         duels_won=sum(1 for d in online if d.winner_id == target.id),
         is_friend=friendship is not None,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import { ArrowLeft, Flame, Swords } from "lucide-react";
+import { ArrowLeft, Flame, Swords, Trophy } from "lucide-react";
 import Avatar from "../../Avatar";
 import { api, createDuel } from "@/lib/api";
 import {
@@ -12,6 +12,23 @@ import {
   plateStyle,
 } from "@/lib/cosmetics";
 import { plural } from "@/lib/exam";
+
+type PublicAchievement = {
+  code: string;
+  title: string;
+  description: string;
+  rarity: "bronze" | "silver" | "gold";
+  unlocked_at: string | null;
+};
+
+const RARITY: Record<
+  PublicAchievement["rarity"],
+  { label: string; color: string; bg: string }
+> = {
+  bronze: { label: "бронза", color: "#8a5a2b", bg: "#f6ebe0" },
+  silver: { label: "серебро", color: "#5b6570", bg: "#eef1f4" },
+  gold: { label: "золото", color: "#8a6d0b", bg: "#fbf1cf" },
+};
 
 type PublicProfile = {
   user_id: number;
@@ -33,6 +50,7 @@ type PublicProfile = {
   streak_record: number;
   achievements_unlocked: number;
   achievements_total: number;
+  achievements: PublicAchievement[];
   duels_played: number;
   duels_won: number;
   is_friend: boolean;
@@ -141,6 +159,54 @@ export default function PublicProfilePage({
           value={`${profile.achievements_unlocked}/${profile.achievements_total}`}
           label="достижений"
         />
+      </section>
+
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-xl">
+            <Trophy size={18} style={{ color: "var(--accent-2)" }} /> Достижения
+          </h2>
+          <span className="muted text-sm">
+            {profile.achievements_unlocked} из {profile.achievements_total}
+          </span>
+        </div>
+
+        {profile.achievements.length === 0 ? (
+          <p className="muted text-sm">
+            Пока ни одного — {profile.is_you ? "самое время начать" : "всё впереди"}.
+          </p>
+        ) : (
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {profile.achievements.map((item) => {
+              const rarity = RARITY[item.rarity];
+              return (
+                <li key={item.code} className="card flex items-start gap-3 p-4">
+                  <span
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: rarity.bg, color: rarity.color }}
+                  >
+                    <Trophy size={17} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium">{item.title}</span>
+                    <span className="muted mt-0.5 block text-sm leading-snug">
+                      {item.description}
+                    </span>
+                    {item.unlocked_at && (
+                      <span className="muted mt-1 block text-xs">
+                        {new Date(item.unlocked_at).toLocaleDateString("ru", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
 
       <section className="card p-6">
