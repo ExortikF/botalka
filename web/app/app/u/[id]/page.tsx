@@ -104,7 +104,7 @@ export default function PublicProfilePage({
       </Link>
 
       <section
-        className={`card flex flex-wrap items-center gap-5 p-7 ${auroraClass(profile.cosmetics.card_bg)} ${plate.className}`}
+        className={`card flex flex-wrap items-center gap-[18px] p-[30px] ${auroraClass(profile.cosmetics.card_bg)} ${plate.className}`}
         style={{
           ...bg.style,
           ...plate.style,
@@ -125,11 +125,12 @@ export default function PublicProfilePage({
               {profile.display_name}
             </span>
             <span
-              className="rounded-full px-3 py-1 text-xs font-semibold"
-              style={{
-                background: `${profile.rank_color}1a`,
-                color: profile.rank_color,
-              }}
+              className="rounded-full px-3 py-1 text-xs font-bold"
+              style={
+                bg.dark
+                  ? { background: "rgba(255,255,255,.24)", color: "#fff" }
+                  : { background: `${profile.rank_color}1a`, color: profile.rank_color }
+              }
             >
               {profile.rank}
             </span>
@@ -147,7 +148,7 @@ export default function PublicProfilePage({
         )}
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-4">
         <Metric
           value={profile.streak_days}
           label={`подряд · рекорд ${profile.streak_record}`}
@@ -233,12 +234,12 @@ function Metric({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="card p-5">
-      <p className="h flex items-baseline gap-1.5 text-3xl">
+    <div className="tile">
+      <p className="tile-value">
         {icon}
         {value}
       </p>
-      <p className="muted mt-1 text-sm leading-snug">{label}</p>
+      <p className="tile-label">{label}</p>
     </div>
   );
 }

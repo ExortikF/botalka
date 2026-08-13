@@ -11,6 +11,8 @@ import {
   Lightbulb,
   Shield,
   Swords,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
   Trophy,
   Volume2,
@@ -54,7 +56,15 @@ const ADMIN_ITEM: NavItem = {
   icon: Shield,
 };
 
-export default function Sidebar({ user }: { user: User | null }) {
+export default function Sidebar({
+  user,
+  collapsed,
+  onToggle,
+}: {
+  user: User | null;
+  collapsed: boolean;
+  onToggle: () => void;
+}) {
   const pathname = usePathname();
   const [days, setDays] = useState<number | null>(null);
   const [sound, setSound] = useState(true);
@@ -68,20 +78,37 @@ export default function Sidebar({ user }: { user: User | null }) {
     <aside
       className="sticky top-0 flex h-screen shrink-0 flex-col justify-between overflow-y-auto border-r"
       style={{
-        width: 258,
-        padding: "22px 16px",
+        width: collapsed ? 72 : 258,
+        padding: collapsed ? "22px 10px" : "22px 16px",
         borderColor: "var(--divider)",
         background: "var(--card)",
+        transition: "width 0.18s ease",
       }}
     >
       <div>
-        <Link
-          href="/"
-          className="h block"
-          style={{ fontSize: 25, fontWeight: 800, margin: "2px 0 26px 8px" }}
+        <div
+          className="mb-[26px] flex items-center"
+          style={{ justifyContent: collapsed ? "center" : "space-between" }}
         >
-          Боталка<span style={{ color: "var(--accent)" }}>.</span>
-        </Link>
+          {!collapsed && (
+            <Link
+              href="/"
+              className="h"
+              style={{ fontSize: 25, fontWeight: 800, marginLeft: 8 }}
+            >
+              Боталка<span style={{ color: "var(--accent)" }}>.</span>
+            </Link>
+          )}
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-[10px]"
+            style={{ background: "var(--surface)", color: "var(--n-600)" }}
+            onClick={onToggle}
+            aria-label={collapsed ? "Развернуть меню" : "Свернуть меню"}
+            title={collapsed ? "Развернуть меню" : "Свернуть меню"}
+          >
+            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </button>
+        </div>
 
         <nav className="space-y-1">
           {(user?.is_admin ? [...NAV, ADMIN_ITEM] : NAV).map(
@@ -93,9 +120,11 @@ export default function Sidebar({ user }: { user: User | null }) {
                   href={soon ? "#" : href}
                   aria-disabled={soon}
                   onClick={(e) => soon && e.preventDefault()}
+                  title={collapsed ? label : undefined}
                   className="flex items-center gap-[11px] rounded-[14px] transition"
                   style={{
-                    padding: "10px 12px",
+                    padding: collapsed ? "10px 0" : "10px 12px",
+                    justifyContent: collapsed ? "center" : "flex-start",
                     fontSize: 14.5,
                     background: active ? "var(--accent-100)" : "transparent",
                     color: active
@@ -107,9 +136,11 @@ export default function Sidebar({ user }: { user: User | null }) {
                     fontWeight: active ? 700 : 400,
                   }}
                 >
-                  <Icon size={18} />
-                  {label}
-                  {soon && <span className="ml-auto text-[11px]">скоро</span>}
+                  <Icon size={18} className="shrink-0" />
+                  {!collapsed && label}
+                  {!collapsed && soon && (
+                    <span className="ml-auto text-[11px]">скоро</span>
+                  )}
                 </Link>
               );
             },
@@ -118,6 +149,7 @@ export default function Sidebar({ user }: { user: User | null }) {
       </div>
 
       <div className="space-y-4">
+        {!collapsed && (
         <div
           className="space-y-2 rounded-xl p-3"
           style={{ background: "var(--surface)" }}
@@ -156,7 +188,9 @@ export default function Sidebar({ user }: { user: User | null }) {
             <IdeaButton />
           </div>
         </div>
+        )}
 
+        {!collapsed && (
         <div>
           <p className="eyebrow">До экзамена</p>
           <p className="h mt-1 text-2xl">
@@ -169,11 +203,17 @@ export default function Sidebar({ user }: { user: User | null }) {
             {EXAM.approximate && " (ориентировочно)"}
           </p>
         </div>
+        )}
 
         {user && (
-          <div
+          <Link
+            href="/app/profile"
             className="flex items-center gap-3 border-t pt-4"
-            style={{ borderColor: "var(--divider)" }}
+            style={{
+              borderColor: "var(--divider)",
+              justifyContent: collapsed ? "center" : "flex-start",
+            }}
+            title={collapsed ? user.display_name : undefined}
           >
             <Avatar
               name={user.display_name}
@@ -182,6 +222,7 @@ export default function Sidebar({ user }: { user: User | null }) {
               size={38}
               rounded="rounded-full"
             />
+            {!collapsed && (
             <span className="min-w-0">
               <span
                 className={`block truncate text-sm ${nickStyle(user.cosmetics?.nick_color).className}`}
@@ -214,7 +255,7 @@ export default function Sidebar({ user }: { user: User | null }) {
                   }}
                 >
                   <Flame
-                    size={user.streak_days >= 7 ? 18 : 14}
+                    size={14}
                     style={{ color: "var(--accent-2)" }}
                     fill={user.streak_days >= 7 ? "var(--accent-2)" : "none"}
                   />
@@ -226,7 +267,8 @@ export default function Sidebar({ user }: { user: User | null }) {
                 </span>
               )}
             </span>
-          </div>
+            )}
+          </Link>
         )}
       </div>
     </aside>

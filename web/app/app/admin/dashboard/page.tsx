@@ -71,10 +71,10 @@ export default function AdminDashboard() {
   if (!data) return <p className="muted">Загрузка…</p>;
 
   return (
-    <div className="space-y-8">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Дашборд</h1>
+          <h1 className="page-title">Дашборд</h1>
           <p className="muted mt-1 text-sm">
             Личные данные сюда не попадают: ни Telegram-id, ни ников, ни
             контактов.
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl">Задачи с подозрительной решаемостью</h2>
+        <h2 className="section-title">Задачи с подозрительной решаемостью</h2>
         <p className="muted text-sm">
           0% почти всегда значит ошибку в эталонном ответе, 100% — что задача
           слишком лёгкая. Смотреть при трёх и более попытках.
@@ -189,7 +189,7 @@ export default function AdminDashboard() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl">Пользователи</h2>
+        <h2 className="section-title">Пользователи</h2>
         <div className="card overflow-x-auto">
           <table className="w-full text-sm" style={{ minWidth: "44rem" }}>
             <thead>

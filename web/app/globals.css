@@ -413,10 +413,16 @@ h2.section-title {
   position: relative;
 }
 
+.plate-grid > * {
+  position: relative;
+  z-index: 1;
+}
+
 .plate-grid::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 0;
   border-radius: inherit;
   pointer-events: none;
   background-image:
@@ -439,7 +445,13 @@ h2.section-title {
   to { background-position: 240px 120px; }
 }
 
+.plate-stars > * {
+  position: relative;
+  z-index: 1;
+}
+
 .plate-stars {
+  position: relative;
   background-image:
     radial-gradient(1.5px 1.5px at 20px 30px, var(--star), transparent),
     radial-gradient(1.5px 1.5px at 90px 70px, var(--star), transparent),

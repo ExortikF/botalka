@@ -144,11 +144,12 @@ export default function StatsPage() {
         {stats.months.length === 0 ? (
           <p className="muted text-sm">Пока пусто — реши первый квиз.</p>
         ) : (
-          <div className="flex items-end gap-2" style={{ height: 160 }}>
+          <div className="flex items-end gap-3" style={{ height: 160 }}>
             {stats.months.map((month) => (
               <div
                 key={month.month}
-                className="flex flex-1 flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2"
+                style={{ width: 46 }}
               >
                 <span className="muted text-xs">{month.solved}</span>
                 <div
@@ -256,9 +257,9 @@ export default function StatsPage() {
 
 function Metric({ value, label }: { value: number | string; label: string }) {
   return (
-    <div className="card p-5">
-      <p className="h text-3xl">{value}</p>
-      <p className="muted mt-1 text-sm leading-snug">{label}</p>
+    <div className="tile">
+      <p className="tile-value">{value}</p>
+      <p className="tile-label">{label}</p>
     </div>
   );
 }

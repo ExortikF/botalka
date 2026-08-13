@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, Check, Clock, Coins, Trophy } from "lucide-react";
+import { CalendarDays, Check, Clock, Coins, Timer, Trophy } from "lucide-react";
 import MathText from "../../Math";
 import { api } from "@/lib/api";
 import { checkAchievements } from "@/lib/achievements";
@@ -47,6 +47,10 @@ export default function DailyPage() {
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<Answer | null>(null);
   const [sending, setSending] = useState(false);
+  /** Условие открывается по кнопке: иначе таймер начинал идти, пока человек
+      читал задачу, и место в таблице зависело от скорости чтения. */
+  const [started, setStarted] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState("");
   const startedAt = useRef(Date.now());
 
@@ -63,6 +67,22 @@ export default function DailyPage() {
   }
 
   useEffect(load, []);
+
+  // Секундомер на экране: он же показывает, что время идёт.
+  useEffect(() => {
+    if (!started || result?.is_correct) return;
+    const timer = setInterval(
+      () => setElapsed(Math.round((Date.now() - startedAt.current) / 1000)),
+      500,
+    );
+    return () => clearInterval(timer);
+  }, [started, result]);
+
+  function start() {
+    startedAt.current = Date.now();
+    setElapsed(0);
+    setStarted(true);
+  }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -124,16 +144,49 @@ export default function DailyPage() {
             Задание № {daily.task_type_number}
           </span>
           <span className="muted text-sm">{daily.task_type_title}</span>
-          <span
-            className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs"
-            style={{ background: "#fdf3dd", color: "#c98a00" }}
-          >
-            <Coins size={13} /> {daily.reward} за решение
+          <span className="ml-auto flex items-center gap-2">
+            {started && !done && (
+              <span
+                className="h inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm"
+                style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+              >
+                <Timer size={13} /> {formatClock(elapsed)}
+              </span>
+            )}
+            <span
+              className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs"
+              style={{ background: "#fdf3dd", color: "#c98a00" }}
+            >
+              <Coins size={13} /> {daily.reward} за решение
+            </span>
           </span>
         </div>
 
-        <MathText className="block text-lg leading-relaxed" text={daily.statement} />
-        {daily.source && <p className="muted text-xs">Источник: {daily.source}</p>}
+        {started || done ? (
+          <>
+            <MathText
+              className="block text-lg leading-relaxed"
+              text={daily.statement}
+            />
+            {daily.source && (
+              <p className="muted text-xs">Источник: {daily.source}</p>
+            )}
+          </>
+        ) : (
+          <div
+            className="flex flex-col items-center gap-3 rounded-xl px-6 py-10 text-center"
+            style={{ background: "var(--surface)" }}
+          >
+            <Timer size={26} style={{ color: "var(--accent)" }} />
+            <p className="max-w-sm leading-relaxed">
+              Условие откроется по кнопке, и сразу пойдёт время. В таблицу идёт
+              первая попытка, так что решать лучше набело.
+            </p>
+            <button className="btn mt-1" onClick={start}>
+              Начать
+            </button>
+          </div>
+        )}
 
         {done ? (
           <div
@@ -155,7 +208,7 @@ export default function DailyPage() {
             </p>
             <p className="muted mt-1 text-sm">Возвращайся завтра — задача сменится.</p>
           </div>
-        ) : (
+        ) : started ? (
           <form className="flex flex-wrap gap-3" onSubmit={submit} noValidate>
             <input
               className="input flex-1"
@@ -168,7 +221,7 @@ export default function DailyPage() {
               {sending ? "Проверяем…" : "Ответить"}
             </button>
           </form>
-        )}
+        ) : null}
 
         {result && !result.is_correct && (
           <div
@@ -219,4 +272,9 @@ export default function DailyPage() {
       </section>
     </div>
   );
+}
+
+function formatClock(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }

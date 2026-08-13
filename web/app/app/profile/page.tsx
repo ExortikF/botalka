@@ -58,6 +58,7 @@ type Profile = {
   mistakes_fixed: number;
   mistakes_open: number;
   weak_topics: { number: number; title: string; accuracy: number }[];
+  rating_history: number[];
   tasks_total: number;
   activity: { day: string; solved: number }[];
   achievements: Achievement[];
@@ -326,6 +327,8 @@ export default function ProfilePage() {
             {profile.rank}
           </p>
         </div>
+
+        <RatingChart values={profile.rating_history} />
 
         <div className="min-w-0 flex-1">
           <h2 className="section-title flex items-center gap-2">
@@ -648,5 +651,54 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Как рейтинг менялся по матчам. Осей нет намеренно: важна форма линии,
+    конкретные значения человек и так видит в списке дуэлей. */
+function RatingChart({ values }: { values: number[] }) {
+  if (values.length < 2) return null;
+
+  const width = 220;
+  const height = 70;
+  const pad = 6;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min || 1;
+
+  const points = values.map((value, i) => {
+    const x = (i / (values.length - 1)) * width;
+    const y = height - pad - ((value - min) / span) * (height - pad * 2);
+    return [x, y] as const;
+  });
+
+  const line = points.map(([x, y]) => `${x},${y}`).join(" ");
+  const grew = values[values.length - 1] >= values[0];
+  const color = grew ? "var(--accent)" : "var(--accent-2)";
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="shrink-0"
+      role="img"
+      aria-label="График рейтинга по матчам"
+    >
+      <polyline
+        points={line}
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx={points[points.length - 1][0]}
+        cy={points[points.length - 1][1]}
+        r="3.5"
+        fill={color}
+      />
+    </svg>
   );
 }

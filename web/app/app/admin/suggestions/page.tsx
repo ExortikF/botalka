@@ -65,10 +65,10 @@ export default function SuggestionsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Задачи от учеников</h1>
+          <h1 className="page-title">Задачи от учеников</h1>
           <p className="muted mt-1 text-sm">
             Принятая задача попадает в банк <b>черновиком</b> и ждёт публикации из
             карточки — сначала стоит посмотреть, как она выглядит в квизе. Автору

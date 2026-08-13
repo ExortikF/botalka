@@ -36,10 +36,10 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Жалобы на задачи</h1>
+          <h1 className="page-title">Жалобы на задачи</h1>
           <p className="muted mt-1 text-sm">
             Приходят из кнопки «Нашли ошибку?» под условием. Задача при этом
             остаётся в выдаче — снимать её решаешь ты.

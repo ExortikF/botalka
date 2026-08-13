@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Loader2, Swords, X } from "lucide-react";
+import { ArrowLeft, Loader2, Swords, X } from "lucide-react";
 import MathText from "../../../Math";
 import { checkAchievements } from "@/lib/achievements";
+import { getMe, type User } from "@/lib/api";
+import { initials } from "@/lib/format";
 
 /** Тот же хост, что и сайт, если стоит прокси; в разработке — порт бэкенда. */
 function socketUrl(): string {
@@ -44,6 +46,13 @@ export default function OnlineDuelPage() {
   const ws = useRef<WebSocket | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState("");
+  const [me, setMe] = useState<User | null>(null);
+
+  useEffect(() => {
+    getMe()
+      .then(setMe)
+      .catch(() => setMe(null));
+  }, []);
   const [opponent, setOpponent] = useState<{
     name: string;
     rating: number;
@@ -275,53 +284,96 @@ export default function OnlineDuelPage() {
     );
 
   return (
-    <div className="space-y-7">
+    <div className="page">
       <header>
-        <h1 className="text-3xl">Онлайн-дуэль</h1>
-        <p className="muted mt-2">
+        <h1 className="page-title">Онлайн-дуэль</h1>
+        <p className="page-subtitle">
           Семь раундов, вопрос приходит обоим одновременно. Очко забирает тот,
           кто ответил верно и раньше. Рейтинг меняется только здесь.
         </p>
       </header>
 
-      {phase === "queued" ? (
-        <section className="card flex flex-col items-center gap-4 p-10 text-center">
-          <Loader2
-            className="animate-spin"
-            style={{ color: "var(--accent)" }}
-          />
-          <p className="text-lg">Ищем соперника…</p>
-          <p className="muted text-sm">
-            Игроков пока мало — если никого нет, позови друга, чтобы он тоже
-            встал в очередь.
-          </p>
-          <button className="btn-ghost" onClick={cancel}>
-            <X size={15} /> Отменить
-          </button>
-        </section>
-      ) : (
-        <section className="card space-y-4 p-7">
-          <div className="flex items-center gap-3">
-            <Swords size={20} style={{ color: "var(--accent-2)" }} />
-            <h2 className="text-xl">Найти соперника</h2>
-          </div>
-          <p className="muted text-sm leading-relaxed">
-            Подбор идёт среди всех, кто сейчас в очереди. Победа над более
-            сильным игроком даёт больше рейтинга.
-          </p>
-          <button className="btn btn-accent2" onClick={connect}>
-            Найти соперника
-          </button>
-          {error && (
-            <p className="text-sm" style={{ color: "var(--accent-2)" }}>
-              {error}
-            </p>
-          )}
-        </section>
-      )}
+      {/* Баннер тот же, что на странице дуэлей: человек пришёл сюда по кнопке
+          с него, и экран не должен выглядеть другим приложением. */}
+      <section
+        className="relative overflow-hidden text-center text-white"
+        style={{
+          background: "var(--accent)",
+          borderRadius: "var(--radius-lg)",
+          padding: "38px 30px",
+        }}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 1px,transparent 1px 26px),repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,transparent 1px 26px)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full"
+          style={{ background: "var(--accent-2)", opacity: 0.28 }}
+        />
 
-      <Link className="muted text-sm hover:underline" href="/app/duels">
-        ← Дуэли по ссылке
+        <div className="relative">
+          <div className="flex items-center justify-center gap-[22px]">
+            <span
+              className="h flex h-14 w-14 items-center justify-center rounded-full text-[17px]"
+              style={{ background: "rgba(255,255,255,.22)" }}
+            >
+              {initials(me?.display_name ?? "")}
+            </span>
+            {phase === "queued" ? (
+              <Loader2 size={26} className="animate-spin" />
+            ) : (
+              <Swords size={26} />
+            )}
+            <span
+              className="flex h-14 w-14 items-center justify-center rounded-full text-[22px]"
+              style={{ background: "rgba(255,255,255,.22)" }}
+            >
+              ?
+            </span>
+          </div>
+
+          <h2 className="h" style={{ fontSize: 33, fontWeight: 800, margin: "18px 0 0" }}>
+            {phase === "queued" ? "Ищем соперника…" : "Найти соперника"}
+          </h2>
+          <p className="mx-auto mt-2.5 max-w-[460px] text-[14.5px] leading-relaxed opacity-90">
+            {phase === "queued"
+              ? "Игроков пока мало — если никого нет, позови друга, чтобы он тоже встал в очередь."
+              : "Подбор идёт среди всех, кто сейчас в очереди. Победа над более сильным игроком даёт больше рейтинга."}
+          </p>
+
+          {phase === "queued" ? (
+            <button
+              className="mt-5 inline-flex items-center gap-2 rounded-2xl px-8 py-3 font-bold"
+              style={{ background: "rgba(255,255,255,.2)", color: "#fff" }}
+              onClick={cancel}
+            >
+              <X size={15} /> Отменить
+            </button>
+          ) : (
+            <button
+              className="mt-5 inline-block rounded-2xl px-10 py-4 text-[16.5px] font-extrabold shadow-lg transition hover:scale-[1.03]"
+              style={{ background: "#fff", color: "var(--accent-700)" }}
+              onClick={connect}
+            >
+              Найти соперника
+            </button>
+          )}
+
+          {error && <p className="mt-4 text-sm">{error}</p>}
+        </div>
+      </section>
+
+      <Link
+        className="muted flex items-center gap-1.5 text-sm hover:underline"
+        href="/app/duels"
+      >
+        <ArrowLeft size={15} /> Дуэли по ссылке
       </Link>
     </div>
   );

@@ -138,6 +138,7 @@ class ProfileOut(BaseModel):
     mistakes_fixed: int
     mistakes_open: int
     weak_topics: list[WeakTopic]
+    rating_history: list[int]
 
     tasks_total: int
 
@@ -353,6 +354,20 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
             .order_by(Duel.id.desc())
         )
     )
+
+    # История рейтинга. Отдельной таблицы нет и заводить её ради спарклайна
+    # незачем: в дуэлях сохранены дельты, поэтому идём от текущего рейтинга
+    # назад и в конце разворачиваем.
+    rating_history = [user.rating]
+    for duel in online:  # уже от свежих к старым
+        delta = (
+            duel.challenger_rating_delta
+            if duel.challenger_id == user.id
+            else duel.opponent_rating_delta
+        )
+        rating_history.append(rating_history[-1] - (delta or 0))
+    rating_history.reverse()
+
     duels_won = sum(1 for d in online if d.winner_id == user.id)
     win_streak = 0
     for duel in online:  # от свежих к старым
@@ -425,6 +440,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         best_correct_run=best_run,
         perfect_quizzes=perfect,
         weak_topics=weak,
+        rating_history=rating_history,
         numbers_covered=numbers_covered,
         attempts_total=len(attempts),
         attempts_correct=sum(a.is_correct for a in attempts),

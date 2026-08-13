@@ -135,10 +135,10 @@ function AdminTasks() {
     );
 
   return (
-    <div className="space-y-7">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Банк задач</h1>
+          <h1 className="page-title">Банк задач</h1>
           <p className="muted mt-1 text-sm">
             {stats
               ? `${stats.total} всего · ${stats.live} опубликовано · ${stats.draft} черновиков · ${stats.broken} снято`

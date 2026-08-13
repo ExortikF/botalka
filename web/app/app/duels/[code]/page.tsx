@@ -49,7 +49,7 @@ export default function DuelPage({
   const youWon = duel.winner && duel.winner === duel.your_side;
 
   return (
-    <div className="space-y-7">
+    <div className="page">
       <header className="flex items-center gap-3">
         <Swords size={22} style={{ color: "var(--accent-2)" }} />
         <div>

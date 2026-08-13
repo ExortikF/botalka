@@ -124,10 +124,10 @@ export default function AdminMocksPage() {
   }
 
   return (
-    <div className="space-y-7">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Конструктор пробников</h1>
+          <h1 className="page-title">Конструктор пробников</h1>
           <p className="muted mt-1 text-sm">
             Вариант собирается по одной случайной задаче на каждый отмеченный
             номер.
@@ -139,7 +139,7 @@ export default function AdminMocksPage() {
       </header>
 
       <section className="card space-y-4 p-6">
-        <h2 className="text-xl">Новый пробник</h2>
+        <h2 className="section-title">Новый пробник</h2>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
@@ -363,7 +363,7 @@ export default function AdminMocksPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl">Готовые пробники</h2>
+        <h2 className="section-title">Готовые пробники</h2>
         {mocks === null ? (
           <p className="muted">Загрузка…</p>
         ) : mocks.length === 0 ? (

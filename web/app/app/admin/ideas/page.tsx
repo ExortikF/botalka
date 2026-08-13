@@ -32,10 +32,10 @@ export default function IdeasPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="page">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Идеи пользователей</h1>
+          <h1 className="page-title">Идеи пользователей</h1>
           <p className="muted mt-1 text-sm">
             Приходят из кнопки «Есть идеи по улучшению сайта?» в боковом меню.
           </p>
