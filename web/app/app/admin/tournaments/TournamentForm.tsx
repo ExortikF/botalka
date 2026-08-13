@@ -438,7 +438,7 @@ export default function TournamentForm({
 
         <div className="grid gap-5 sm:grid-cols-3">
           <label className="block">
-            <span className="eyebrow">Начало</span>
+            <span className="eyebrow">Начало, МСК</span>
             <input
               className="input mt-1.5 w-full"
               type="datetime-local"
@@ -447,7 +447,7 @@ export default function TournamentForm({
             />
           </label>
           <label className="block">
-            <span className="eyebrow">Конец</span>
+            <span className="eyebrow">Конец, МСК</span>
             <input
               className="input mt-1.5 w-full"
               type="datetime-local"
@@ -470,7 +470,7 @@ export default function TournamentForm({
         </div>
 
         <p className="muted text-sm">
-          Идёт {duration} · время московское, как у всех дат в приложении.
+          Идёт {duration}. Время московское — и здесь, и у участников.
         </p>
 
         <div>

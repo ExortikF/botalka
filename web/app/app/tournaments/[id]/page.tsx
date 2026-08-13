@@ -40,7 +40,7 @@ export default function TournamentPage({
 
   if (!data) return <p className="muted">Загрузка…</p>;
 
-  const period = `${formatDate(data.starts_at)} — ${formatDate(data.ends_at)}`;
+  const period = `${formatDate(data.starts_at)} — ${formatDate(data.ends_at)} (МСК)`;
 
   return (
     <div className="page">

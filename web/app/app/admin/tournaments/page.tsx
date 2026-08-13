@@ -154,7 +154,7 @@ export default function AdminTournamentsPage() {
                     <span className="muted text-xs">{row.state}</span>
                   </span>
                   <span className="muted mt-0.5 block text-sm">
-                    {formatDate(row.starts_at)} — {formatDate(row.ends_at)} · правил{" "}
+                    {formatDate(row.starts_at)} — {formatDate(row.ends_at)} МСК · позиций{" "}
                     {row.rules} · участников {row.participants}
                   </span>
                 </span>

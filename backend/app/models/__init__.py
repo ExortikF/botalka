@@ -1,5 +1,6 @@
 from app.models.achievements import AchievementUnlock
 from app.models.league import LeagueMember
+from app.models.clans import Clan, ClanMember, ClanRequest, ClanRole, JoinPolicy
 from app.models.daily import DailyStart
 from app.models.tournaments import (
     ContestProblem,
@@ -55,6 +56,11 @@ __all__ = [
     "Task",
     "TaskStatus",
     "TaskType",
+    "Clan",
+    "ClanMember",
+    "ClanRequest",
+    "ClanRole",
+    "JoinPolicy",
     "ContestProblem",
     "ContestSubmission",
     "RuleEvent",

@@ -109,7 +109,7 @@ export default function RatingPage() {
             </p>
           )}
 
-          {data.rows.length >= 3 && <Podium rows={data.rows} />}
+          {data.rows.length >= 3 && <Podium rows={data.rows} board={board} />}
 
           <section className="card overflow-x-auto">
             <table className="w-full text-sm" style={{ minWidth: "34rem" }}>
@@ -127,12 +127,7 @@ export default function RatingPage() {
                       <th className="px-4 py-3 font-medium">Победы</th>
                     </>
                   ) : (
-                    <>
-                      <th className="px-4 py-3 font-medium">
-                        Решено за неделю
-                      </th>
-                      <th className="px-4 py-3 font-medium">Рейтинг</th>
-                    </>
+                    <th className="px-4 py-3 font-medium">Решено за неделю</th>
                   )}
                 </tr>
               </thead>
@@ -180,10 +175,9 @@ export default function RatingPage() {
                         <td className="px-4 py-3">{row.wins}</td>
                       </>
                     ) : (
-                      <>
-                        <td className="px-4 py-3">{row.solved_week}</td>
-                        <td className="px-4 py-3 muted">{row.rating}</td>
-                      </>
+                      <td className="px-4 py-3">
+                        <b>{row.solved_week}</b>
+                      </td>
                     )}
                   </tr>
                 ))}
@@ -198,17 +192,22 @@ export default function RatingPage() {
 
 /** Тройка лидеров отдельно: в таблице первое место ничем не выделено,
     а именно оно должно быть целью. */
-function Podium({ rows }: { rows: LeaderRow[] }) {
+function Podium({ rows, board }: { rows: LeaderRow[]; board: string }) {
+  // На доске активности главное число — решённые задачи: сортировка идёт по
+  // ним, и показывать рядом рейтинг значит сбивать с толку.
+  const value = (row: LeaderRow) =>
+    board === "week" ? row.solved_week : row.rating;
+  const unit = board === "week" ? "решено за неделю" : "рейтинг";
   const [first, second, third] = rows;
   const places = [
-    { row: second, size: 52, pad: "20px 14px", value: 22, border: "var(--divider)" },
-    { row: first, size: 64, pad: "26px 14px", value: 27, border: "#b8860b" },
-    { row: third, size: 48, pad: "18px 14px", value: 20, border: "var(--divider)" },
+    { row: second, size: 52, pad: "20px 14px", font: 22, border: "var(--divider)" },
+    { row: first, size: 64, pad: "26px 14px", font: 27, border: "#b8860b" },
+    { row: third, size: 48, pad: "18px 14px", font: 20, border: "var(--divider)" },
   ];
 
   return (
     <section className="grid items-end gap-3.5 sm:grid-cols-[1fr_1.2fr_1fr]">
-      {places.map(({ row, size, pad, value, border }) => (
+      {places.map(({ row, size, pad, font, border }) => (
         <Link
           key={row.user_id}
           href={row.is_you ? "/app/profile" : `/app/u/${row.user_id}`}
@@ -234,9 +233,10 @@ function Podium({ rows }: { rows: LeaderRow[] }) {
             #{row.place} {row.display_name}
             {row.is_you && " · ты"}
           </span>
-          <span className="h mt-1 block" style={{ fontSize: value, fontWeight: 800 }}>
-            {row.rating}
+          <span className="h mt-1 block" style={{ fontSize: font, fontWeight: 800 }}>
+            {value(row)}
           </span>
+          <span className="muted block text-[11px]">{unit}</span>
         </Link>
       ))}
     </section>

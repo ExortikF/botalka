@@ -45,6 +45,7 @@ const NAV: NavItem[] = [
   { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
+  { href: "/app/clans", label: "Кланы", icon: Swords },
   { href: "/app/shop", label: "Магазин", icon: ShoppingBag },
   { href: "/app/league", label: "Лига", icon: Shield },
   { href: "/app/tournaments", label: "Турниры", icon: Flag },

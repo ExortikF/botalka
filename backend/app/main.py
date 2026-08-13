@@ -11,6 +11,7 @@ from app.api import (
     admin,
     auth,
     catalog,
+    clans,
     daily,
     duel_ws,
     duels,
@@ -56,6 +57,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(quiz.router)
 app.include_router(catalog.router)
+app.include_router(clans.router)
 app.include_router(daily.router)
 app.include_router(profile.router)
 app.include_router(admin.router)
