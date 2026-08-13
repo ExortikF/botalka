@@ -17,11 +17,12 @@ from app.api.quiz import STREAK_TZ, _correct_answer_text, _source_label
 from app.core.answers import check_answer
 from app.core.coins import award
 from app.api.deps import DbSession, PlayerUser
-from app.models import Attempt, CoinReason, Task, TaskStatus, User
+from app.models import Attempt, CoinReason, DailyStart, Task, TaskStatus, User
 
 router = APIRouter(prefix="/api/daily", tags=["daily"])
 
 REWARD = 20  # заметно больше обычной задачи: это ежедневный крючок, а не фарм
+LIMIT_SECONDS = 5 * 60  # столько даётся на решение с момента открытия условия
 
 
 def today() -> date:
@@ -60,6 +61,9 @@ class DailyOut(BaseModel):
     source: str | None
 
     solved: bool
+    started: bool
+    seconds_left: int | None  # None, пока не начал
+    limit_seconds: int
     your_seconds: int | None
     your_place: int | None
     solved_today: int
@@ -82,6 +86,7 @@ class DailyAnswerIn(BaseModel):
 
 class DailyAnswerOut(BaseModel):
     is_correct: bool
+    expired: bool
     correct_answer: str
     solution: str | None
     coins: int
@@ -111,11 +116,36 @@ def _ranked(attempts: list[Attempt]) -> list[Attempt]:
     return sorted(best.values(), key=lambda a: a.time_spent_ms)
 
 
+async def _start_of(session: DbSession, user_id: int, day: date) -> DailyStart | None:
+    return await session.scalar(
+        select(DailyStart).where(DailyStart.user_id == user_id, DailyStart.day == day)
+    )
+
+
+def _left(start: DailyStart | None) -> int | None:
+    if start is None:
+        return None
+    spent = (datetime.now(UTC) - start.started_at.replace(tzinfo=UTC)).total_seconds()
+    return max(0, round(LIMIT_SECONDS - spent))
+
+
+@router.post("/start", response_model=DailyOut)
+async def start(session: DbSession, user: PlayerUser) -> DailyOut:
+    """Открывает условие и запускает отсчёт. Повторный вызов ничего не сбрасывает —
+    иначе таймер обнулялся бы при каждом возврате на вкладку."""
+    day = today()
+    if await _start_of(session, user.id, day) is None:
+        session.add(DailyStart(user_id=user.id, day=day))
+        await session.commit()
+    return await daily(session, user)
+
+
 @router.get("", response_model=DailyOut)
 async def daily(session: DbSession, user: PlayerUser) -> DailyOut:
     day = today()
     task = await _task_of(session, day)
     ranked = _ranked(await _attempts_today(session, task.id))
+    start = await _start_of(session, user.id, day)
 
     mine = next((i for i, a in enumerate(ranked) if a.user_id == user.id), None)
     tomorrow = datetime.combine(day + timedelta(days=1), datetime.min.time(), STREAK_TZ)
@@ -125,11 +155,14 @@ async def daily(session: DbSession, user: PlayerUser) -> DailyOut:
         task_id=task.id,
         task_type_number=task.task_type.number,
         task_type_title=task.task_type.title,
-        statement=task.statement,
-        image_url=task.image_url,
+        statement=task.statement if (start is not None or mine is not None) else "",
+        image_url=task.image_url if (start is not None or mine is not None) else None,
         answer_type=task.answer_type.value,
         source=_source_label(task),
         solved=mine is not None,
+        started=start is not None,
+        seconds_left=_left(start),
+        limit_seconds=LIMIT_SECONDS,
         your_seconds=round(ranked[mine].time_spent_ms / 1000) if mine is not None else None,
         your_place=mine + 1 if mine is not None else None,
         solved_today=len(ranked),
@@ -165,17 +198,28 @@ async def answer(payload: DailyAnswerIn, session: DbSession, user: PlayerUser) -
     if any(a.is_correct for a in mine):
         raise HTTPException(status.HTTP_409_CONFLICT, "задача дня уже решена")
 
-    is_correct = check_answer(task.answer_type, task.answer_payload, payload.answer)
-    seconds = round(max(0, payload.time_spent_ms) / 1000)
+    start = await _start_of(session, user.id, day)
+    if start is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "сначала открой условие")
+
+    # Время считает сервер: клиентскому таймеру нельзя верить, раз от него
+    # зависит место в таблице.
+    spent = (datetime.now(UTC) - start.started_at.replace(tzinfo=UTC)).total_seconds()
+    seconds = round(spent)
+    expired = spent > LIMIT_SECONDS
+
+    is_correct = not expired and check_answer(
+        task.answer_type, task.answer_payload, payload.answer
+    )
 
     session.add(
         Attempt(
             user_id=user.id,
             task_id=task.id,
-            answer_raw=payload.answer[:512],
+            answer_raw=(payload.answer or "—")[:512],
             is_correct=is_correct,
             used_hint=False,
-            time_spent_ms=max(0, payload.time_spent_ms),
+            time_spent_ms=round(spent * 1000),
         )
     )
 
@@ -192,6 +236,7 @@ async def answer(payload: DailyAnswerIn, session: DbSession, user: PlayerUser) -
 
     return DailyAnswerOut(
         is_correct=is_correct,
+        expired=expired,
         correct_answer=_correct_answer_text(task),
         solution=task.solution,
         coins=coins,

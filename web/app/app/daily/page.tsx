@@ -17,6 +17,9 @@ type Daily = {
   image_url: string | null;
   source: string | null;
   solved: boolean;
+  started: boolean;
+  seconds_left: number | null;
+  limit_seconds: number;
   your_seconds: number | null;
   your_place: number | null;
   solved_today: number;
@@ -34,6 +37,7 @@ type Row = {
 
 type Answer = {
   is_correct: boolean;
+  expired: boolean;
   correct_answer: string;
   solution: string | null;
   coins: number;
@@ -47,19 +51,26 @@ export default function DailyPage() {
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<Answer | null>(null);
   const [sending, setSending] = useState(false);
-  /** Условие открывается по кнопке: иначе таймер начинал идти, пока человек
-      читал задачу, и место в таблице зависело от скорости чтения. */
-  const [started, setStarted] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
+  /** Сколько осталось. Считает сервер: вкладку переключают и перезагружают,
+      а от времени зависит место в таблице — клиентскому счётчику тут не место. */
+  const [left, setLeft] = useState<number | null>(null);
   const [error, setError] = useState("");
-  const startedAt = useRef(Date.now());
+  const deadline = useRef<number | null>(null);
+
+  function apply(data: Daily) {
+    setDaily(data);
+    if (data.seconds_left === null) {
+      deadline.current = null;
+      setLeft(null);
+    } else {
+      deadline.current = Date.now() + data.seconds_left * 1000;
+      setLeft(data.seconds_left);
+    }
+  }
 
   function load() {
     api<Daily>("/api/daily")
-      .then((data) => {
-        setDaily(data);
-        startedAt.current = Date.now();
-      })
+      .then(apply)
       .catch((e: Error) => setError(e.message));
     api<Row[]>("/api/daily/leaderboard")
       .then(setRows)
@@ -68,33 +79,42 @@ export default function DailyPage() {
 
   useEffect(load, []);
 
-  // Секундомер на экране: он же показывает, что время идёт.
+  // Обратный отсчёт до срока, полученного с сервера. Когда время вышло —
+  // отправляем пустой ответ, чтобы попытка закрылась и показался разбор.
   useEffect(() => {
-    if (!started || result?.is_correct) return;
-    const timer = setInterval(
-      () => setElapsed(Math.round((Date.now() - startedAt.current) / 1000)),
-      500,
-    );
-    return () => clearInterval(timer);
-  }, [started, result]);
+    if (deadline.current === null || result) return;
 
-  function start() {
-    startedAt.current = Date.now();
-    setElapsed(0);
-    setStarted(true);
+    const timer = setInterval(() => {
+      const rest = Math.max(
+        0,
+        Math.round((deadline.current! - Date.now()) / 1000),
+      );
+      setLeft(rest);
+      if (rest === 0) {
+        clearInterval(timer);
+        send("");
+      }
+    }, 500);
+
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [daily?.started, result]);
+
+  async function start() {
+    try {
+      apply(await api<Daily>("/api/daily/start", { method: "POST" }));
+    } catch (e) {
+      setError((e as Error).message);
+    }
   }
 
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
-    if (sending || !answer.trim()) return;
+  async function send(value: string) {
+    if (sending) return;
     setSending(true);
     try {
       const res = await api<Answer>("/api/daily/answer", {
         method: "POST",
-        body: JSON.stringify({
-          answer,
-          time_spent_ms: Date.now() - startedAt.current,
-        }),
+        body: JSON.stringify({ answer: value }),
       });
       setResult(res);
       if (res.is_correct) {
@@ -111,11 +131,19 @@ export default function DailyPage() {
     }
   }
 
+  function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!answer.trim()) return;
+    send(answer);
+  }
+
   if (error && !daily)
     return <p style={{ color: "var(--accent-2)" }}>{error}</p>;
   if (!daily) return <p className="muted">Загрузка…</p>;
 
   const done = daily.solved || result?.is_correct;
+  const started = daily.started;
+  const timeUp = result?.expired || (left === 0 && !done);
 
   return (
     <div className="page">
@@ -145,12 +173,16 @@ export default function DailyPage() {
           </span>
           <span className="muted text-sm">{daily.task_type_title}</span>
           <span className="ml-auto flex items-center gap-2">
-            {started && !done && (
+            {started && !done && left !== null && (
               <span
                 className="h inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm"
-                style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+                style={
+                  left <= 60
+                    ? { background: "var(--accent-2-100)", color: "var(--accent-2)" }
+                    : { background: "var(--accent-100)", color: "var(--accent-700)" }
+                }
               >
-                <Timer size={13} /> {formatClock(elapsed)}
+                <Timer size={13} /> {formatClock(left)}
               </span>
             )}
             <span
@@ -179,8 +211,10 @@ export default function DailyPage() {
           >
             <Timer size={26} style={{ color: "var(--accent)" }} />
             <p className="max-w-sm leading-relaxed">
-              Условие откроется по кнопке, и сразу пойдёт время. В таблицу идёт
-              первая попытка, так что решать лучше набело.
+              Условие откроется по кнопке, и сразу пойдёт время — на решение
+              {" "}
+              {Math.round(daily.limit_seconds / 60)} минут. В таблицу идёт первая
+              попытка, так что решать лучше набело.
             </p>
             <button className="btn mt-1" onClick={start}>
               Начать
@@ -208,7 +242,7 @@ export default function DailyPage() {
             </p>
             <p className="muted mt-1 text-sm">Возвращайся завтра — задача сменится.</p>
           </div>
-        ) : started ? (
+        ) : started && !timeUp ? (
           <form className="flex flex-wrap gap-3" onSubmit={submit} noValidate>
             <input
               className="input flex-1"
@@ -229,7 +263,9 @@ export default function DailyPage() {
             style={{ background: "var(--accent-2-100)", color: "var(--accent-2)" }}
           >
             <p className="font-semibold">
-              Неверно. Правильный ответ: {result.correct_answer}
+              {result.expired
+                ? `Время вышло. Правильный ответ: ${result.correct_answer}`
+                : `Неверно. Правильный ответ: ${result.correct_answer}`}
             </p>
             {result.solution && (
               <div className="mt-2 leading-relaxed" style={{ color: "var(--text)" }}>

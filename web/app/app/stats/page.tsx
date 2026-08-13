@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  CalendarDays,
+  Check,
+  Target,
+  Timer,
+  TrendingUp,
+} from "lucide-react";
 import { api } from "@/lib/api";
 import { plural } from "@/lib/exam";
 
@@ -57,6 +64,11 @@ function monthLabel(key: string): string {
   return MONTHS[Number(month) - 1] ?? key;
 }
 
+/** Сетка тетрадного листа — та же, что на баннерах дуэлей. */
+const GRID =
+  "repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px)," +
+  "repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px)";
+
 export default function StatsPage() {
   const [stats, setStats] = useState<StatsYear | null>(null);
 
@@ -70,9 +82,11 @@ export default function StatsPage() {
 
   const maxMonth = Math.max(1, ...stats.months.map((m) => m.solved));
   const maxHour = Math.max(1, ...stats.hours.map((h) => h.attempts));
+  const lastMonth = stats.months[stats.months.length - 1]?.month;
   const worst = [...stats.by_type]
     .filter((t) => t.total >= 3)
-    .sort((a, b) => a.accuracy - b.accuracy);
+    .sort((a, b) => a.accuracy - b.accuracy)
+    .slice(0, 3);
 
   return (
     <div className="page">
@@ -81,23 +95,44 @@ export default function StatsPage() {
       </header>
 
       <section
-        className="relative overflow-hidden p-8 text-white"
+        className="relative overflow-hidden text-white"
         style={{
-          background: "var(--accent)",
           borderRadius: "var(--radius-lg)",
+          padding: "32px 34px",
+          backgroundImage: "linear-gradient(120deg,#0088b0,#0aa0c9 60%,#7c3aed)",
+          boxShadow: "0 12px 32px rgba(0,136,176,.25)",
         }}
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full opacity-30"
-          style={{ background: "var(--accent-2)" }}
+          className="pointer-events-none absolute inset-0"
+          style={{ backgroundImage: GRID }}
         />
-        <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest opacity-80">
-            Прогноз по текущей точности
-          </p>
-          <p className="h mt-2 text-6xl">{stats.forecast_secondary}</p>
-          <p className="mt-2 max-w-lg opacity-90">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-24 h-[300px] w-[300px] rounded-full"
+          style={{ background: "var(--accent-2)", opacity: 0.25 }}
+        />
+
+        <div className="relative flex flex-wrap items-center gap-7">
+          <div>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider"
+              style={{ background: "rgba(255,255,255,.2)" }}
+            >
+              <TrendingUp size={13} /> Прогноз по текущей точности
+            </span>
+            <p
+              className="h mt-2.5"
+              style={{ fontSize: 64, fontWeight: 800, lineHeight: 1 }}
+            >
+              {stats.forecast_secondary}
+            </p>
+          </div>
+          <p
+            className="min-w-[260px] max-w-[480px] flex-1 text-sm leading-relaxed"
+            style={{ opacity: 0.92 }}
+          >
             Столько тестовых баллов дала бы часть 1, если решать её с твоей
             нынешней точностью {stats.accuracy}%. Это оценка, а не обещание:
             настоящий экзамен сложнее домашнего квиза.
@@ -105,8 +140,10 @@ export default function StatsPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        <Metric
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <IconTile
+          icon={<CalendarDays size={17} style={{ color: "var(--accent-700)" }} />}
+          iconBg="var(--accent-100)"
           value={stats.days_total}
           label={plural(
             stats.days_total,
@@ -115,16 +152,171 @@ export default function StatsPage() {
             "дней с занятиями",
           )}
         />
-        <Metric value={stats.attempts_total} label="ответов всего" />
-        <Metric value={`${stats.accuracy}%`} label="верных" />
-        <Metric value={stats.minutes_total} label="минут за решением" />
-        <Metric value={stats.quizzes} label="квизов пройдено" />
-        <Metric value={stats.mocks} label="пробников сдано" />
-        <Metric value={stats.duels} label="дуэлей сыграно" />
-        <Metric
+        <IconTile
+          icon={<Target size={17} style={{ color: "var(--n-700)" }} />}
+          iconBg="var(--surface)"
+          value={stats.attempts_total}
+          label="ответов всего"
+        />
+        <IconTile
+          icon={<Check size={17} style={{ color: "var(--accent-700)" }} />}
+          iconBg="var(--accent-100)"
+          value={`${stats.accuracy}%`}
+          valueColor="var(--accent-700)"
+          label="верных"
+        />
+        <IconTile
+          icon={<Timer size={17} style={{ color: "var(--accent-2)" }} />}
+          iconBg="var(--accent-2-100)"
           value={stats.avg_seconds ? `${stats.avg_seconds} с` : "—"}
           label="в среднем на задачу"
         />
+      </section>
+
+      <section className="card" style={{ padding: "28px 30px" }}>
+        <div className="section-head mb-5">
+          <h2 className="section-title">По месяцам</h2>
+          <span className="text-xs" style={{ color: "var(--n-400)" }}>
+            решённых задач
+          </span>
+        </div>
+
+        {stats.months.length === 0 ? (
+          <p className="muted text-sm">Пока пусто — реши первый квиз.</p>
+        ) : (
+          <div
+            className="relative flex items-end gap-4"
+            style={{ height: 150 }}
+          >
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0"
+              style={{ height: 1, background: "var(--divider)" }}
+            />
+            {stats.months.map((month) => {
+              const current = month.month === lastMonth;
+              return (
+                <div
+                  key={month.month}
+                  className="flex flex-col items-center gap-2"
+                  style={{ width: 52 }}
+                  title={`${month.correct} верных из ${month.solved}, дней: ${month.days_active}`}
+                >
+                  <span
+                    className="h text-[12.5px]"
+                    style={{ color: current ? "var(--accent)" : "var(--n-600)" }}
+                  >
+                    {month.solved}
+                  </span>
+                  <div
+                    className="w-full"
+                    style={{
+                      height: Math.max(6, (month.solved / maxMonth) * 100),
+                      borderRadius: "10px 10px 3px 3px",
+                      background: current ? "var(--accent)" : "var(--accent-300)",
+                      boxShadow: current
+                        ? "0 4px 14px rgba(0,136,176,.35)"
+                        : undefined,
+                    }}
+                  />
+                  <span
+                    className="text-xs"
+                    style={{
+                      color: "var(--n-600)",
+                      fontWeight: current ? 700 : 400,
+                    }}
+                  >
+                    {monthLabel(month.month)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      <section className="card" style={{ padding: "28px 30px" }}>
+        <h2 className="section-title">Когда ты решаешь</h2>
+        <p className="muted mb-5 mt-1 text-[13px]">
+          По часам, время московское
+        </p>
+
+        <div
+          className="flex items-end gap-[5px]"
+          style={{
+            height: 90,
+            background: "var(--surface)",
+            borderRadius: 10,
+            padding: "10px 6px 0",
+          }}
+        >
+          {stats.hours.map((hour) => (
+            <div
+              key={hour.hour}
+              className="flex h-full flex-1 flex-col justify-end"
+              title={`${hour.hour}:00 — ${hour.attempts}`}
+            >
+              <div
+                style={{
+                  height: Math.max(
+                    hour.attempts ? 4 : 2,
+                    (hour.attempts / maxHour) * 70,
+                  ),
+                  borderRadius: 4,
+                  background: hour.attempts
+                    ? "var(--accent)"
+                    : "var(--divider)",
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-1.5 flex gap-[5px]">
+          {stats.hours.map((hour) => (
+            <div key={hour.hour} className="flex-1 text-center">
+              {hour.hour % 6 === 0 && (
+                <span className="muted text-[10.5px]">{hour.hour}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="card" style={{ padding: "28px 30px" }}>
+        <h2 className="section-title">Что тянет вниз</h2>
+        <p className="muted mb-5 mt-1 text-[13px]">
+          Номера с худшей точностью при трёх и более попытках
+        </p>
+
+        {worst.length === 0 ? (
+          <p className="muted text-sm">
+            Пока мало данных: номер попадает сюда после трёх попыток.
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-3.5">
+            {worst.map((row) => (
+              <TopicRow key={row.number} row={row} />
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="card" style={{ padding: "28px 30px" }}>
+        <h2 className="section-title">По номерам заданий</h2>
+        <p className="muted mb-5 mt-1 text-[13px]">
+          Все номера, где были попытки — точность и среднее время
+        </p>
+
+        {stats.by_type.length === 0 ? (
+          <p className="muted text-sm">Данных пока нет.</p>
+        ) : (
+          <ul className="flex flex-col gap-3.5">
+            {stats.by_type.map((row) => (
+              <TopicRow key={row.number} row={row} showTime />
+            ))}
+          </ul>
+        )}
       </section>
 
       {stats.best_day && (
@@ -135,131 +327,99 @@ export default function StatsPage() {
             month: "long",
           })}{" "}
           — {stats.best_day.solved}{" "}
-          {plural(stats.best_day.solved, "ответ", "ответа", "ответов")}.
+          {plural(stats.best_day.solved, "ответ", "ответа", "ответов")}. Всего за
+          решением {stats.minutes_total}{" "}
+          {plural(stats.minutes_total, "минута", "минуты", "минут")}: квизов{" "}
+          {stats.quizzes}, пробников {stats.mocks}, дуэлей {stats.duels}.
         </p>
-      )}
-
-      <section className="card p-6">
-        <h2 className="mb-4 text-xl">По месяцам</h2>
-        {stats.months.length === 0 ? (
-          <p className="muted text-sm">Пока пусто — реши первый квиз.</p>
-        ) : (
-          <div className="flex items-end gap-3" style={{ height: 160 }}>
-            {stats.months.map((month) => (
-              <div
-                key={month.month}
-                className="flex flex-col items-center gap-2"
-                style={{ width: 46 }}
-              >
-                <span className="muted text-xs">{month.solved}</span>
-                <div
-                  className="w-full rounded-t-lg"
-                  style={{
-                    height: `${(month.solved / maxMonth) * 110}px`,
-                    background: "var(--accent)",
-                    minHeight: 4,
-                  }}
-                  title={`${month.correct} верных из ${month.solved}, дней: ${month.days_active}`}
-                />
-                <span className="muted text-xs">{monthLabel(month.month)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="card p-6">
-        <h2 className="mb-1 text-xl">Когда ты решаешь</h2>
-        <p className="muted mb-4 text-sm">По часам, время московское</p>
-        <div className="flex items-end gap-1" style={{ height: 110 }}>
-          {stats.hours.map((hour) => (
-            <div
-              key={hour.hour}
-              className="flex flex-1 flex-col items-center gap-1"
-            >
-              <div
-                className="w-full rounded-t"
-                style={{
-                  height: `${(hour.attempts / maxHour) * 80}px`,
-                  background: hour.attempts
-                    ? "var(--accent-300)"
-                    : "var(--surface)",
-                  minHeight: 3,
-                }}
-                title={`${hour.hour}:00 — ${hour.attempts}`}
-              />
-              {hour.hour % 6 === 0 && (
-                <span className="muted text-[10px]">{hour.hour}</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="card p-6">
-        <h2 className="mb-4 text-xl">По номерам заданий</h2>
-        {stats.by_type.length === 0 ? (
-          <p className="muted text-sm">Данных пока нет.</p>
-        ) : (
-          <ul className="space-y-2">
-            {stats.by_type.map((row) => (
-              <li key={row.number} className="flex items-center gap-3 text-sm">
-                <span className="muted w-10 shrink-0">№{row.number}</span>
-                <span className="w-44 shrink-0 truncate">{row.title}</span>
-                <span
-                  className="h-2 flex-1 overflow-hidden rounded-full"
-                  style={{ background: "var(--surface)" }}
-                >
-                  <span
-                    className="block h-full rounded-full"
-                    style={{
-                      width: `${row.accuracy}%`,
-                      background:
-                        row.accuracy >= 70
-                          ? "#1f9d55"
-                          : row.accuracy >= 40
-                            ? "#c98a00"
-                            : "var(--accent-2)",
-                    }}
-                  />
-                </span>
-                <span className="w-12 shrink-0 text-right">
-                  {row.accuracy}%
-                </span>
-                <span className="muted w-20 shrink-0 text-right">
-                  {row.avg_seconds ? `${row.avg_seconds} с` : "—"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {worst.length > 0 && (
-        <section className="card p-6">
-          <h2 className="section-title">Что тянет вниз</h2>
-          <p className="muted mt-1 text-sm">
-            Номера с худшей точностью при трёх и более попытках
-          </p>
-          <ul className="mt-3 space-y-1 text-sm">
-            {worst.slice(0, 3).map((row) => (
-              <li key={row.number}>
-                <b>№{row.number}</b> {row.title} — {row.accuracy}% из{" "}
-                {row.total}
-              </li>
-            ))}
-          </ul>
-        </section>
       )}
     </div>
   );
 }
 
-function Metric({ value, label }: { value: number | string; label: string }) {
+function accuracyColor(accuracy: number): string {
+  if (accuracy >= 70) return "#1f9d55";
+  if (accuracy >= 40) return "#c98a00";
+  return "var(--accent-2)";
+}
+
+function TopicRow({ row, showTime }: { row: TypeRow; showTime?: boolean }) {
+  const color = accuracyColor(row.accuracy);
+
   return (
-    <div className="tile">
-      <p className="tile-value">{value}</p>
-      <p className="tile-label">{label}</p>
+    <li className="flex items-center gap-3.5">
+      <span
+        className="h flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[10px] text-[12.5px]"
+        style={{ background: `${color}1a`, color }}
+      >
+        {row.number}
+      </span>
+      <span className="w-[190px] shrink-0 truncate text-[13.5px] font-medium">
+        {row.title}
+      </span>
+      <span
+        className="h-[9px] flex-1 overflow-hidden rounded-full"
+        style={{ background: "var(--surface)" }}
+      >
+        <span
+          className="block h-full rounded-full"
+          style={{ width: `${row.accuracy}%`, background: color }}
+        />
+      </span>
+      <span
+        className="h w-11 shrink-0 text-right text-sm"
+        style={{ color }}
+      >
+        {row.accuracy}%
+      </span>
+      {showTime && (
+        <span className="muted w-12 shrink-0 text-right text-[13px]">
+          {row.avg_seconds ? `${row.avg_seconds} с` : "—"}
+        </span>
+      )}
+    </li>
+  );
+}
+
+function IconTile({
+  icon,
+  iconBg,
+  value,
+  valueColor,
+  label,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  value: number | string;
+  valueColor?: string;
+  label: string;
+}) {
+  return (
+    <div
+      className="flex items-center gap-3.5"
+      style={{
+        background: "var(--card)",
+        border: "1px solid var(--divider)",
+        borderRadius: 16,
+        padding: 18,
+        boxShadow: "0 1px 2px rgba(45,43,43,.08)",
+      }}
+    >
+      <span
+        className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl"
+        style={{ background: iconBg }}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span
+          className="h block text-[22px]"
+          style={{ color: valueColor }}
+        >
+          {value}
+        </span>
+        <span className="muted mt-px block text-xs">{label}</span>
+      </span>
     </div>
   );
 }
