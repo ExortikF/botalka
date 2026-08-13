@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { ArrowLeft, Check, Plus, Trash2 } from "lucide-react";
+import { api, getTaskTypes, type TaskType } from "@/lib/api";
 import type { Tournament } from "../../tournaments/types";
 
 type RuleDraft = {
@@ -24,11 +24,13 @@ type ProblemDraft = {
 
 type PickRow = {
   id: number;
-  number: number;
+  task_type_number: number;
   statement: string;
   answer_value: string;
   difficulty: number;
 };
+
+const DIFFICULTY = ["", "очень лёгкая", "лёгкая", "средняя", "сложная", "очень сложная"];
 
 type PrizeDraft = {
   place_from: number;
@@ -95,8 +97,11 @@ export default function TournamentForm({
   const [format, setFormat] = useState<"contest" | "marathon">("contest");
   const [penaltyMinutes, setPenaltyMinutes] = useState(10);
   const [problems, setProblems] = useState<ProblemDraft[]>([]);
-  const [pickNumber, setPickNumber] = useState(1);
+  const [pickType, setPickType] = useState<number | null>(null);
+  const [pickQuery, setPickQuery] = useState("");
   const [picks, setPicks] = useState<PickRow[]>([]);
+  const [types, setTypes] = useState<TaskType[]>([]);
+  const [searching, setSearching] = useState(false);
   const [rules, setRules] = useState<RuleDraft[]>([emptyRule()]);
   const [prizes, setPrizes] = useState<PrizeDraft[]>([
     { place_from: 1, place_to: 1, coins: 500, item_code: "" },
@@ -214,12 +219,52 @@ export default function TournamentForm({
     });
   }
 
-  async function loadPicks() {
-    try {
-      setPicks(await api<PickRow[]>(`/api/admin/tasks/pick/${pickNumber}`));
-    } catch (e) {
-      setError((e as Error).message);
+  // Поиск идёт по всему банку: заранее знать номер задания незачем, а
+  // «покажи задачи номера 7» — это про пробники, не про контест.
+  useEffect(() => {
+    let alive = true;
+    setSearching(true);
+
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams({ limit: "40", task_status: "live" });
+      if (pickQuery.trim()) params.set("q", pickQuery.trim());
+      if (pickType !== null) params.set("task_type_id", String(pickType));
+
+      api<{ items: PickRow[] }>(`/api/admin/tasks?${params}`)
+        .then((data) => alive && setPicks(data.items))
+        .catch(() => alive && setPicks([]))
+        .finally(() => alive && setSearching(false));
+    }, 250);
+
+    return () => {
+      alive = false;
+      clearTimeout(timer);
+    };
+  }, [pickQuery, pickType]);
+
+  useEffect(() => {
+    getTaskTypes()
+      .then(setTypes)
+      .catch(() => setTypes([]));
+  }, []);
+
+  /** Баллы по возрастанию: 100, 200, 300… Ровно то, что делаешь руками. */
+  function spreadPoints() {
+    setProblems((list) =>
+      list.map((problem, index) => ({ ...problem, points: (index + 1) * 100 })),
+    );
+  }
+
+  /** Готовые окна: контест обычно ставят на вечер или на выходные. */
+  function setWindow(hours: number, startHour?: number) {
+    const start = new Date();
+    if (startHour !== undefined) {
+      start.setHours(startHour, 0, 0, 0);
+      if (start < new Date()) start.setDate(start.getDate() + 1);
     }
+    const end = new Date(start.getTime() + hours * 3600_000);
+    setStartsAt(toLocal(start));
+    setEndsAt(toLocal(end));
   }
 
   function patchRule(index: number, patch: Partial<RuleDraft>) {
@@ -233,6 +278,17 @@ export default function TournamentForm({
       list.map((prize, i) => (i === index ? { ...prize, ...patch } : prize)),
     );
   }
+
+  const minutes = Math.max(
+    0,
+    Math.round((new Date(endsAt).getTime() - new Date(startsAt).getTime()) / 60000),
+  );
+  const duration =
+    minutes >= 1440
+      ? `${Math.round(minutes / 1440)} дн.`
+      : minutes >= 60
+        ? `${Math.floor(minutes / 60)} ч ${minutes % 60 || ""}`.trim() + " мин"
+        : `${minutes} мин`;
 
   return (
     <div className="page">
@@ -301,6 +357,22 @@ export default function TournamentForm({
           />
         </label>
 
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="eyebrow">Когда:</span>
+          <button className="btn-ghost text-sm" onClick={() => setWindow(2, 18)}>
+            Сегодня 18:00, 2 часа
+          </button>
+          <button className="btn-ghost text-sm" onClick={() => setWindow(3, 12)}>
+            Завтра 12:00, 3 часа
+          </button>
+          <button className="btn-ghost text-sm" onClick={() => setWindow(48)}>
+            Двое суток
+          </button>
+          <button className="btn-ghost text-sm" onClick={() => setWindow(168)}>
+            Неделя
+          </button>
+        </div>
+
         <div className="grid gap-5 sm:grid-cols-3">
           <label className="block">
             <span className="eyebrow">Начало</span>
@@ -321,7 +393,7 @@ export default function TournamentForm({
             />
           </label>
           <label className="block">
-            <span className="eyebrow">Рейтинг от (необязательно)</span>
+            <span className="eyebrow">Пускать с рейтингом от</span>
             <input
               className="input mt-1.5 w-full"
               type="number"
@@ -333,6 +405,10 @@ export default function TournamentForm({
             />
           </label>
         </div>
+
+        <p className="muted text-sm">
+          Идёт {duration} · время московское, как у всех дат в приложении.
+        </p>
 
         <div>
           <span className="eyebrow">Цвет баннера</span>
@@ -431,39 +507,64 @@ export default function TournamentForm({
             </ul>
           )}
 
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="btn-ghost text-sm"
+              onClick={spreadPoints}
+              disabled={problems.length === 0}
+            >
+              Расставить баллы по возрастанию
+            </button>
+            <label className="flex items-center gap-2 text-sm">
+              Штраф за неверную попытку
+              <input
+                className="input"
+                style={{ width: 80 }}
+                type="number"
+                min={0}
+                value={penaltyMinutes}
+                onChange={(e) => setPenaltyMinutes(Number(e.target.value))}
+              />
+              мин
+            </label>
+          </div>
+
           <div
             className="space-y-3 rounded-xl p-4"
             style={{ background: "var(--surface)" }}
           >
-            <div className="flex flex-wrap items-end gap-3">
-              <label style={{ width: 150 }}>
-                <span className="eyebrow">Номер задания</span>
-                <input
-                  className="input mt-1.5 w-full"
-                  type="number"
-                  min={1}
-                  max={19}
-                  value={pickNumber}
-                  onChange={(e) => setPickNumber(Number(e.target.value))}
-                />
-              </label>
-              <button className="btn-ghost text-sm" onClick={loadPicks}>
-                Показать задачи
-              </button>
-              <label style={{ width: 150 }}>
-                <span className="eyebrow">Штраф за попытку, мин</span>
-                <input
-                  className="input mt-1.5 w-full"
-                  type="number"
-                  min={0}
-                  value={penaltyMinutes}
-                  onChange={(e) => setPenaltyMinutes(Number(e.target.value))}
-                />
-              </label>
+            <p className="eyebrow">Добавить из банка</p>
+
+            <div className="flex flex-wrap gap-3">
+              <input
+                className="input min-w-[220px] flex-1"
+                value={pickQuery}
+                onChange={(e) => setPickQuery(e.target.value)}
+                placeholder="Поиск по условию: «трапеция», «производная»…"
+              />
+              <select
+                className="input"
+                style={{ minWidth: 260 }}
+                value={pickType ?? ""}
+                onChange={(e) =>
+                  setPickType(e.target.value ? Number(e.target.value) : null)
+                }
+              >
+                <option value="">Любая тема</option>
+                {types.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    № {type.number} · {type.title} ({type.tasks_count})
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {picks.length > 0 && (
-              <ul className="max-h-72 space-y-1 overflow-y-auto">
+            {searching ? (
+              <p className="muted text-sm">Ищем…</p>
+            ) : picks.length === 0 ? (
+              <p className="muted text-sm">Ничего не нашлось — измени запрос.</p>
+            ) : (
+              <ul className="max-h-80 space-y-1 overflow-y-auto">
                 {picks.map((row) => {
                   const added = problems.some((p) => p.task_id === row.id);
                   return (
@@ -477,19 +578,30 @@ export default function TournamentForm({
                             ...list,
                             {
                               task_id: row.id,
-                              points: 100 * (list.length + 1),
-                              number: row.number,
+                              points: (list.length + 1) * 100,
+                              number: row.task_type_number,
                               statement: row.statement,
                             },
                           ])
                         }
                       >
-                        <Plus size={14} className="shrink-0" />
+                        {added ? (
+                          <Check size={14} className="shrink-0" />
+                        ) : (
+                          <Plus size={14} className="shrink-0" />
+                        )}
+                        <span
+                          className="muted shrink-0 text-xs"
+                          style={{ width: 34 }}
+                        >
+                          № {row.task_type_number}
+                        </span>
                         <span className="min-w-0 flex-1 truncate">
                           {row.statement}
                         </span>
                         <span className="muted shrink-0 text-xs">
-                          ответ {row.answer_value} · сложность {row.difficulty}
+                          {DIFFICULTY[row.difficulty] ?? row.difficulty} · ответ{" "}
+                          {row.answer_value}
                         </span>
                       </button>
                     </li>
