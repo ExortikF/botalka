@@ -6,6 +6,10 @@ import { initials } from "@/lib/format";
 /**
  * Аватарка с рамкой. Одна на всё приложение: профиль, сайдбар, лидерборд,
  * друзья, дуэли — иначе косметика в одних местах применяется, в других нет.
+ *
+ * Рамка и подложка живут на разных элементах намеренно. Градиентные рамки
+ * рисуются двумя фонами с обрезкой по padding-box, и на одном элементе такой
+ * фон затирал бы цвет аватарки — вместо купленной подложки был бы цвет карточки.
  */
 export default function Avatar({
   name,
@@ -26,17 +30,20 @@ export default function Avatar({
 
   return (
     <span
-      className={`flex shrink-0 items-center justify-center ${rounded} ${look.className} ${ring.className}`}
-      style={{
-        width: size,
-        height: size,
-        fontSize: emoji ? size * 0.5 : size * 0.36,
-        fontWeight: 700,
-        ...look.style,
-        ...ring.style,
-      }}
+      className={`inline-flex shrink-0 items-center justify-center ${rounded} ${ring.className}`}
+      style={{ width: size, height: size, boxSizing: "border-box", ...ring.style }}
     >
-      {emoji ?? initials(name)}
+      <span
+        className={`flex h-full w-full items-center justify-center ${rounded} ${look.className}`}
+        style={{
+          fontSize: emoji ? size * 0.5 : size * 0.36,
+          fontWeight: 700,
+          lineHeight: 1,
+          ...look.style,
+        }}
+      >
+        {emoji ?? initials(name)}
+      </span>
     </span>
   );
 }
