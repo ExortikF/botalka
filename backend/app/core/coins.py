@@ -19,6 +19,7 @@ REWARDS = {
     CoinReason.DUEL_WIN: 15,
     CoinReason.DUEL_LOSS: 3,
     CoinReason.MOCK_FINISHED: 30,
+    CoinReason.SUGGESTION_APPROVED: 50,
 }
 
 MAX_STREAK_BONUS = 7  # дальше не растёт, иначе длинная серия даёт слишком много

@@ -91,7 +91,7 @@ CATALOG = [
     ("plate_none", ItemKind.NAME_PLATE, "Без декора", "none", 0, C),
     ("plate_line", ItemKind.NAME_PLATE, "Полоска", "bar:#0088b0", 120, C),
     ("plate_corner", ItemKind.NAME_PLATE, "Уголки", "corner:#7c3aed", 250, R),
-    ("plate_glass", ItemKind.NAME_PLATE, "Стекло", "glass", 500, E),
+    ("plate_grid", ItemKind.NAME_PLATE, "Тетрадь в клетку", "grid:#0088b0", 500, E),
     ("plate_neon", ItemKind.NAME_PLATE, "Неон", "neon:#00d5ff", 900, E),
     ("plate_stars", ItemKind.NAME_PLATE, "Звёздная пыль", "stars:#7c3aed", 1700, L),
 ]

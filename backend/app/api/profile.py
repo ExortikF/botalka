@@ -17,6 +17,7 @@ from sqlalchemy import func, select
 from app.api.deps import DbSession, PlayerUser
 from app.api.shop import cosmetics_of
 from app.models import (
+    AchievementUnlock,
     Attempt,
     CoinTransaction,
     Duel,
@@ -204,6 +205,41 @@ def _build_achievements(**m) -> list[Achievement]:
         )
         for code, title, desc, rarity, progress, target in raw
     ]
+
+
+async def sync_unlocks(
+    session: DbSession, user_id: int, achievements: list[Achievement]
+) -> list[Achievement]:
+    """Записывает новые достижения и возвращает те, что получены прямо сейчас.
+
+    У аккаунта, который завёлся до появления таблицы, всё уже давно заслужено —
+    показывать пачку всплывашек задним числом незачем. Поэтому первый прогон
+    записывает молча.
+    """
+    known = set(
+        await session.scalars(
+            select(AchievementUnlock.code).where(AchievementUnlock.user_id == user_id)
+        )
+    )
+    unlocked = [a for a in achievements if a.unlocked]
+    fresh = [a for a in unlocked if a.code not in known]
+    if not fresh:
+        return []
+
+    for a in fresh:
+        session.add(AchievementUnlock(user_id=user_id, code=a.code))
+    await session.commit()
+
+    first_run = not known
+    return [] if first_run else fresh
+
+
+@router.post("/achievements/check", response_model=list[Achievement])
+async def check_achievements(session: DbSession, user: PlayerUser) -> list[Achievement]:
+    """Что человек получил с прошлой проверки. Дёргается после квиза и дуэли —
+    чтобы всплывашка появилась в момент события, а не когда откроют профиль."""
+    data = await profile(session, user)
+    return await sync_unlocks(session, user.id, data.achievements)
 
 
 @router.get("/profile", response_model=ProfileOut)

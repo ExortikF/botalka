@@ -7,6 +7,7 @@ import MathText from "../../../Math";
 import DrawingPad, { type Stroke } from "../../DrawingPad";
 import ReportButton from "../../ReportButton";
 import { playCorrect, playWrong } from "@/lib/sound";
+import { checkAchievements } from "@/lib/achievements";
 import {
   getQuizResult,
   playDuel,
@@ -159,6 +160,7 @@ export default function QuizRunner({
     }
     setResult(await getQuizResult(quiz.id));
     setPhase("finished");
+    checkAchievements();
   }
 
   if (phase === "loading") return <p className="muted">Собираем квиз…</p>;

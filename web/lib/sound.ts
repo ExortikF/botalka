@@ -72,3 +72,11 @@ export function playWrong(): void {
   if (!soundEnabled()) return;
   tone(210, 0, 0.2, 0.09);
 }
+
+/** Фанфара на достижение: три ноты вверх, чуть громче обычного отклика. */
+export function playAchievement(): void {
+  if (!soundEnabled()) return;
+  tone(523, 0, 0.16, 0.14); // до
+  tone(659, 0.12, 0.16, 0.14); // ми
+  tone(784, 0.24, 0.42, 0.16); // соль
+}

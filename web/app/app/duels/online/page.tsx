@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, Swords, X } from "lucide-react";
 import MathText from "../../../Math";
+import { checkAchievements } from "@/lib/achievements";
 
 /** Тот же хост, что и сайт, если стоит прокси; в разработке — порт бэкенда. */
 function socketUrl(): string {
@@ -102,6 +103,7 @@ export default function OnlineDuelPage() {
         case "match_over":
           setOver(msg);
           setPhase("over");
+          checkAchievements();
           socket.close();
           break;
         case "error":

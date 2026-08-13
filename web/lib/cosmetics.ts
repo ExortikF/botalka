@@ -267,13 +267,10 @@ export function plateStyle(value: string | null | undefined): {
     };
   }
 
-  if (value === "glass")
+  if (value.startsWith("grid:"))
     return {
-      style: {
-        backdropFilter: "blur(6px)",
-        background: "rgba(255,255,255,.55)",
-      },
-      className: "plate-glass",
+      style: { ["--gridc" as string]: value.slice(5) },
+      className: "plate-grid",
     };
 
   if (value.startsWith("neon:")) {

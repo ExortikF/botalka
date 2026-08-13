@@ -7,6 +7,7 @@ import {
   BarChart3,
   ClipboardList,
   Flag,
+  Inbox,
   Lightbulb,
   Pencil,
   Plus,
@@ -153,6 +154,9 @@ function AdminTasks() {
           </Link>
           <Link className="btn-ghost" href="/app/admin/ideas">
             <Lightbulb size={16} /> Идеи
+          </Link>
+          <Link className="btn-ghost" href="/app/admin/suggestions">
+            <Inbox size={16} /> Задачи от учеников
           </Link>
           <Link className="btn-ghost" href="/app/admin/mocks">
             <ClipboardList size={16} /> Пробники

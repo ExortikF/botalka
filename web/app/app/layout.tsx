@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import AchievementToast from "./AchievementToast";
 import { getMe, type User } from "@/lib/api";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="min-w-0 flex-1 p-8">
         <div className="mx-auto max-w-4xl">{children}</div>
       </main>
+      <AchievementToast />
     </div>
   );
 }

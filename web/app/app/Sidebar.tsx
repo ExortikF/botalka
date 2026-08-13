@@ -7,6 +7,7 @@ import {
   Coins,
   Flame,
   ShoppingBag,
+  Lightbulb,
   Shield,
   Swords,
   ClipboardList,
@@ -41,6 +42,7 @@ const NAV: NavItem[] = [
   { href: "/app/friends", label: "Друзья", icon: Users },
   { href: "/app/shop", label: "Магазин", icon: ShoppingBag },
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
+  { href: "/app/suggest", label: "Своя задача", icon: Lightbulb },
 ];
 
 const ADMIN_ITEM: NavItem = {

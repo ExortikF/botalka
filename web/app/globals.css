@@ -321,8 +321,23 @@ h3,
   letter-spacing: 0.04em;
 }
 
-.plate-glass {
-  border: 1px solid rgba(255, 255, 255, 0.6);
+/* Тетрадь в клетку: своя, узнаваемая штука для тренажёра по математике */
+/* Клетка рисуется слоем поверх, а не фоном: у плиты может быть свой фон из
+   магазина, и обычный background-image затёрся бы им. */
+.plate-grid {
+  position: relative;
+}
+
+.plate-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--gridc) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--gridc) 30%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 @keyframes neon-breathe {
@@ -356,4 +371,17 @@ h3,
 
 @media (prefers-reduced-motion: reduce) {
   .avatar-holo, .avatar-shine, .plate-neon, .plate-stars { animation: none; }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.achievement-toast {
+  animation: toast-in 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achievement-toast { animation: none; }
 }

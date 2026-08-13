@@ -6,6 +6,7 @@ import { Clock, PenLine } from "lucide-react";
 import MathText from "../../Math";
 import DrawingPad, { type Stroke } from "../DrawingPad";
 import ReportButton from "../ReportButton";
+import { checkAchievements } from "@/lib/achievements";
 import { api } from "@/lib/api";
 
 type MockTask = {
@@ -104,6 +105,7 @@ export default function MockRunner({
           method: "POST",
         }),
       );
+      checkAchievements();
     } catch (e) {
       setError((e as Error).message);
     } finally {

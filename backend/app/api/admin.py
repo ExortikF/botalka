@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 
 from app.api.deps import CurrentUser, DbSession
+from app.api.suggestions import approve_suggestion
 from app.core.answers import check_answer
 from app.models import (
     AnswerType,
@@ -31,8 +32,10 @@ from app.models import (
     Quiz,
     SourceKind,
     Subject,
+    SuggestionStatus,
     Task,
     TaskStatus,
+    TaskSuggestion,
     TaskType,
     User,
 )
@@ -809,6 +812,91 @@ async def resolve_idea(idea_id: int, action: str, session: DbSession, admin: Adm
     if idea is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "идея не найдена")
     idea.status = IdeaStatus.ACCEPTED if action == "accept" else IdeaStatus.DECLINED
+    await session.commit()
+    return {"ok": True}
+
+
+# ------------------------------------------------------- задачи от учеников
+
+
+class SuggestionRow(BaseModel):
+    id: int
+    author: str
+    author_id: int
+    number: int
+    statement: str
+    answer: str
+    solution: str | None
+    source: str | None
+    status: str
+    moderator_note: str | None
+    task_id: int | None
+    created_at: datetime
+
+
+@router.get("/suggestions", response_model=list[SuggestionRow])
+async def list_suggestions(
+    session: DbSession, admin: AdminUser, only_pending: bool = True
+) -> list[SuggestionRow]:
+    stmt = select(TaskSuggestion).order_by(TaskSuggestion.id.desc()).limit(100)
+    if only_pending:
+        stmt = stmt.where(TaskSuggestion.status == SuggestionStatus.PENDING)
+
+    out: list[SuggestionRow] = []
+    for row in await session.scalars(stmt):
+        author = await session.get(User, row.user_id)
+        out.append(
+            SuggestionRow(
+                id=row.id,
+                author=author.display_name if author else "неизвестно",
+                author_id=row.user_id,
+                number=row.number,
+                statement=row.statement,
+                answer=row.answer,
+                solution=row.solution,
+                source=row.source,
+                status=row.status.value,
+                moderator_note=row.moderator_note,
+                task_id=row.task_id,
+                created_at=row.created_at,
+            )
+        )
+    return out
+
+
+class SuggestionReviewIn(BaseModel):
+    note: str | None = None
+
+
+@router.post("/suggestions/{suggestion_id}/approve")
+async def approve(
+    suggestion_id: int, session: DbSession, admin: AdminUser
+) -> dict:
+    """Берёт задачу в банк черновиком и платит автору. Публиковать — отдельно,
+    уже из карточки задачи: текст стоит один раз увидеть глазами ученика."""
+    row = await session.get(TaskSuggestion, suggestion_id)
+    if row is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "предложение не найдено")
+    if row.status is not SuggestionStatus.PENDING:
+        raise HTTPException(status.HTTP_409_CONFLICT, "уже рассмотрено")
+
+    task = await approve_suggestion(session, row, "math_prof")
+    return {"ok": True, "task_id": task.id}
+
+
+@router.post("/suggestions/{suggestion_id}/reject")
+async def reject(
+    suggestion_id: int, payload: SuggestionReviewIn, session: DbSession, admin: AdminUser
+) -> dict:
+    row = await session.get(TaskSuggestion, suggestion_id)
+    if row is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "предложение не найдено")
+    if row.status is not SuggestionStatus.PENDING:
+        raise HTTPException(status.HTTP_409_CONFLICT, "уже рассмотрено")
+
+    row.status = SuggestionStatus.REJECTED
+    row.moderator_note = payload.note
+    row.reviewed_at = datetime.now(UTC)
     await session.commit()
     return {"ok": True}
 
