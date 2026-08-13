@@ -77,6 +77,17 @@ export type QuizResult = {
     used_hint: boolean;
     solution: string | null;
   }[];
+  coins_earned: number;
+  seconds_spent: number;
+  best_run: number;
+  accuracy: number;
+  by_number: {
+    number: number;
+    correct: number;
+    total: number;
+    accuracy_before: number | null;
+    accuracy_after: number;
+  }[];
 };
 
 /** credentials: include обязателен — сессия живёт в httpOnly-куке. */

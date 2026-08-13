@@ -82,6 +82,16 @@ class QuizResultItem(BaseModel):
     solution: str | None
 
 
+class NumberProgress(BaseModel):
+    """Как номер шёл раньше и как в этом квизе — ради этого сюда и приходят."""
+
+    number: int
+    correct: int
+    total: int
+    accuracy_before: int | None  # None, если этот номер решался впервые
+    accuracy_after: int
+
+
 class QuizResultOut(BaseModel):
     quiz_id: int
     score: int
@@ -89,6 +99,12 @@ class QuizResultOut(BaseModel):
     finished: bool
     items: list[QuizResultItem]
     streak_days: int
+
+    coins_earned: int
+    seconds_spent: int
+    best_run: int          # самая длинная серия верных внутри квиза
+    accuracy: int
+    by_number: list[NumberProgress]
 
 
 def _to_task_out(task: Task) -> TaskOut:
@@ -425,6 +441,7 @@ async def submit_answer(
                 session, user, CoinReason.STREAK_DAY, amount=bonus, note=f"серия {user.streak_days}"
             )
 
+    quiz.coins_earned += coins
     await session.commit()
 
     if quiz_just_finished and quiz.duel_id is not None:
@@ -478,6 +495,63 @@ async def quiz_result(quiz_id: int, session: DbSession, user: PlayerUser) -> Qui
             )
         )
 
+    # Точность по номеру до этого квиза и после — чтобы было видно, что подтянулось
+    quiz_attempts = [attempts[t] for t in quiz.task_ids if t in attempts]
+    numbers = {item.task_id: item.task_type_number for item in items}
+
+    earlier = list(
+        await session.scalars(
+            select(Attempt).where(
+                Attempt.user_id == user.id,
+                Attempt.quiz_id != quiz.id,
+                Attempt.task_id.in_(list(numbers)),
+            )
+        )
+    )
+
+    by_number: dict[int, dict] = {}
+    for attempt in quiz_attempts:
+        number = numbers.get(attempt.task_id)
+        if number is None:
+            continue
+        row = by_number.setdefault(number, {"correct": 0, "total": 0, "was": [0, 0]})
+        row["total"] += 1
+        row["correct"] += int(attempt.is_correct)
+
+    # старые попытки по тем же номерам — их считаем по task_id из этого квиза,
+    # то есть «как раньше шли ровно эти задачи»
+    for attempt in earlier:
+        number = numbers.get(attempt.task_id)
+        if number is None:
+            continue
+        row = by_number.setdefault(number, {"correct": 0, "total": 0, "was": [0, 0]})
+        row["was"][1] += 1
+        row["was"][0] += int(attempt.is_correct)
+
+    progress = []
+    for number, row in sorted(by_number.items()):
+        if row["total"] == 0:
+            continue
+        before = row["was"]
+        after_correct = before[0] + row["correct"]
+        after_total = before[1] + row["total"]
+        progress.append(
+            NumberProgress(
+                number=number,
+                correct=row["correct"],
+                total=row["total"],
+                accuracy_before=round(100 * before[0] / before[1]) if before[1] else None,
+                accuracy_after=round(100 * after_correct / after_total),
+            )
+        )
+
+    best_run = run = 0
+    for task_id in quiz.task_ids:
+        attempt = attempts.get(task_id)
+        run = run + 1 if attempt and attempt.is_correct else 0
+        best_run = max(best_run, run)
+
+    answered = len(quiz_attempts)
     return QuizResultOut(
         quiz_id=quiz.id,
         score=quiz.score,
@@ -485,6 +559,11 @@ async def quiz_result(quiz_id: int, session: DbSession, user: PlayerUser) -> Qui
         finished=quiz.finished_at is not None,
         items=items,
         streak_days=user.streak_days,
+        coins_earned=quiz.coins_earned,
+        seconds_spent=round(sum(a.time_spent_ms for a in quiz_attempts) / 1000),
+        best_run=best_run,
+        accuracy=round(100 * quiz.score / answered) if answered else 0,
+        by_number=progress,
     )
 
 

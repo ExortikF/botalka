@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Coins, Lightbulb, PenLine, X } from "lucide-react";
+import { Coins, Flame, Lightbulb, PenLine, TrendingUp, X } from "lucide-react";
 import MathText from "../../../Math";
 import DrawingPad, { type Stroke } from "../../DrawingPad";
 import ReportButton from "../../ReportButton";
 import { playCorrect, playWrong } from "@/lib/sound";
 import { checkAchievements } from "@/lib/achievements";
+import { plural } from "@/lib/exam";
 import {
   getQuizResult,
   playDuel,
@@ -58,6 +59,9 @@ export default function QuizRunner({
   const [slots, setSlots] = useState<Record<number, Slot>>({});
   const [index, setIndex] = useState(0);
   const [result, setResult] = useState<QuizResult | null>(null);
+  /** Верных подряд внутри подхода — счётчик, ради которого не хочется ошибаться. */
+  const [combo, setCombo] = useState(0);
+  const [flash, setFlash] = useState(0);
   const [sending, setSending] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
   // черновик общий на весь квиз: при переходе к следующей задаче он остаётся
@@ -143,8 +147,14 @@ export default function QuizRunner({
         slot.hintsShown > 0,
       );
       patch(task.id, { result: res });
-      if (res.is_correct) playCorrect();
-      else playWrong();
+      if (res.is_correct) {
+        playCorrect();
+        setCombo((n) => n + 1);
+        setFlash((n) => n + 1);
+      } else {
+        playWrong();
+        setCombo(0);
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -190,8 +200,11 @@ export default function QuizRunner({
         >
           <X size={16} /> Выйти
         </Link>
-        <span className="eyebrow">
-          Вопрос {index + 1} из {quiz.tasks.length}
+        <span className="flex items-center gap-3">
+          <ComboBadge combo={combo} />
+          <span className="eyebrow">
+            Вопрос {index + 1} из {quiz.tasks.length}
+          </span>
         </span>
       </div>
 
@@ -209,7 +222,7 @@ export default function QuizRunner({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_220px]">
-        <article className="card space-y-5 p-7">
+        <article key={flash} className={`card space-y-5 p-7 ${slot.result?.is_correct ? "answer-right" : ""}`}>
           <div className="flex flex-wrap items-center gap-2">
             <span
               className="rounded-full px-3 py-1 text-xs font-medium"
@@ -403,6 +416,25 @@ function Legend({ color, text }: { color: string; text: string }) {
   );
 }
 
+/** Счётчик верных подряд. До двух не показываем — иначе он всегда на экране. */
+function ComboBadge({ combo }: { combo: number }) {
+  if (combo < 2) return null;
+  const hot = combo >= 5;
+  return (
+    <span
+      key={combo}
+      className="combo-pop inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold"
+      style={{
+        background: hot ? "var(--accent-2-100)" : "var(--accent-100)",
+        color: hot ? "var(--accent-2)" : "var(--accent-700)",
+      }}
+    >
+      {hot && <Flame size={14} />}
+      {combo} подряд
+    </span>
+  );
+}
+
 function Feedback({
   result,
   onNext,
@@ -433,7 +465,7 @@ function Feedback({
             : `Неверно. Правильный ответ: ${result.correct_answer}`}
           {result.coins > 0 && (
             <span
-              className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
+              className="coin-fly inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
               style={{ background: "#fdf3dd", color: "#c98a00" }}
             >
               <Coins size={14} /> +{result.coins}
@@ -463,42 +495,99 @@ function Feedback({
 }
 
 function Result({ result }: { result: QuizResult }) {
-  const percent = Math.round((result.score / result.total) * 100);
   const wrong = result.items.filter((i) => !i.is_correct);
-  const withHint = result.items.filter(
-    (i) => i.is_correct && i.used_hint,
-  ).length;
+  const withHint = result.items.filter((i) => i.is_correct && i.used_hint).length;
+  const perfect = result.score === result.total;
+
+  // Номера, где стало заметно лучше — ради этого сюда и приходят.
+  const improved = result.by_number.filter(
+    (n) => n.accuracy_before !== null && n.accuracy_after > n.accuracy_before,
+  );
 
   return (
     <div className="space-y-6">
-      <section className="card flex flex-wrap items-center justify-between gap-6 p-7">
-        <div className="flex items-center gap-5">
-          <span
-            className="h flex h-20 w-20 items-center justify-center rounded-2xl text-2xl"
-            style={{
-              background: "var(--accent-100)",
-              color: "var(--accent-700)",
-            }}
-          >
-            {result.score}/{result.total}
-          </span>
-          <div>
-            <h1 className="text-2xl">{percent}% верно</h1>
-            <p className="muted mt-1 text-sm">
-              {result.streak_days > 0 && `серия ${result.streak_days} дн.`}
-              {withHint > 0 && ` · с подсказкой: ${withHint}`}
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <Link className="btn" href="/app/quiz">
-            Собрать ещё
-          </Link>
-          <Link className="btn-ghost" href="/app">
-            На главную
-          </Link>
+      <section
+        className="relative overflow-hidden p-8 text-center text-white"
+        style={{
+          background: perfect ? "var(--accent-2)" : "var(--accent)",
+          borderRadius: "var(--radius-lg)",
+        }}
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full opacity-25"
+          style={{ background: "#fff" }}
+        />
+        <div className="relative">
+          <p className="eyebrow" style={{ color: "rgba(255,255,255,.8)" }}>
+            {perfect ? "Идеально" : "Подход закрыт"}
+          </p>
+          <p className="h result-score mt-2 text-6xl">
+            {result.score}
+            <span style={{ opacity: 0.6 }}>/{result.total}</span>
+          </p>
+          <p className="mt-2 opacity-90">
+            {result.accuracy}% верно
+            {withHint > 0 && ` · с подсказкой: ${withHint}`}
+          </p>
         </div>
       </section>
+
+      <section className="grid gap-4 sm:grid-cols-4">
+        <Tile
+          value={`+${result.coins_earned}`}
+          label="монет"
+          icon={<Coins size={15} style={{ color: "#c98a00" }} />}
+          accent={result.coins_earned > 0}
+        />
+        <Tile value={formatTime(result.seconds_spent)} label="в работе" />
+        <Tile
+          value={String(result.best_run)}
+          label={`подряд ${plural(result.best_run, "верный", "верных", "верных")}`}
+        />
+        <Tile
+          value={String(result.streak_days)}
+          label={`${plural(result.streak_days, "день", "дня", "дней")} серии`}
+          icon={<Flame size={15} style={{ color: "var(--accent-2)" }} />}
+        />
+      </section>
+
+      {improved.length > 0 && (
+        <section className="card space-y-3 p-6">
+          <h2 className="flex items-center gap-2 text-xl">
+            <TrendingUp size={18} style={{ color: "var(--accent)" }} /> Что подтянулось
+          </h2>
+          <ul className="space-y-2 text-sm">
+            {improved.map((item) => (
+              <li key={item.number} className="flex items-center justify-between gap-3">
+                <span>
+                  Задание № {item.number}
+                  <span className="muted"> · {item.correct} из {item.total} в этом подходе</span>
+                </span>
+                <span className="shrink-0">
+                  <span className="muted">{item.accuracy_before}%</span>
+                  <span className="muted"> → </span>
+                  <b style={{ color: "var(--accent)" }}>{item.accuracy_after}%</b>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div className="flex flex-wrap gap-3">
+        <Link className="btn" href="/app/quiz">
+          Ещё подход
+        </Link>
+        {wrong.length > 0 && (
+          <Link className="btn-ghost" href="/app/quiz?mistakes=1">
+            Проработать ошибки ({wrong.length})
+          </Link>
+        )}
+        <Link className="btn-ghost" href="/app/profile">
+          В профиль
+        </Link>
+      </div>
 
       {wrong.length > 0 && (
         <section className="space-y-3">
@@ -533,4 +622,35 @@ function Result({ result }: { result: QuizResult }) {
       )}
     </div>
   );
+}
+
+function Tile({
+  value,
+  label,
+  icon,
+  accent,
+}: {
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className="card p-5"
+      style={accent ? { background: "var(--accent-100)", borderColor: "var(--accent-200)" } : undefined}
+    >
+      <p className="h flex items-baseline gap-1.5 text-3xl">
+        {icon}
+        {value}
+      </p>
+      <p className="muted mt-1 text-sm leading-snug">{label}</p>
+    </div>
+  );
+}
+
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds} с`;
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}:${String(seconds % 60).padStart(2, "0")}`;
 }

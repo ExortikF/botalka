@@ -87,6 +87,7 @@ class Quiz(Base):
     duel_id: Mapped[int | None] = mapped_column(ForeignKey("duels.id"), index=True)
 
     score: Mapped[int] = mapped_column(Integer, default=0)
+    coins_earned: Mapped[int] = mapped_column(Integer, default=0)
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 

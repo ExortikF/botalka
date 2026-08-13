@@ -11,9 +11,11 @@ from app.api import (
     admin,
     auth,
     catalog,
+    daily,
     duel_ws,
     duels,
     friends,
+    league,
     mocks,
     profile,
     quiz,
@@ -53,10 +55,12 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(quiz.router)
 app.include_router(catalog.router)
+app.include_router(daily.router)
 app.include_router(profile.router)
 app.include_router(admin.router)
 app.include_router(duels.router)
 app.include_router(friends.router)
+app.include_router(league.router)
 app.include_router(duel_ws.router)
 app.include_router(mocks.router)
 app.include_router(shop.router)

@@ -1,0 +1,222 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { CalendarDays, Check, Clock, Coins, Trophy } from "lucide-react";
+import MathText from "../../Math";
+import { api } from "@/lib/api";
+import { checkAchievements } from "@/lib/achievements";
+import { playCorrect, playWrong } from "@/lib/sound";
+import { plural } from "@/lib/exam";
+
+type Daily = {
+  day: string;
+  task_id: number;
+  task_type_number: number;
+  task_type_title: string;
+  statement: string;
+  image_url: string | null;
+  source: string | null;
+  solved: boolean;
+  your_seconds: number | null;
+  your_place: number | null;
+  solved_today: number;
+  reward: number;
+  next_in_hours: number;
+};
+
+type Row = {
+  place: number;
+  user_id: number;
+  display_name: string;
+  seconds: number;
+  is_you: boolean;
+};
+
+type Answer = {
+  is_correct: boolean;
+  correct_answer: string;
+  solution: string | null;
+  coins: number;
+  seconds: number;
+  place: number | null;
+};
+
+export default function DailyPage() {
+  const [daily, setDaily] = useState<Daily | null>(null);
+  const [rows, setRows] = useState<Row[]>([]);
+  const [answer, setAnswer] = useState("");
+  const [result, setResult] = useState<Answer | null>(null);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const startedAt = useRef(Date.now());
+
+  function load() {
+    api<Daily>("/api/daily")
+      .then((data) => {
+        setDaily(data);
+        startedAt.current = Date.now();
+      })
+      .catch((e: Error) => setError(e.message));
+    api<Row[]>("/api/daily/leaderboard")
+      .then(setRows)
+      .catch(() => setRows([]));
+  }
+
+  useEffect(load, []);
+
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (sending || !answer.trim()) return;
+    setSending(true);
+    try {
+      const res = await api<Answer>("/api/daily/answer", {
+        method: "POST",
+        body: JSON.stringify({
+          answer,
+          time_spent_ms: Date.now() - startedAt.current,
+        }),
+      });
+      setResult(res);
+      if (res.is_correct) {
+        playCorrect();
+        checkAchievements();
+        load();
+      } else {
+        playWrong();
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSending(false);
+    }
+  }
+
+  if (error && !daily)
+    return <p style={{ color: "var(--accent-2)" }}>{error}</p>;
+  if (!daily) return <p className="muted">Загрузка…</p>;
+
+  const done = daily.solved || result?.is_correct;
+
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <CalendarDays size={22} style={{ color: "var(--accent-2)" }} />
+          <div>
+            <h1 className="text-3xl">Задача дня</h1>
+            <p className="muted mt-1 text-sm">
+              Одна на всех, новая каждый день. Место в таблице — по времени решения,
+              так что думать лучше сразу набело.
+            </p>
+          </div>
+        </div>
+        <span className="muted shrink-0 text-sm">
+          новая через {daily.next_in_hours} {plural(daily.next_in_hours, "час", "часа", "часов")}
+        </span>
+      </header>
+
+      <article className="card space-y-5 p-7">
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className="rounded-full px-3 py-1 text-xs font-medium"
+            style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+          >
+            Задание № {daily.task_type_number}
+          </span>
+          <span className="muted text-sm">{daily.task_type_title}</span>
+          <span
+            className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs"
+            style={{ background: "#fdf3dd", color: "#c98a00" }}
+          >
+            <Coins size={13} /> {daily.reward} за решение
+          </span>
+        </div>
+
+        <MathText className="block text-lg leading-relaxed" text={daily.statement} />
+        {daily.source && <p className="muted text-xs">Источник: {daily.source}</p>}
+
+        {done ? (
+          <div
+            className="coin-fly rounded-xl p-4"
+            style={{ background: "var(--accent-100)", color: "var(--accent-700)" }}
+          >
+            <p className="flex flex-wrap items-center gap-2 font-semibold">
+              <Check size={17} /> Решено
+              {(result?.seconds ?? daily.your_seconds) !== null && (
+                <span className="font-normal">
+                  за {result?.seconds ?? daily.your_seconds} с
+                </span>
+              )}
+              {(result?.place ?? daily.your_place) && (
+                <span className="font-normal">
+                  · {result?.place ?? daily.your_place} место
+                </span>
+              )}
+            </p>
+            <p className="muted mt-1 text-sm">Возвращайся завтра — задача сменится.</p>
+          </div>
+        ) : (
+          <form className="flex flex-wrap gap-3" onSubmit={submit} noValidate>
+            <input
+              className="input flex-1"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Ответ"
+              autoFocus
+            />
+            <button className="btn" disabled={sending}>
+              {sending ? "Проверяем…" : "Ответить"}
+            </button>
+          </form>
+        )}
+
+        {result && !result.is_correct && (
+          <div
+            className="rounded-xl p-4 text-sm"
+            style={{ background: "var(--accent-2-100)", color: "var(--accent-2)" }}
+          >
+            <p className="font-semibold">
+              Неверно. Правильный ответ: {result.correct_answer}
+            </p>
+            {result.solution && (
+              <div className="mt-2 leading-relaxed" style={{ color: "var(--text)" }}>
+                <MathText text={result.solution} />
+              </div>
+            )}
+          </div>
+        )}
+      </article>
+
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-xl">
+            <Trophy size={18} style={{ color: "var(--accent-2)" }} /> Кто быстрее
+          </h2>
+          <span className="muted text-sm">
+            решили сегодня: {daily.solved_today}
+          </span>
+        </div>
+
+        {rows.length === 0 ? (
+          <p className="muted text-sm">Сегодня ещё никто не решил — можно быть первым.</p>
+        ) : (
+          <ul className="space-y-2">
+            {rows.map((row) => (
+              <li
+                key={row.user_id}
+                className="card flex items-center gap-3 p-3 text-sm"
+                style={row.is_you ? { background: "var(--accent-100)" } : undefined}
+              >
+                <span className="h w-6 text-center">{row.place}</span>
+                <span className="min-w-0 flex-1 truncate">{row.display_name}</span>
+                <span className="muted flex items-center gap-1">
+                  <Clock size={13} /> {row.seconds} с
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}

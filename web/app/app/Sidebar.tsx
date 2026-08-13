@@ -7,6 +7,7 @@ import {
   Coins,
   Flame,
   ShoppingBag,
+  CalendarDays,
   Lightbulb,
   Shield,
   Swords,
@@ -35,12 +36,14 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { href: "/app/profile", label: "Профиль", icon: UserIcon },
+  { href: "/app/daily", label: "Задача дня", icon: CalendarDays },
   { href: "/app/quiz", label: "Квизы", icon: Zap },
   { href: "/app/stats", label: "Статистика", icon: BarChart3 },
   { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
   { href: "/app/shop", label: "Магазин", icon: ShoppingBag },
+  { href: "/app/league", label: "Лига", icon: Shield },
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
   { href: "/app/suggest", label: "Своя задача", icon: Lightbulb },
 ];
