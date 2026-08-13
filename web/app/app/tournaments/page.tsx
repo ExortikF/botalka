@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Coins, Flag, Trophy } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Tournament } from "./types";
-import { STATE_COLOR, formatLeft } from "./types";
+import { STATE_COLOR } from "./types";
+import Countdown from "./Countdown";
 
 export default function TournamentsPage() {
   const [rows, setRows] = useState<Tournament[] | null>(null);
@@ -63,7 +64,7 @@ export default function TournamentsPage() {
                     </span>
                     {row.seconds_left !== null && (
                       <span className="text-xs opacity-90">
-                        осталось {formatLeft(row.seconds_left)}
+                        осталось <Countdown seconds={row.seconds_left} />
                       </span>
                     )}
                   </span>

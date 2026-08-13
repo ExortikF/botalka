@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Clock, Send, Users } from "lucide-react";
 import MathText from "../../../Math";
 import { api } from "@/lib/api";
 import { playCorrect, playWrong } from "@/lib/sound";
-import type { Problem, SubmitResult, Tournament } from "../types";
-import { formatClock } from "../types";
+import type { SubmitResult, Tournament } from "../types";
+import { formatFull, useCountdown } from "../Countdown";
 
 /**
  * Экран контеста: слева список задач, справа выбранная задача с полем ответа.
@@ -28,30 +28,14 @@ export default function Contest({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
-  const [left, setLeft] = useState<number | null>(
-    data.seconds_left ?? data.seconds_to_start ?? null,
+  const left = useCountdown(
+    data.started ? data.seconds_left : data.seconds_to_start,
   );
-  const deadline = useRef<number | null>(null);
 
+  // Ноль означает смену фазы: контест начался или кончился — перечитываем.
   useEffect(() => {
-    const seconds = data.started ? data.seconds_left : data.seconds_to_start;
-    deadline.current = seconds === null ? null : Date.now() + seconds * 1000;
-    setLeft(seconds);
-  }, [data.started, data.seconds_left, data.seconds_to_start]);
-
-  useEffect(() => {
-    if (deadline.current === null) return;
-    const timer = setInterval(() => {
-      const rest = Math.max(0, Math.round((deadline.current! - Date.now()) / 1000));
-      setLeft(rest);
-      // Ноль означает смену фазы: контест начался или кончился — перечитываем.
-      if (rest === 0) {
-        clearInterval(timer);
-        onReload();
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [data.started, onReload]);
+    if (left === 0) onReload();
+  }, [left, onReload]);
 
   const problem = data.problems.find((p) => p.letter === current) ?? null;
 
@@ -81,7 +65,7 @@ export default function Contest({
     return (
       <section className="card flex flex-col items-center gap-3 p-10 text-center">
         <Clock size={26} style={{ color: "var(--accent)" }} />
-        <p className="h text-4xl">{left !== null ? formatClock(left) : "—"}</p>
+        <p className="h text-4xl">{left !== null ? formatFull(left) : "—"}</p>
         <p className="muted max-w-sm leading-relaxed">
           До старта. Задачи откроются у всех одновременно — набор до начала
           не показывается никому.
@@ -101,7 +85,7 @@ export default function Contest({
             className="h text-3xl"
             style={{ color: left <= 300 ? "var(--accent-2)" : undefined }}
           >
-            {formatClock(left)}
+            {formatFull(left)}
           </span>
         </section>
       )}

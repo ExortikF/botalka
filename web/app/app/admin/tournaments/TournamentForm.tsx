@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Check, Plus, Trash2 } from "lucide-react";
 import { api, getTaskTypes, type TaskType } from "@/lib/api";
+import MathText from "../../../Math";
 import type { Tournament } from "../../tournaments/types";
 
 type RuleDraft = {
@@ -102,6 +103,16 @@ export default function TournamentForm({
   const [picks, setPicks] = useState<PickRow[]>([]);
   const [types, setTypes] = useState<TaskType[]>([]);
   const [searching, setSearching] = useState(false);
+
+  // Своя задача: пишем прямо здесь, в банк она попадает черновиком.
+  const [ownOpen, setOwnOpen] = useState(false);
+  const [ownType, setOwnType] = useState<number | null>(null);
+  const [ownStatement, setOwnStatement] = useState("");
+  const [ownAnswer, setOwnAnswer] = useState("");
+  const [ownAnswerType, setOwnAnswerType] = useState("number");
+  const [ownSolution, setOwnSolution] = useState("");
+  const [ownDifficulty, setOwnDifficulty] = useState(3);
+  const [ownBusy, setOwnBusy] = useState(false);
   const [rules, setRules] = useState<RuleDraft[]>([emptyRule()]);
   const [prizes, setPrizes] = useState<PrizeDraft[]>([
     { place_from: 1, place_to: 1, coins: 500, item_code: "" },
@@ -265,6 +276,58 @@ export default function TournamentForm({
     const end = new Date(start.getTime() + hours * 3600_000);
     setStartsAt(toLocal(start));
     setEndsAt(toLocal(end));
+  }
+
+  /**
+   * Создаёт задачу и сразу ставит её в набор.
+   *
+   * Статус — черновик: своя задача контеста не должна до старта всплыть
+   * в квизе у того, кто в нём участвует. После контеста её можно опубликовать
+   * в банк из админки задач.
+   */
+  async function createOwn() {
+    if (ownType === null || !ownStatement.trim() || !ownAnswer.trim()) {
+      setError("Для своей задачи нужны тема, условие и ответ");
+      return;
+    }
+
+    setOwnBusy(true);
+    setError("");
+    try {
+      const task = await api<{ id: number; task_type_number: number; statement: string }>(
+        "/api/admin/tasks",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            task_type_id: ownType,
+            statement: ownStatement,
+            answer_type: ownAnswerType,
+            answer_value: ownAnswer,
+            solution: ownSolution || null,
+            difficulty: ownDifficulty,
+            status: "draft",
+          }),
+        },
+      );
+
+      setProblems((list) => [
+        ...list,
+        {
+          task_id: task.id,
+          points: (list.length + 1) * 100,
+          number: task.task_type_number,
+          statement: task.statement,
+        },
+      ]);
+      setOwnStatement("");
+      setOwnAnswer("");
+      setOwnSolution("");
+      setOwnOpen(false);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOwnBusy(false);
+    }
   }
 
   function patchRule(index: number, patch: Partial<RuleDraft>) {
@@ -610,6 +673,117 @@ export default function TournamentForm({
               </ul>
             )}
           </div>
+
+          {ownOpen ? (
+            <div
+              className="space-y-4 rounded-xl p-4"
+              style={{ background: "var(--surface)" }}
+            >
+              <div className="section-head">
+                <p className="eyebrow">Своя задача</p>
+                <button className="muted text-sm" onClick={() => setOwnOpen(false)}>
+                  свернуть
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <label className="min-w-[240px] flex-1">
+                  <span className="eyebrow">Тема</span>
+                  <select
+                    className="input mt-1.5 w-full"
+                    value={ownType ?? ""}
+                    onChange={(e) =>
+                      setOwnType(e.target.value ? Number(e.target.value) : null)
+                    }
+                  >
+                    <option value="">Выбери номер задания</option>
+                    {types.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        № {type.number} · {type.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label style={{ width: 170 }}>
+                  <span className="eyebrow">Тип ответа</span>
+                  <select
+                    className="input mt-1.5 w-full"
+                    value={ownAnswerType}
+                    onChange={(e) => setOwnAnswerType(e.target.value)}
+                  >
+                    <option value="number">Число</option>
+                    <option value="string">Слово</option>
+                    <option value="digits">Цифры по порядку</option>
+                    <option value="multi">Числа в любом порядке</option>
+                  </select>
+                </label>
+
+                <label style={{ width: 150 }}>
+                  <span className="eyebrow">Сложность 1–5</span>
+                  <input
+                    className="input mt-1.5 w-full"
+                    type="number"
+                    min={1}
+                    max={5}
+                    value={ownDifficulty}
+                    onChange={(e) => setOwnDifficulty(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+
+              <label className="block">
+                <span className="eyebrow">Условие</span>
+                <textarea
+                  className="input mt-1.5 min-h-24 w-full"
+                  value={ownStatement}
+                  onChange={(e) => setOwnStatement(e.target.value)}
+                  placeholder="Формулы в TeX: $\\frac{3}{4}$"
+                />
+              </label>
+
+              {ownStatement && (
+                <div className="rounded-xl p-3" style={{ background: "var(--card)" }}>
+                  <p className="eyebrow mb-1.5">Как увидит участник</p>
+                  <MathText text={ownStatement} />
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-3">
+                <label style={{ width: 200 }}>
+                  <span className="eyebrow">Ответ</span>
+                  <input
+                    className="input mt-1.5 w-full"
+                    value={ownAnswer}
+                    onChange={(e) => setOwnAnswer(e.target.value)}
+                    placeholder="как в бланке"
+                  />
+                </label>
+                <label className="min-w-[240px] flex-1">
+                  <span className="eyebrow">Разбор (не обязательно)</span>
+                  <input
+                    className="input mt-1.5 w-full"
+                    value={ownSolution}
+                    onChange={(e) => setOwnSolution(e.target.value)}
+                    placeholder="покажем после контеста"
+                  />
+                </label>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button className="btn text-sm" onClick={createOwn} disabled={ownBusy}>
+                  {ownBusy ? "Создаём…" : "Создать и добавить в контест"}
+                </button>
+                <span className="muted text-xs">
+                  Задача сохранится черновиком: в квизах до публикации не появится.
+                </span>
+              </div>
+            </div>
+          ) : (
+            <button className="btn-ghost text-sm" onClick={() => setOwnOpen(true)}>
+              <Plus size={15} /> Своя задача
+            </button>
+          )}
         </section>
       )}
 

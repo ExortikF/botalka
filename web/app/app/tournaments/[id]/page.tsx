@@ -7,7 +7,8 @@ import Avatar from "../../Avatar";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
 import type { Tournament } from "../types";
-import { formatLeft, placeLabel } from "../types";
+import { placeLabel } from "../types";
+import Countdown from "../Countdown";
 import Contest from "./Contest";
 
 export default function TournamentPage({
@@ -76,7 +77,8 @@ export default function TournamentPage({
             </span>
             {data.seconds_left !== null && (
               <span className="text-sm opacity-90">
-                осталось {formatLeft(data.seconds_left)}
+                осталось{" "}
+                <Countdown className="h" seconds={data.seconds_left} />
               </span>
             )}
           </span>
