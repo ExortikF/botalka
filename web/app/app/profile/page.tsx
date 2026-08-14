@@ -65,6 +65,12 @@ type Profile = {
     color: string;
     role: string;
   } | null;
+  league: {
+    division: string;
+    title: string;
+    color: string;
+    points_week: number;
+  } | null;
   rating_history: number[];
   tasks_total: number;
   activity: { day: string; solved: number }[];
@@ -173,6 +179,24 @@ export default function ProfilePage() {
               >
                 {profile.rank}
               </span>
+
+              {profile.league && (
+                <Link
+                  href="/app/league"
+                  className="h rounded-lg px-2.5 py-1 text-sm"
+                  style={
+                    bg.dark
+                      ? { background: "rgba(255,255,255,.2)", color: "#fff" }
+                      : {
+                          background: `${profile.league.color}1a`,
+                          color: profile.league.color,
+                        }
+                  }
+                  title={`Лига: ${profile.league.title} · ${profile.league.points_week} очков за неделю`}
+                >
+                  {profile.league.title}
+                </Link>
+              )}
 
               {profile.clan && (
                 <Link

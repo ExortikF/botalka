@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException, status
@@ -96,6 +96,41 @@ class DayStatsOut(BaseModel):
     by_type: list[DayTypeRow]
 
 
+class LeagueBadge(BaseModel):
+    """Дивизион лиги для профиля. Место в группе не считаем: это два десятка
+    запросов ради одной строки, а за ним всё равно идут на страницу лиги."""
+
+    division: str
+    title: str
+    color: str
+    points_week: int
+
+
+async def league_badge(session: DbSession, user_id: int) -> LeagueBadge | None:
+    from app.api.league import DIVISIONS, _points, division_at
+    from app.models import LeagueMember
+
+    member = await session.scalar(
+        select(LeagueMember)
+        .where(LeagueMember.user_id == user_id)
+        .order_by(LeagueMember.week_start.desc())
+    )
+    if member is None:
+        return None
+
+    code, title, color = division_at(member.division)
+    start = member.week_start
+    if start.tzinfo is None:
+        start = start.replace(tzinfo=UTC)
+
+    return LeagueBadge(
+        division=code,
+        title=title,
+        color=color,
+        points_week=await _points(session, user_id, start),
+    )
+
+
 class ClanBadge(BaseModel):
     """Клан в профиле: тег и цвет — то, чем в клане и хвастаются."""
 
@@ -172,6 +207,7 @@ class ProfileOut(BaseModel):
     weak_topics: list[WeakTopic]
     rating_history: list[int]
     clan: ClanBadge | None
+    league: LeagueBadge | None
 
     tasks_total: int
 
@@ -475,6 +511,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         weak_topics=weak,
         rating_history=rating_history,
         clan=await clan_badge(session, user.id),
+        league=await league_badge(session, user.id),
         numbers_covered=numbers_covered,
         attempts_total=len(attempts),
         attempts_correct=sum(a.is_correct for a in attempts),
@@ -557,6 +594,9 @@ class LeaderRow(BaseModel):
     prefix: str | None
     avatar: str | None
     frame: str | None
+    clan_tag: str | None
+    clan_color: str | None
+    clan_id: int | None
     duels: int
     wins: int
     solved_week: int
@@ -621,6 +661,8 @@ async def leaderboard(
     for candidate in candidates[: limit + 5]:
         cos = await cosmetics_of(session, candidate.id)
         worn[candidate.id] = cos.model_dump()
+        badge = await clan_badge(session, candidate.id)
+        worn[candidate.id]["clan"] = badge
 
     rows = [
         LeaderRow(
@@ -629,6 +671,9 @@ async def leaderboard(
             prefix=worn.get(u.id, {}).get("prefix"),
             avatar=worn.get(u.id, {}).get("avatar"),
             frame=worn.get(u.id, {}).get("frame"),
+            clan_tag=(worn.get(u.id, {}).get("clan").tag if worn.get(u.id, {}).get("clan") else None),
+            clan_color=(worn.get(u.id, {}).get("clan").color if worn.get(u.id, {}).get("clan") else None),
+            clan_id=(worn.get(u.id, {}).get("clan").id if worn.get(u.id, {}).get("clan") else None),
             user_id=u.id,
             display_name=u.display_name,
             rating=u.rating,

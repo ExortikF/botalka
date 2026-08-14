@@ -71,18 +71,29 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
 
   if (!clan) return <p className="muted">Загрузка…</p>;
 
-  // Вызов бросает глава или офицер другого клана. Занятые войной и мелкие
-  // кланы отсекаем здесь же, чтобы кнопка не появлялась ради ошибки в ответе.
+  // Блок вызова показываем всем, кто в принципе может воевать, — с причиной,
+  // если сейчас нельзя. Скрытая кнопка выглядит как «функции нет», и человек
+  // не понимает, что мешает: чаще всего это размер собственного клана.
   const busyWar = wars.some(
     (war) => war.state === "pending" || war.state === "active",
   );
-  const canChallenge =
+  const showChallenge =
     mine !== null &&
     mine.id !== clan.id &&
-    (mine.your_role === "leader" || mine.your_role === "officer") &&
-    mine.members_count >= MIN_FOR_BOARD &&
-    clan.members_count >= MIN_FOR_BOARD &&
-    !busyWar;
+    (mine.your_role === "leader" || mine.your_role === "officer");
+
+  const blocker =
+    mine === null
+      ? null
+      : busyWar
+        ? "У одного из кланов уже идёт война или висит неотвеченный вызов."
+        : mine.members_count < MIN_FOR_BOARD
+          ? `Наберите минимум ${MIN_FOR_BOARD} человек в свой клан — сейчас ${mine.members_count}.`
+          : clan.members_count < MIN_FOR_BOARD
+            ? `В этом клане меньше ${MIN_FOR_BOARD} человек — воевать не с кем.`
+            : (mine.coins ?? 0) < stake
+              ? `В вашей казне ${mine.coins}, на ставку ${stake} не хватает.`
+              : null;
 
   return (
     <div className="page">
@@ -151,7 +162,7 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
         </div>
       </section>
 
-      {canChallenge && (
+      {showChallenge && (
         <section
           className="card flex flex-wrap items-end gap-4"
           style={{ padding: "22px 24px", borderColor: "var(--accent-2-200)" }}
@@ -162,8 +173,12 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
               войну
             </h2>
             <p className="muted mt-1 text-sm">
-              Пять часов, 20 общих задач. Ставку платят обе стороны из казны,
-              победитель забирает {stake * 2}. В вашей казне {mine?.coins}.
+              {blocker ?? (
+                <>
+                  Пять часов, 20 общих задач. Ставку платят обе стороны из казны,
+                  победитель забирает {stake * 2}. В вашей казне {mine?.coins}.
+                </>
+              )}
             </p>
           </div>
 
@@ -181,18 +196,13 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
 
           <button
             className="btn btn-accent2"
-            disabled={busy || (mine?.coins ?? 0) < stake}
+            disabled={busy || blocker !== null}
+            title={blocker ?? undefined}
             onClick={challenge}
           >
             <Swords size={16} /> {busy ? "Отправляем…" : "Бросить вызов"}
           </button>
         </section>
-      )}
-
-      {mine && mine.id !== clan.id && busyWar && (
-        <p className="muted text-sm">
-          Вызвать нельзя: у одного из кланов уже есть война или неотвеченный вызов.
-        </p>
       )}
 
       {clan.members_count < MIN_FOR_BOARD && (

@@ -17,6 +17,9 @@ type LeaderRow = {
   nick_color: string | null;
   avatar: string | null;
   frame: string | null;
+  clan_tag: string | null;
+  clan_color: string | null;
+  clan_id: number | null;
   prefix: string | null;
   duels: number;
   wins: number;
@@ -38,9 +41,22 @@ const BOARDS = [
 function NickName({ row }: { row: LeaderRow }) {
   const nick = nickStyle(row.nick_color);
   return (
-    <span className={nick.className} style={nick.style}>
-      {row.prefix && `${row.prefix} `}
-      {row.display_name}
+    <span className="flex items-center gap-1.5">
+      {row.clan_tag && (
+        <span
+          className="h shrink-0 rounded px-1.5 py-0.5 text-[11px]"
+          style={{
+            background: `${row.clan_color}1a`,
+            color: row.clan_color ?? "var(--n-600)",
+          }}
+        >
+          {row.clan_tag}
+        </span>
+      )}
+      <span className={nick.className} style={nick.style}>
+        {row.prefix && `${row.prefix} `}
+        {row.display_name}
+      </span>
     </span>
   );
 }
