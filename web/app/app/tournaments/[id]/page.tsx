@@ -4,6 +4,7 @@ import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Coins, Info, Trophy } from "lucide-react";
 import Avatar from "../../Avatar";
+import BackLink from "../../BackLink";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
 import type { Tournament } from "../types";
@@ -44,12 +45,7 @@ export default function TournamentPage({
 
   return (
     <div className="page">
-      <Link
-        className="muted flex items-center gap-1.5 text-sm hover:underline"
-        href="/app/tournaments"
-      >
-        <ArrowLeft size={15} /> Все турниры
-      </Link>
+      <BackLink fallback="/app/tournaments" fallbackLabel="Все турниры" />
 
       <section
         className="relative overflow-hidden text-white"

@@ -17,10 +17,12 @@ export default function ClansPage() {
   const [mine, setMine] = useState<Clan | null>(null);
   const [wars, setWars] = useState<WarType[]>([]);
   const [creating, setCreating] = useState(false);
+  const [query, setQuery] = useState("");
   const [error, setError] = useState("");
 
   const load = useCallback(() => {
-    api<ClanRow[]>("/api/clans")
+    const params = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : "";
+    api<ClanRow[]>(`/api/clans${params}`)
       .then(setRows)
       .catch(() => setRows([]));
     api<Clan | null>("/api/clans/my")
@@ -29,9 +31,13 @@ export default function ClansPage() {
     api<WarType[]>("/api/clans/wars")
       .then(setWars)
       .catch(() => setWars([]));
-  }, []);
+  }, [query]);
 
-  useEffect(load, [load]);
+  // Ищем не на каждую букву: пауза после ввода экономит запросы.
+  useEffect(() => {
+    const timer = setTimeout(load, 250);
+    return () => clearTimeout(timer);
+  }, [load]);
 
   async function join(id: number) {
     setError("");
@@ -94,17 +100,35 @@ export default function ClansPage() {
 
       <section className="space-y-3">
         <div className="section-head">
-          <h2 className="section-title">Таблица кланов</h2>
+          <h2 className="section-title">
+            {query.trim() ? "Найденные кланы" : "Таблица кланов"}
+          </h2>
           <span className="section-note">
             в зачёт идут кланы от {MIN_FOR_BOARD} человек
           </span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <input
+            className="input min-w-[220px] flex-1"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Найти клан по названию или тегу"
+          />
+          {query && (
+            <button className="btn-ghost text-sm" onClick={() => setQuery("")}>
+              Сбросить
+            </button>
+          )}
         </div>
 
         {rows === null ? (
           <p className="muted">Загрузка…</p>
         ) : rows.length === 0 ? (
           <p className="muted text-sm">
-            Кланов пока нет — можно создать первый.
+            {query.trim()
+              ? "Ничего не нашлось — попробуй другое название или тег."
+              : "Кланов пока нет — можно создать первый."}
           </p>
         ) : (
           <ul className="space-y-2">
@@ -118,7 +142,9 @@ export default function ClansPage() {
                     opacity: row.members_count >= MIN_FOR_BOARD ? 1 : 0.65,
                   }}
                 >
-                  <span className="h w-7 shrink-0 text-center">{row.place}</span>
+                  {!query.trim() && (
+                    <span className="h w-7 shrink-0 text-center">{row.place}</span>
+                  )}
 
                   <span
                     className="h shrink-0 rounded-lg px-2 py-1 text-xs"

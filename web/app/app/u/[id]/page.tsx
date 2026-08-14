@@ -4,6 +4,7 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { ArrowLeft, Flame, Swords, Trophy } from "lucide-react";
 import Avatar from "../../Avatar";
+import BackLink from "../../BackLink";
 import { api, createDuel } from "@/lib/api";
 import {
   auroraClass,
@@ -103,12 +104,7 @@ export default function PublicProfilePage({
 
   return (
     <div className="space-y-6">
-      <Link
-        className="muted flex items-center gap-1.5 text-sm hover:underline"
-        href="/app/rating"
-      >
-        <ArrowLeft size={15} /> К лидерборду
-      </Link>
+      <BackLink fallback="/app/rating" fallbackLabel="К лидерборду" />
 
       <section
         className={`card flex flex-wrap items-center gap-[18px] p-[30px] ${auroraClass(profile.cosmetics.card_bg)} ${plate.className}`}

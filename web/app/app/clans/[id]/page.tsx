@@ -4,6 +4,7 @@ import Link from "next/link";
 import { use, useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Swords } from "lucide-react";
 import Avatar from "../../Avatar";
+import BackLink from "../../BackLink";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
 import type { Clan, War } from "../types";
@@ -85,12 +86,7 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
 
   return (
     <div className="page">
-      <Link
-        className="muted flex items-center gap-1.5 text-sm hover:underline"
-        href="/app/clans"
-      >
-        <ArrowLeft size={15} /> Все кланы
-      </Link>
+      <BackLink fallback="/app/clans" fallbackLabel="Все кланы" />
 
       <section
         className="card"

@@ -15,7 +15,7 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import DbSession, PlayerUser
@@ -236,10 +236,20 @@ async def _out(session: DbSession, clan: Clan, user: User) -> ClanOut:
 
 
 @router.get("", response_model=list[ClanRow])
-async def leaderboard(session: DbSession, user: PlayerUser) -> list[ClanRow]:
-    """Таблица кланов по среднему на активного участника."""
+async def leaderboard(
+    session: DbSession, user: PlayerUser, q: str | None = None
+) -> list[ClanRow]:
+    """Таблица кланов по среднему на активного участника.
+
+    `q` ищет по названию и тегу: с десятком кланов таблица ещё обозрима, а с
+    сотней найти нужный без поиска нельзя.
+    """
     mine = await _membership(session, user.id)
-    clans = list(await session.scalars(select(Clan).options(selectinload(Clan.members))))
+    stmt = select(Clan).options(selectinload(Clan.members))
+    if q and q.strip():
+        pattern = f"%{q.strip()}%"
+        stmt = stmt.where(or_(Clan.name.ilike(pattern), Clan.tag.ilike(pattern)))
+    clans = list(await session.scalars(stmt))
 
     rows = []
     for clan in clans:
@@ -384,14 +394,27 @@ async def handle_request(
     if request is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "заявки нет")
 
+    if action == "accept" and len(clan.members) >= clan.max_members:
+        raise HTTPException(status.HTTP_409_CONFLICT, "в клане нет мест")
+
+    # Пока заявка висела, человек мог вступить в другой клан. Раньше такая
+    # заявка молча закрывалась и состав не менялся — со стороны это выглядело
+    # как «кнопка не работает».
+    joined_elsewhere = (
+        action == "accept" and await _membership(session, user_id) is not None
+    )
+
     request.handled = True
-    if action == "accept":
-        if len(clan.members) >= clan.max_members:
-            raise HTTPException(status.HTTP_409_CONFLICT, "в клане нет мест")
-        if await _membership(session, user_id) is None:
-            session.add(ClanMember(clan_id=clan.id, user_id=user_id))
+    if action == "accept" and not joined_elsewhere:
+        session.add(ClanMember(clan_id=clan.id, user_id=user_id))
 
     await session.commit()
+
+    if joined_elsewhere:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "он уже вступил в другой клан — заявка закрыта",
+        )
     return await _out(session, await _load(session, clan.id), user)
 
 

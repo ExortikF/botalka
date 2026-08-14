@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Loader2, Swords, X } from "lucide-react";
 import MathText from "../../../Math";
+import BackLink from "../../BackLink";
 import { checkAchievements } from "@/lib/achievements";
 import { getMe, type User } from "@/lib/api";
 import { initials } from "@/lib/format";
@@ -369,12 +370,7 @@ export default function OnlineDuelPage() {
         </div>
       </section>
 
-      <Link
-        className="muted flex items-center gap-1.5 text-sm hover:underline"
-        href="/app/duels"
-      >
-        <ArrowLeft size={15} /> Дуэли по ссылке
-      </Link>
+      <BackLink fallback="/app/duels" fallbackLabel="К дуэлям" />
     </div>
   );
 }
