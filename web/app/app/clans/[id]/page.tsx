@@ -6,12 +6,15 @@ import { ArrowLeft, Swords } from "lucide-react";
 import Avatar from "../../Avatar";
 import BackLink from "../../BackLink";
 import { api } from "@/lib/api";
+import { CLANS_ENABLED } from "@/lib/features";
+import ClansSoon from "../Soon";
 import { nickStyle } from "@/lib/cosmetics";
 import type { Clan, War } from "../types";
 import { MIN_FOR_BOARD, POLICY, ROLE } from "../types";
 
 export default function ClanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+
   const [clan, setClan] = useState<Clan | null>(null);
   const [mine, setMine] = useState<Clan | null>(null);
   const [wars, setWars] = useState<War[]>([]);
@@ -58,6 +61,8 @@ export default function ClanPage({ params }: { params: Promise<{ id: string }> }
       setError((e as Error).message);
     }
   }
+
+  if (!CLANS_ENABLED) return <ClansSoon />;
 
   if (error)
     return (

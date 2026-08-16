@@ -5,6 +5,7 @@ import { use, useEffect, useState } from "react";
 import { ArrowLeft, Flame, Swords, Trophy } from "lucide-react";
 import Avatar from "../../Avatar";
 import BackLink from "../../BackLink";
+import { CLANS_ENABLED } from "@/lib/features";
 import { api, createDuel } from "@/lib/api";
 import {
   auroraClass,
@@ -127,7 +128,7 @@ export default function PublicProfilePage({
               {profile.cosmetics.prefix && `${profile.cosmetics.prefix} `}
               {profile.display_name}
             </span>
-            {profile.clan && (
+            {CLANS_ENABLED && profile.clan && (
               <Link
                 href={`/app/clans/${profile.clan.id}`}
                 className="h flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm"

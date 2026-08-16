@@ -6,6 +6,7 @@ import { Trophy } from "lucide-react";
 import { api } from "@/lib/api";
 import { nickStyle } from "@/lib/cosmetics";
 import Avatar from "../Avatar";
+import { CLANS_ENABLED } from "@/lib/features";
 
 type LeaderRow = {
   place: number;
@@ -42,7 +43,7 @@ function NickName({ row }: { row: LeaderRow }) {
   const nick = nickStyle(row.nick_color);
   return (
     <span className="flex items-center gap-1.5">
-      {row.clan_tag && (
+      {CLANS_ENABLED && row.clan_tag && (
         <span
           className="h shrink-0 rounded px-1.5 py-0.5 text-[11px]"
           style={{

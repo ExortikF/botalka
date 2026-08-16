@@ -30,6 +30,7 @@ import { nickStyle } from "@/lib/cosmetics";
 import Avatar from "./Avatar";
 import { setSoundEnabled, soundEnabled } from "@/lib/sound";
 import IdeaButton from "./IdeaButton";
+import { CLANS_ENABLED } from "@/lib/features";
 
 type NavItem = {
   href: string;
@@ -46,9 +47,8 @@ const NAV: NavItem[] = [
   { href: "/app/mocks", label: "Пробники", icon: ClipboardList },
   { href: "/app/duels", label: "Дуэли", icon: Swords },
   { href: "/app/friends", label: "Друзья", icon: Users },
-  { href: "/app/clans", label: "Кланы", icon: Castle },
+  { href: "/app/clans", label: "Кланы", icon: Castle, soon: !CLANS_ENABLED },
   { href: "/app/shop", label: "Магазин", icon: ShoppingBag },
-  { href: "/app/league", label: "Лига", icon: Shield },
   { href: "/app/tournaments", label: "Турниры", icon: Flag },
   { href: "/app/rating", label: "Лидерборд", icon: Trophy },
   { href: "/app/suggest", label: "Своя задача", icon: Lightbulb },

@@ -1,5 +1,4 @@
 from app.models.achievements import AchievementUnlock
-from app.models.league import LeagueMember
 from app.models.clans import (
     Clan,
     ClanMember,
@@ -43,7 +42,6 @@ __all__ = [
     "DuelKind",
     "Friendship",
     "ItemKind",
-    "LeagueMember",
     "Rarity",
     "ShopItem",
     "UserItem",

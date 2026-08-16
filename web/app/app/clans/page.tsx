@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Shield, Users } from "lucide-react";
 import { api } from "@/lib/api";
+import { CLANS_ENABLED } from "@/lib/features";
+import ClansSoon from "./Soon";
 import type { Clan, ClanRow, War as WarType } from "./types";
 import { MIN_FOR_BOARD, POLICY } from "./types";
 import MyClan from "./MyClan";
@@ -50,6 +52,8 @@ export default function ClansPage() {
   }
 
   const active = wars.find((war) => war.state === "active") ?? null;
+
+  if (!CLANS_ENABLED) return <ClansSoon />;
 
   return (
     <div className="page">
