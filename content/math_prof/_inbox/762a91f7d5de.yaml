@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_762a91f7d5de
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  В четырёхугольник $ABCD,$ периметр которого равен 22, вписана окружность, $AB=8.$ Найдите длину стороны $CD.$
+image: math_prof/img/xs3qstsrcEE017601214CA38B4C39D5CE53BD946A_1_1765457085.png
+answer:
+  type: number
+  value: "3"
+solution: |
+  Суммы противоположных сторон равны, и каждая из них — половина периметра: $22:2=11$. Значит искомая сторона равна $11-8=3$.
+source:
+  kind: fipi
+  year: null
+  ref: "762a91f7d5de4dcf80f80894005b9c91"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: circumscribed_quadrilateral
+status: live
+needs_review: true

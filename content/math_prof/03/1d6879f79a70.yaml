@@ -1,0 +1,27 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1d6879f79a70
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  Шар, объём которого равен 18, вписан в цилиндр. Найдите объём цилиндра.
+image: math_prof/img/xs3qstsrc1B7468B8EEB4857941CAFF1419F5C529_1_1478534640.png
+answer:
+  type: number
+  value: "27"
+solution: |
+  У вписанного шара радиус тот же, что у цилиндра, а высота цилиндра равна
+  диаметру шара. Тогда $V_{ш}=\frac{4}{3}\pi R^{3}$, а
+  $V_{ц}=\pi R^{2}\cdot 2R=2\pi R^{3}$.
+  Отношение объёмов не зависит от $R$: $\frac{V_{ш}}{V_{ц}}=\frac{2}{3}$,
+  поэтому $V_{ц}=18\cdot \frac{3}{2}=27$.
+source:
+  kind: fipi
+  year: null
+  ref: "1D6879F79A70AE0C43CD5DF6E0B50387"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

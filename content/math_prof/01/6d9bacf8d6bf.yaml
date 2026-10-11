@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6d9bacf8d6bf
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Четырёхугольник $ABCD$ вписан в окружность. Угол $ABD$ равен $62°,$ угол $CAD$ равен $41°.$ Найдите угол $ABC.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrcD332420C313EA536401E05824A6BEE8D_1_1699351078.png
+answer:
+  type: number
+  value: "103"
+solution: |
+  Углы $DBC$ и $CAD$ опираются на одну дугу $DC$, значит $\angle DBC=41°$. Угол $ABC$ складывается из двух: $62°+41°=103°$.
+source:
+  kind: fipi
+  year: null
+  ref: "6D9BACF8D6BFB3714377E1EDB79130ED"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: inscribed_quadrilateral
+status: live
+needs_review: true

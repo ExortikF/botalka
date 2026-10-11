@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_51a65755f51f
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Площадь параллелограмма $ABCD$ равна 28. Точка $E$ — середина стороны $AD.$ Найдите площадь трапеции $BCDE.$
+image: math_prof/img/xs3qstsrc51A65755F51FAEF24B5D21C7D6202F35_3_1748529534.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "51A65755F51FAEF24B5D21C7D6202F35"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

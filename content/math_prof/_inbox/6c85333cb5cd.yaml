@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6c85333cb5cd
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Во сколько раз уменьшится объём конуса, если его высота уменьшится в 9 раз,
+  а радиус основания останется прежним?
+image: math_prof/img/xs3qstsrcE617EABE4C81B52641BA8A5760F2FF83_1_1637923407.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "6C85333CB5CDA1374639886E8695B06C"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

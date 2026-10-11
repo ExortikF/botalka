@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_faaefac474ec
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  Перед началом волейбольного матча капитаны команд тянут жребий, чтобы определить, какая из команд начнёт игру с мячом. Команда «Ротор» по очереди играет с командами «Статор», «Стартёр» и «Мотор». Найдите вероятность того, что «Ротор» будет начинать с мячом только вторую игру.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "FAAEFAC474EC8CAD482CE77FF41249BB"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

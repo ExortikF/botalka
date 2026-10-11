@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b131a4e9d43c
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Площадь сечения шара плоскостью, проходящей через центр шара, равна 12. Найдите площадь поверхности шара.
+image: math_prof/img/xs3qstsrcb131a4e9d43c4b4c9a6745777e925791_6_1758622184.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "b131a4e9d43c4b4c9a6745777e925791"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

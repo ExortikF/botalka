@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d87d4c650315
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Острый угол $B$ прямоугольного треугольника $ABC$ равен $65°.$ Найдите величину угла между высотой $CH$ и медианой $CM​,$ проведёнными из вершины прямого угла $C.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrcd87d4c6503154bcab02093e2a8363f9c_7_1759831220.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "d87d4c6503154bcab02093e2a8363f9c"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_98df28ffb7d8
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $\log _{0,6}50-\log _{0,6}18.$
+image: null
+answer:
+  type: number
+  value: "-2"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "98df28ffb7d84e6b935300652659559a"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

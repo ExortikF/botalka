@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_56b066437a2d
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $5^{0,06}\cdot 25^{0,97}$ .
+image: null
+answer:
+  type: number
+  value: "25"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "56B066437A2DB7524A1F81C79005C7B2"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_517108e7d2c3
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Дано два цилиндра. Объём первого цилиндра равен 15. У второго цилиндра высота в 3 раза меньше,
+  а радиус основания в 2 раза больше, чем у первого. Найдите объём второго цилиндра.
+image: math_prof/img/xs3qstsrcE9B11DE756759A4148A478F8891062BE_1_1538410005.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "517108E7D2C38AC840A73726F8862FF9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

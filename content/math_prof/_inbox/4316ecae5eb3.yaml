@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4316ecae5eb3
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  Четырёхугольник $ABCD$ вписан в окружность.
+  Угол $ABC$ равен $120°,$ угол $ABD$ равен $43°.$ Найдите угол $CAD.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc705E033DC6EF81AF43FD7EC4566A544F_2_1710152012.png
+answer:
+  type: number
+  value: "77"
+solution: |
+  Сначала найдём угол $DBC$: $\angle DBC=\angle ABC-\angle ABD=120°-43°=77°$.
+  Углы $CAD$ и $DBC$ вписанные и опираются на одну дугу $DC$, поэтому равны:
+  $\angle CAD=77°$.
+source:
+  kind: fipi
+  year: null
+  ref: "4316ECAE5EB3B84E49DE92876B49A64F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: inscribed_quadrilateral
+status: live
+needs_review: true

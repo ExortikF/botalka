@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_efee1be63f2e
+subject: math_prof
+task_type: 5
+difficulty: null
+statement: |
+  Из районного центра в деревню ежедневно ходит автобус. Вероятность того, что в понедельник в автобусе окажется меньше 23 пассажиров, равна 0,87. Вероятность того, что окажется меньше 14 пассажиров, равна 0,61. Найдите вероятность того, что число пассажиров будет от 14 до 22 включительно.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "EFEE1BE63F2EA5E34AF65DE356FF97E1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_9947fdae1e93
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  На чемпионате по прыжкам в воду выступают 20 спортсменов, среди них
+  7 спортсменов из Германии и 9 спортсменов из США. Порядок выступлений определяется жеребьёвкой. Найдите вероятность того, что двенадцатым будет выступать спортсмен из Германии.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "9947FDAE1E93B72044A0627D4350A63B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

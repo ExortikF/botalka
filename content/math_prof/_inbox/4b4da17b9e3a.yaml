@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4b4da17b9e3a
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  Четырёхугольник $ABCD$ вписан в окружность. Угол $ABC$ равен $98°$ , угол $CAD$ равен $44°$ . Найдите угол $ABD$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc8DAA2BCFA853B0114622496179F36C6C_1_1478531292.png
+answer:
+  type: number
+  value: "54"
+solution: |
+  Углы $DBC$ и $CAD$ опираются на одну дугу $DC$, значит $\angle DBC=44°$.
+  Тогда $\angle ABD=\angle ABC-\angle DBC=98°-44°=54°$.
+source:
+  kind: fipi
+  year: null
+  ref: "4B4DA17B9E3AB1764C16AF43E79371F8"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: inscribed_quadrilateral
+status: live
+needs_review: true

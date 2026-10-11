@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_2e61a0cb684c
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  Четырёхугольник $ABCD$ вписан в окружность. Угол $ABD$ равен $61°$ , угол $CAD$ равен $37°$ . Найдите угол $ABC$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc6DACDAD1821CA4CC437A88C8C5F508A1_1_1478531303.png
+answer:
+  type: number
+  value: "98"
+solution: |
+  Углы $DBC$ и $CAD$ опираются на одну дугу $DC$, значит $\angle DBC=37°$.
+  Угол $ABC$ складывается из двух: $\angle ABC=\angle ABD+\angle DBC=61°+37°=98°$.
+source:
+  kind: fipi
+  year: null
+  ref: "2E61A0CB684C9F494DDF7BAC727413AD"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: inscribed_quadrilateral
+status: live
+needs_review: true

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5a70c7490e52
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Четырёхугольник [[img:math_prof/img/xs3qstsrcDC7634958957A0C34806225CA2A49B2A_1_1575539493.gif]] вписан
+  в окружность. Угол [[img:math_prof/img/xs3qstsrcDC7634958957A0C34806225CA2A49B2A_2_1575539494.gif]] равен [[img:math_prof/img/xs3qstsrcDC7634958957A0C34806225CA2A49B2A_3_1575539494.gif]] . Найдите угол [[img:math_prof/img/xs3qstsrcDC7634958957A0C34806225CA2A49B2A_4_1575539494.gif]] . Ответ дайте
+  в градусах.
+image: math_prof/img/xs3qstsrcDC7634958957A0C34806225CA2A49B2A_1_1575539493.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "5A70C7490E528A0A40DFE2C48C71F45B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

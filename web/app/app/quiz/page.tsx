@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertTriangle, Check, Lock, Minus, Plus, Target } from "lucide-react";
+import { AlertTriangle, Check, Lock, Minus, Plus, Shuffle, Target } from "lucide-react";
 import {
   getStats,
   getSubjects,
@@ -15,9 +15,9 @@ import { plural } from "@/lib/exam";
 
 /** Полосы сложности: цвет и подпись. Совпадают с DIFFICULTY_BANDS на бэкенде. */
 const BANDS = [
-  { key: "easy", label: "лёгкие", color: "#1f9d55", bg: "#e8f6ee" },
-  { key: "medium", label: "средние", color: "#c98a00", bg: "#fdf3dd" },
-  { key: "hard", label: "сложные", color: "#d6006c", bg: "#ffe9f0" },
+  { key: "easy", label: "лёгкие", color: "var(--success)", bg: "#e8f6ee" },
+  { key: "medium", label: "средние", color: "var(--gold)", bg: "var(--gold-bg)" },
+  { key: "hard", label: "сложные", color: "var(--accent-2)", bg: "#ffe9f0" },
 ] as const;
 
 type Band = (typeof BANDS)[number]["key"];
@@ -74,6 +74,11 @@ export default function QuizBuilder() {
     });
   }
 
+  /** Десять случайных задач по всему банку — вход в один клик. */
+  function startRandom() {
+    router.push(`/app/quiz/run?subject=${subject}&length=10`);
+  }
+
   function startPreset(preset: "weak" | "mistakes") {
     router.push(`/app/quiz/run?subject=${subject}&length=10&preset=${preset}`);
   }
@@ -124,6 +129,23 @@ export default function QuizBuilder() {
             );
           })}
         </ul>
+      </section>
+
+      {/* Быстрый вход: набирать задачи стрелочками ради «просто порешать»
+          — слишком долго для главного действия на странице. */}
+      <section
+        className="card flex flex-wrap items-center justify-between gap-4"
+        style={{ padding: "22px 24px" }}
+      >
+        <div className="min-w-0">
+          <h2 className="section-title">Просто порешать</h2>
+          <p className="muted mt-1 text-sm">
+            Десять случайных задач по всему банку — набирать ничего не нужно.
+          </p>
+        </div>
+        <button className="btn" onClick={startRandom}>
+          <Shuffle size={16} /> Случайный квиз
+        </button>
       </section>
 
       <section className="space-y-3">
@@ -195,7 +217,9 @@ export default function QuizBuilder() {
                       ) : (
                         <>
                           {type.tasks_count} задач
-                          {percent !== null && ` · сейчас ${percent}% верно`}
+                          {percent !== null
+                            ? ` · сейчас ${percent}% верно`
+                            : " · ещё не решал"}
                         </>
                       )}
                     </span>

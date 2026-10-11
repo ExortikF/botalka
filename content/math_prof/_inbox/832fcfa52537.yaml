@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_832fcfa52537
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $3\sqrt{3}-6\sqrt{3}\sin ^{2}\frac{13π}{12}.$
+image: null
+answer:
+  type: number
+  value: "4,5"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "832FCFA52537828340BD7E7235F0CBE2"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

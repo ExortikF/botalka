@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f3961273fbfa
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображены график функции $y=f(x)$ и касательная к нему
+  в точке с абсциссой $x_{0}.$ Найдите значение производной функции $f(x)$
+  в точке $x_{0}.$
+  [[img:math_prof/img/xs3qstsrc01A5EADA8418AE7E422C46B7CEDC6F88_1_1638185215.png]]
+image: math_prof/img/xs3qstsrc01A5EADA8418AE7E422C46B7CEDC6F88_1_1638185215.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "F3961273FBFA8B9E479CC23233398096"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

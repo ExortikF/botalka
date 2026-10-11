@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e27ea216e314
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  На чемпионате по прыжкам в воду выступают 75 спортсменов, среди них
+  15 спортсменов из Италии и 13 спортсменов из Канады. Порядок выступлений определяется жеребьёвкой. Найдите вероятность того, что четвёртым будет выступать спортсмен из Италии.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "E27EA216E314BC3D4B8801DE8F49B65E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

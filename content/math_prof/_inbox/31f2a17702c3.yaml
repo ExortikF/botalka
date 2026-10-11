@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_31f2a17702c3
+subject: math_prof
+task_type: 2
+difficulty: 3
+statement: |
+  Даны векторы $\overrightarrow{a}(5;3)$ и $\overrightarrow{b}(4;-6).$ Найдите скалярное произведение $\overrightarrow{a}\cdot \overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "2"
+solution: |
+  Координаты векторов: $(5; 3)$ и $(4; -6)$. Скалярное произведение — сумма произведений одноимённых координат: $2$.
+source:
+  kind: fipi
+  year: null
+  ref: "31F2A17702C3AE1045423F0A583E1D2A"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

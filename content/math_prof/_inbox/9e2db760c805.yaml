@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_9e2db760c805
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x),$ определённой на интервале $(-10;7).$ Найдите количество точек минимума функции $f(x),$ принадлежащих отрезку $[-2;6].$
+  [[img:math_prof/img/xs3qstsrcFF17E957226C894643685F9A1BEE8B83_1_1701955124.png]]
+image: math_prof/img/xs3qstsrcFF17E957226C894643685F9A1BEE8B83_1_1701955124.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "9E2DB760C805A4F047018C7AC43F5ACC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

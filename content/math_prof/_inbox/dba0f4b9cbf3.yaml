@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_dba0f4b9cbf3
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x).$
+  На оси абсцисс отмечено девять точек: $x_{1}, x_{2}, x_{3}, x_{4}, x_{5}, x_{6}, x_{7}, x_{8}, x_{9}.$ Сколько из этих точек принадлежит промежуткам убывания функции $f(x)?$
+  [[img:math_prof/img/xs3qstsrc86F9D0602A0E90E942EA7CC9ECD6B3CF_1_1762358487.png]]
+image: math_prof/img/xs3qstsrc86F9D0602A0E90E942EA7CC9ECD6B3CF_1_1762358487.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "dba0f4b9cbf341beb238f415fb127cbe"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_7711797744d9
+subject: math_prof
+task_type: 6
+difficulty: null
+statement: |
+  Первый насос наполняет бак за 11 минут, второй — за 15 минут, а третий — за 1 час 50 минут. За сколько минут наполнят этот бак три насоса, работая одновременно?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "7711797744D9A7C84CF2B772BD1A3982"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

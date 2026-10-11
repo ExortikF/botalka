@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_bc0ce59df4a4
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Через среднюю линию основания треугольной призмы проведена плоскость, параллельная боковому ребру. Площадь боковой поверхности отсечённой треугольной призмы равна 18. Найдите площадь боковой поверхности исходной призмы.
+image: math_prof/img/xs3qstsrcEDB652EAA1E493EA44485D3A4885BDF4_1_1763039090.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "bc0ce59df4a44e75b0540b8351da1521"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

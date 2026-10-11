@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d7bda4b96696
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $18\sqrt{2}\tg \frac{π}{4}\sin \frac{π}{4}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D7BDA4B966968B7D4890390DD9565E6B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

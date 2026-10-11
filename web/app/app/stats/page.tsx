@@ -38,7 +38,10 @@ type StatsYear = {
   quizzes: number;
   mocks: number;
   duels: number;
-  forecast_secondary: number;
+  week_solved: number;
+  week_prev_solved: number;
+  week_minutes: number;
+  week_days: number;
   months: MonthRow[];
   hours: HourRow[];
   by_type: TypeRow[];
@@ -69,8 +72,91 @@ const GRID =
   "repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px)," +
   "repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px)";
 
+/** Текст под числом недели. Сравниваем с предыдущими семью днями — это
+ *  единственное честное сравнение: «прогноз балла» обещал то, чего никто не
+ *  может обещать, а объём работы измерим. */
+const FULL_MONTHS = [
+  "январь", "февраль", "март", "апрель", "май", "июнь",
+  "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
+];
+
+function monthTooltip(month: MonthRow): string {
+  const accuracy = month.solved ? Math.round((100 * month.correct) / month.solved) : 0;
+  const [year, number] = month.month.split("-");
+  const name = FULL_MONTHS[Number(number) - 1] ?? month.month;
+  return (
+    `${name} ${year}: ${month.solved} ${plural(month.solved, "задача", "задачи", "задач")}, ` +
+    `${month.correct} верных (${accuracy}%), ` +
+    `${month.days_active} ${plural(month.days_active, "день", "дня", "дней")} с занятиями`
+  );
+}
+
+/** Подсказка над столбиком. Раньше здесь был атрибут title: он ждёт секунду,
+ *  рисуется системным шрифтом и на тач-экране не показывается вовсе. */
+function MonthTooltip({ month }: { month: MonthRow }) {
+  const accuracy = month.solved ? Math.round((100 * month.correct) / month.solved) : 0;
+  const [year, number] = month.month.split("-");
+
+  return (
+    <div
+      role="tooltip"
+      className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-[168px] -translate-x-1/2 rounded-[12px] p-3 text-left"
+      style={{
+        background: "var(--text)",
+        color: "#fff",
+        boxShadow: "var(--shadow-md)",
+      }}
+    >
+      <p className="h text-[0.8125rem] leading-none">
+        {FULL_MONTHS[Number(number) - 1] ?? month.month} {year}
+      </p>
+      <dl className="mt-2 space-y-1 text-[0.75rem]" style={{ opacity: 0.92 }}>
+        <div className="flex justify-between gap-2">
+          <dt>решено</dt>
+          <dd className="h">{month.solved}</dd>
+        </div>
+        <div className="flex justify-between gap-2">
+          <dt>верных</dt>
+          <dd className="h">
+            {month.correct} · {accuracy}%
+          </dd>
+        </div>
+        <div className="flex justify-between gap-2">
+          <dt>дней с занятиями</dt>
+          <dd className="h">{month.days_active}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
+function weekSummary(stats: StatsYear): string {
+  if (stats.week_solved === 0) {
+    return stats.week_prev_solved > 0
+      ? `На этой неделе пока ноль, а на прошлой было ${stats.week_prev_solved}. Пятнадцать минут — уже тренировка.`
+      : "На этой неделе пока пусто. Пятнадцать минут — уже тренировка.";
+  }
+
+  const tail =
+    `Это ${stats.week_minutes} ${plural(stats.week_minutes, "минута", "минуты", "минут")} ` +
+    `работы за ${stats.week_days} ${plural(stats.week_days, "день", "дня", "дней")} ` +
+    `с занятиями.`;
+
+  const diff = stats.week_solved - stats.week_prev_solved;
+  if (stats.week_prev_solved === 0) return `${tail} Неделей раньше не занимался вовсе.`;
+  if (diff === 0) return `${tail} Ровно столько же, сколько неделей раньше.`;
+
+  const word = diff > 0 ? "больше" : "меньше";
+  const size = Math.abs(diff);
+  return (
+    `${tail} На ${size} ${plural(size, "задачу", "задачи", "задач")} ${word}, ` +
+    `чем неделей раньше (${stats.week_prev_solved}).`
+  );
+}
+
 export default function StatsPage() {
   const [stats, setStats] = useState<StatsYear | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     api<StatsYear>("/api/stats/year")
@@ -117,25 +203,23 @@ export default function StatsPage() {
         <div className="relative flex flex-wrap items-center gap-7">
           <div>
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider"
+              className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.6875rem] font-bold uppercase tracking-wider"
               style={{ background: "rgba(255,255,255,.2)" }}
             >
-              <TrendingUp size={13} /> Прогноз по текущей точности
+              <TrendingUp size={13} /> За последние 7 дней
             </span>
             <p
               className="h mt-2.5"
               style={{ fontSize: 64, fontWeight: 800, lineHeight: 1 }}
             >
-              {stats.forecast_secondary}
+              {stats.week_solved}
             </p>
           </div>
           <p
             className="min-w-[260px] max-w-[480px] flex-1 text-sm leading-relaxed"
             style={{ opacity: 0.92 }}
           >
-            Столько тестовых баллов дала бы часть 1, если решать её с твоей
-            нынешней точностью {stats.accuracy}%. Это оценка, а не обещание:
-            настоящий экзамен сложнее домашнего квиза.
+            {weekSummary(stats)}
           </p>
         </div>
       </section>
@@ -176,7 +260,7 @@ export default function StatsPage() {
       <section className="card" style={{ padding: "28px 30px" }}>
         <div className="section-head mb-5">
           <h2 className="section-title">По месяцам</h2>
-          <span className="text-xs" style={{ color: "var(--n-400)" }}>
+          <span className="text-xs" style={{ color: "var(--n-700)" }}>
             решённых задач
           </span>
         </div>
@@ -195,16 +279,23 @@ export default function StatsPage() {
             />
             {stats.months.map((month) => {
               const current = month.month === lastMonth;
+              const open = hovered === month.month;
               return (
                 <div
                   key={month.month}
-                  className="flex flex-col items-center gap-2"
+                  className="relative flex flex-col items-center gap-2"
                   style={{ width: 52 }}
-                  title={`${month.correct} верных из ${month.solved}, дней: ${month.days_active}`}
+                  tabIndex={0}
+                  onMouseEnter={() => setHovered(month.month)}
+                  onMouseLeave={() => setHovered((m) => (m === month.month ? null : m))}
+                  onFocus={() => setHovered(month.month)}
+                  onBlur={() => setHovered((m) => (m === month.month ? null : m))}
+                  aria-label={monthTooltip(month)}
                 >
+                  {open && <MonthTooltip month={month} />}
                   <span
-                    className="h text-[12.5px]"
-                    style={{ color: current ? "var(--accent)" : "var(--n-600)" }}
+                    className="h text-[0.78125rem]"
+                    style={{ color: current ? "var(--accent-700)" : "var(--n-700)" }}
                   >
                     {month.solved}
                   </span>
@@ -222,7 +313,7 @@ export default function StatsPage() {
                   <span
                     className="text-xs"
                     style={{
-                      color: "var(--n-600)",
+                      color: "var(--n-700)",
                       fontWeight: current ? 700 : 400,
                     }}
                   >
@@ -237,7 +328,7 @@ export default function StatsPage() {
 
       <section className="card" style={{ padding: "28px 30px" }}>
         <h2 className="section-title">Когда ты решаешь</h2>
-        <p className="muted mb-5 mt-1 text-[13px]">
+        <p className="muted mb-5 mt-1 text-[0.8125rem]">
           По часам, время московское
         </p>
 
@@ -276,7 +367,7 @@ export default function StatsPage() {
           {stats.hours.map((hour) => (
             <div key={hour.hour} className="flex-1 text-center">
               {hour.hour % 6 === 0 && (
-                <span className="muted text-[10.5px]">{hour.hour}</span>
+                <span className="muted text-[0.65625rem]">{hour.hour}</span>
               )}
             </div>
           ))}
@@ -285,7 +376,7 @@ export default function StatsPage() {
 
       <section className="card" style={{ padding: "28px 30px" }}>
         <h2 className="section-title">Что тянет вниз</h2>
-        <p className="muted mb-5 mt-1 text-[13px]">
+        <p className="muted mb-5 mt-1 text-[0.8125rem]">
           Номера с худшей точностью при трёх и более попытках
         </p>
 
@@ -304,7 +395,7 @@ export default function StatsPage() {
 
       <section className="card" style={{ padding: "28px 30px" }}>
         <h2 className="section-title">По номерам заданий</h2>
-        <p className="muted mb-5 mt-1 text-[13px]">
+        <p className="muted mb-5 mt-1 text-[0.8125rem]">
           Все номера, где были попытки — точность и среднее время
         </p>
 
@@ -338,9 +429,9 @@ export default function StatsPage() {
 }
 
 function accuracyColor(accuracy: number): string {
-  if (accuracy >= 70) return "#1f9d55";
-  if (accuracy >= 40) return "#c98a00";
-  return "var(--accent-2)";
+  if (accuracy >= 70) return "#177f43";
+  if (accuracy >= 40) return "#7a5f00";
+  return "#d6006c";  // hex, а не токен: цвет склеивается с альфой ниже
 }
 
 function TopicRow({ row, showTime }: { row: TypeRow; showTime?: boolean }) {
@@ -349,12 +440,12 @@ function TopicRow({ row, showTime }: { row: TypeRow; showTime?: boolean }) {
   return (
     <li className="flex items-center gap-3.5">
       <span
-        className="h flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[10px] text-[12.5px]"
+        className="h flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[10px] text-[0.78125rem]"
         style={{ background: `${color}1a`, color }}
       >
         {row.number}
       </span>
-      <span className="w-[190px] shrink-0 truncate text-[13.5px] font-medium">
+      <span className="w-[190px] shrink-0 truncate text-[0.84375rem] font-medium">
         {row.title}
       </span>
       <span
@@ -373,7 +464,7 @@ function TopicRow({ row, showTime }: { row: TypeRow; showTime?: boolean }) {
         {row.accuracy}%
       </span>
       {showTime && (
-        <span className="muted w-12 shrink-0 text-right text-[13px]">
+        <span className="muted w-12 shrink-0 text-right text-[0.8125rem]">
           {row.avg_seconds ? `${row.avg_seconds} с` : "—"}
         </span>
       )}
@@ -413,7 +504,7 @@ function IconTile({
       </span>
       <span className="min-w-0">
         <span
-          className="h block text-[22px]"
+          className="h block text-[1.375rem]"
           style={{ color: valueColor }}
         >
           {value}

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ecfe0cb91ec6
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $\sqrt{22-3x}=2$ .
+image: null
+answer:
+  type: number
+  value: "6"
+solution: |
+  $\sqrt{22-3x} = 2$. Возведём обе части в степень, которая уберёт корень. Получаем $x = 6$. Проверка: подставим найденное значение в исходное уравнение — обе части совпадают.
+source:
+  kind: fipi
+  year: null
+  ref: "ECFE0CB91EC6B6A84F9B97F56A9E40D1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: решено + подстановка
+status: live
+needs_review: false

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_380b3404d96a
+subject: math_prof
+task_type: 2
+difficulty: null
+statement: |
+  На координатной плоскости изображены векторы $\overrightarrow{a}$ и $\overrightarrow{b},$ координатами которых являются целые числа. Найдите длину вектора $\overrightarrow{a}+4\overrightarrow{b}.$
+  [[img:math_prof/img/xs3qstsrc6FE4CEFC73F98EE5464A690B8397B49A_1_1706617793.png]]
+image: math_prof/img/xs3qstsrc6FE4CEFC73F98EE5464A690B8397B49A_1_1706617793.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "380B3404D96AB39F499053EFAB7B0095"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

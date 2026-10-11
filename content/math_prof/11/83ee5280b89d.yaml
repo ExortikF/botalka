@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_83ee5280b89d
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a\sqrt{x}$ . Найдите значение $f(36)$ .
+  [[img:math_prof/img/xs3qstsrcA6AC334DFD45B0AC4A120D2C7B64DEAC_1_1766415906.png]]
+image: math_prof/img/xs3qstsrcA6AC334DFD45B0AC4A120D2C7B64DEAC_1_1766415906.png
+answer:
+  type: number
+  value: "-12"
+solution: |
+  График убывает и проходит через точку $(4;-4)$, поэтому $a\cdot 2=-4$
+  и $a=-2$.
+  Тогда $f(36)=-2\cdot \sqrt{36}=-2\cdot 6=-12$.
+source:
+  kind: fipi
+  year: null
+  ref: "83ee5280b89d4926b4fc7d66dcfe9770"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

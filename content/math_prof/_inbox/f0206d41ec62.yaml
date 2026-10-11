@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f0206d41ec62
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $\frac{\log _{7}32}{\log _{7}2}.$
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "f0206d41ec624474ae6e07fa7fe2236e"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

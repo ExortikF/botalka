@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1154577c573c
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график функции $y=f(x).$ На оси абсцисс отмечены точки $-2$ , $-1$ , 3, 4. В какой из этих точек значение производной
+  функции $f(x)$ наименьшее? В ответе укажите эту точку.
+  [[img:math_prof/img/xs3qstsrc1276CB090B7E9B6249C92A6585CD6B74_1_1773310718.png]]
+image: math_prof/img/xs3qstsrc1276CB090B7E9B6249C92A6585CD6B74_1_1773310718.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "1154577c573c48e6bd76745d04391f90"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

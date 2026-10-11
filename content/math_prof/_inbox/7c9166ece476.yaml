@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_7c9166ece476
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a\sqrt{x}.$ Найдите значение $f(36).$
+  [[img:math_prof/img/xs3qstsrc17885657A7AFA5FA4E5789C2A2FB25D5_1_1766415836.png]]
+image: math_prof/img/xs3qstsrc17885657A7AFA5FA4E5789C2A2FB25D5_1_1766415836.png
+answer:
+  type: number
+  value: "18"
+solution: |
+  График проходит через точку $(1;3)$, поэтому $a\sqrt{1}=3$ и $a=3$.
+  Проверка по второй точке: $f(4)=3\cdot 2=6$ — совпадает с рисунком.
+  Тогда $f(36)=3\cdot 6=18$.
+source:
+  kind: fipi
+  year: null
+  ref: "7c9166ece4764ce0b520950e1bfd4136"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

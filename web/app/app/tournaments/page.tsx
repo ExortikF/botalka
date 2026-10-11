@@ -57,7 +57,7 @@ export default function TournamentsPage() {
                 >
                   <span className="flex flex-wrap items-center gap-2.5">
                     <span
-                      className="rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
+                      className="rounded-full px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider"
                       style={{ background: "rgba(255,255,255,.22)" }}
                     >
                       {row.state}
@@ -86,14 +86,14 @@ export default function TournamentsPage() {
                       <Trophy size={14} style={{ color: "var(--accent-2)" }} />
                       <span className="muted">За первое место:</span>
                       <b>{row.prizes[0].coins}</b>
-                      <Coins size={13} style={{ color: "#c98a00" }} />
+                      <Coins size={13} style={{ color: "var(--gold)" }} />
                       {row.prizes[0].item_title && <b>+ {row.prizes[0].item_title}</b>}
                     </span>
                   )}
 
                   <span
                     className="ml-auto text-xs font-semibold"
-                    style={{ color: STATE_COLOR[row.state] ?? "var(--n-600)" }}
+                    style={{ color: STATE_COLOR[row.state] ?? "var(--n-700)" }}
                   >
                     подробнее →
                   </span>

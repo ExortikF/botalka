@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5d99366b7b98
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a\sqrt{x}.$ Найдите значение $f(64).$
+  [[img:math_prof/img/xs3qstsrc3D2D05DE2D139DF046B8ADE8332932E9_1_1766415856.png]]
+image: math_prof/img/xs3qstsrc3D2D05DE2D139DF046B8ADE8332932E9_1_1766415856.png
+answer:
+  type: number
+  value: "16"
+solution: |
+  График проходит через точку $(1;2)$, поэтому $a=2$.
+  Проверка по второй точке: $f(4)=2\cdot 2=4$ — совпадает с рисунком.
+  Тогда $f(64)=2\cdot \sqrt{64}=2\cdot 8=16$.
+source:
+  kind: fipi
+  year: null
+  ref: "5d99366b7b984760a02b87360aefbf00"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

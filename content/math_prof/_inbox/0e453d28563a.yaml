@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_0e453d28563a
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  Цилиндр и конус имеют общие основание и высоту. Высота цилиндра равна радиусу основания. Площадь боковой поверхности цилиндра равна $5\sqrt{2}$ . Найдите площадь боковой поверхности конуса.
+image: math_prof/img/xs3qstsrcE6EFE322D98AA0874F8B5E9642525DB5_1_1478534085.png
+answer:
+  type: number
+  value: "5"
+solution: |
+  Высота равна радиусу, поэтому боковая поверхность цилиндра
+  $S_{ц}=2\pi Rh=2\pi R^{2}=5\sqrt{2}$, откуда $\pi R^{2}=\frac{5\sqrt{2}}{2}$.
+  Образующая конуса $l=\sqrt{R^{2}+h^{2}}=R\sqrt{2}$, поэтому
+  $S_{к}=\pi Rl=\pi R^{2}\sqrt{2}=\frac{5\sqrt{2}}{2}\cdot \sqrt{2}=5$.
+source:
+  kind: fipi
+  year: null
+  ref: "0E453D28563AA35F466A42693A3B8FF0"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

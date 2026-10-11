@@ -299,7 +299,7 @@ export default function OnlineDuelPage() {
       <section
         className="relative overflow-hidden text-center text-white"
         style={{
-          background: "var(--accent)",
+          background: "var(--accent-700)",
           borderRadius: "var(--radius-lg)",
           padding: "38px 30px",
         }}
@@ -321,7 +321,7 @@ export default function OnlineDuelPage() {
         <div className="relative">
           <div className="flex items-center justify-center gap-[22px]">
             <span
-              className="h flex h-14 w-14 items-center justify-center rounded-full text-[17px]"
+              className="h flex h-14 w-14 items-center justify-center rounded-full text-[1.0625rem]"
               style={{ background: "rgba(255,255,255,.22)" }}
             >
               {initials(me?.display_name ?? "")}
@@ -332,7 +332,7 @@ export default function OnlineDuelPage() {
               <Swords size={26} />
             )}
             <span
-              className="flex h-14 w-14 items-center justify-center rounded-full text-[22px]"
+              className="flex h-14 w-14 items-center justify-center rounded-full text-[1.375rem]"
               style={{ background: "rgba(255,255,255,.22)" }}
             >
               ?
@@ -342,7 +342,7 @@ export default function OnlineDuelPage() {
           <h2 className="h" style={{ fontSize: 33, fontWeight: 800, margin: "18px 0 0" }}>
             {phase === "queued" ? "Ищем соперника…" : "Найти соперника"}
           </h2>
-          <p className="mx-auto mt-2.5 max-w-[460px] text-[14.5px] leading-relaxed opacity-90">
+          <p className="mx-auto mt-2.5 max-w-[460px] text-[0.90625rem] leading-relaxed opacity-90">
             {phase === "queued"
               ? "Игроков пока мало — если никого нет, позови друга, чтобы он тоже встал в очередь."
               : "Подбор идёт среди всех, кто сейчас в очереди. Победа над более сильным игроком даёт больше рейтинга."}
@@ -358,7 +358,7 @@ export default function OnlineDuelPage() {
             </button>
           ) : (
             <button
-              className="mt-5 inline-block rounded-2xl px-10 py-4 text-[16.5px] font-extrabold shadow-lg transition hover:scale-[1.03]"
+              className="mt-5 inline-block rounded-2xl px-10 py-4 text-[1.03125rem] font-extrabold shadow-lg transition hover:scale-[1.03]"
               style={{ background: "#fff", color: "var(--accent-700)" }}
               onClick={connect}
             >

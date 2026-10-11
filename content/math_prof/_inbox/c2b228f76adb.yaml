@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c2b228f76adb
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Найдите угол $ACO$ , если его сторона $CA$ касается окружности с центром $O$ , отрезок $CO$ пересекает окружность в точке $B$ (см. рис.),
+  а дуга $AB$ окружности, заключённая внутри этого угла, равна $17°$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc3EF218DCCF008A4246C00032425B3786_1_1509372835.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C2B228F76ADB99CB4B5E09F0097C5C80"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_24e33b501e75
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  В четырёхугольник $ABCD,$ периметр которого равен 24, вписана окружность, $AB=5.$ Найдите длину стороны $CD.$
+image: math_prof/img/xs3qstsrcF6690ECEEF869E7244249F34A7698E44_1_1765457058.png
+answer:
+  type: number
+  value: "7"
+solution: |
+  В четырёхугольник вписана окружность, значит суммы противоположных сторон
+  равны: $AB+CD=BC+AD$. Каждая из этих сумм — половина периметра:
+  $\frac{24}{2}=12$. Отсюда $CD=12-5=7$.
+source:
+  kind: fipi
+  year: null
+  ref: "24e33b501e75497793bb3138e22c4190"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: circumscribed_quadrilateral
+status: live
+needs_review: true

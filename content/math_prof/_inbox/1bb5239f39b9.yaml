@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1bb5239f39b9
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения [[img:math_prof/img/xs3qstsrc2958319C68F18D11404047B36E5BDC8F_1_1575630871.gif]] .
+image: math_prof/img/xs3qstsrc2958319C68F18D11404047B36E5BDC8F_1_1575630871.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "1BB5239F39B996DA45584D301D5F9229"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

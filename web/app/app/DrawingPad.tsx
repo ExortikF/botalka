@@ -54,6 +54,17 @@ export default function DrawingPad({
     ctx.lineJoin = "round";
 
     for (const stroke of strokesRef.current) {
+      // Точка — это тоже след: одиночное касание раньше не оставляло ничего,
+      // потому что путь из одной точки не рисуется.
+      if (stroke.points.length === 1) {
+        const [p] = stroke.points;
+        ctx.beginPath();
+        ctx.fillStyle = stroke.color;
+        ctx.arc(p.x, p.y, stroke.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        continue;
+      }
+
       ctx.beginPath();
       ctx.strokeStyle = stroke.color;
       ctx.lineWidth = stroke.width;
@@ -66,20 +77,33 @@ export default function DrawingPad({
 
   useEffect(repaint, [strokes]);
 
-  // ResizeObserver, а не замер на монтировании: в момент первого эффекта элемент
-  // может быть ещё не разложен, и offsetWidth равен нулю — холст выходил нулевой ширины
+  /**
+   * Подгонка холста под ширину контейнера.
+   *
+   * Одного ResizeObserver мало: его первый вызов может прийти с нулевой шириной,
+   * пока элемент не разложен, а второго не будет — размер-то больше не меняется.
+   * Холст так и оставался 300×150 по умолчанию, и черновик, вернувшийся из
+   * состояния, просто не рисовался. Поэтому меряем сами и, если рано, повторяем
+   * на следующем кадре.
+   */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const observer = new ResizeObserver(([entry]) => {
-      const width = Math.round(entry.contentRect.width);
-      if (width > 0 && canvas.width !== width) {
-        canvas.width = width;
-        canvas.height = height;
-        repaint();
+    function fit(): boolean {
+      const width = Math.round(canvas!.getBoundingClientRect().width);
+      if (width <= 0) return false;
+      if (canvas!.width !== width || canvas!.height !== height) {
+        canvas!.width = width;
+        canvas!.height = height;
       }
-    });
+      repaint();
+      return true;
+    }
+
+    if (!fit()) requestAnimationFrame(fit);
+
+    const observer = new ResizeObserver(() => fit());
     observer.observe(canvas);
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,6 +209,7 @@ export default function DrawingPad({
             onClick={undo}
             disabled={strokes.length === 0}
             title="Отменить"
+            aria-label="Отменить"
           >
             <Undo2 size={15} />
           </button>
@@ -193,6 +218,7 @@ export default function DrawingPad({
             onClick={redo}
             disabled={undone.length === 0}
             title="Вернуть"
+            aria-label="Вернуть"
           >
             <Redo2 size={15} />
           </button>
@@ -204,6 +230,7 @@ export default function DrawingPad({
             }}
             disabled={strokes.length === 0}
             title="Очистить"
+            aria-label="Очистить"
           >
             <Eraser size={15} />
           </button>
@@ -212,6 +239,7 @@ export default function DrawingPad({
               className="btn-ghost px-3 py-1.5"
               onClick={onClose}
               title="Свернуть черновик"
+              aria-label="Свернуть черновик"
             >
               <ChevronDown size={15} />
             </button>

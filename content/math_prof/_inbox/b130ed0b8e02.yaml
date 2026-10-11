@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b130ed0b8e02
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Площадь треугольника $ABC$ равна 24, $DE —$ средняя линия, параллельная стороне $AB.$ Найдите площадь треугольника $CDE.$
+image: math_prof/img/xs3qstsrc59011DEE28B5907D41857934DB5D7D82_1_1678455898.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "B130ED0B8E02988546C41BD3FDFF74AD"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

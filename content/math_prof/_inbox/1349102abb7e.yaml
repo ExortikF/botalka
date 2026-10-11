@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1349102abb7e
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $90°$ , $AB=10$ , $AC=\sqrt{51}$ . Найдите $\sin A$ .
+image: math_prof/img/xs3qstsrcDA5103E67E0BB354406C6ACF8BFC2E84_1_1478531281.png
+answer:
+  type: number
+  value: "0,7"
+solution: |
+  По теореме Пифагора $BC=\sqrt{AB^{2}-AC^{2}}=\sqrt{100-51}=7$.
+  Синус острого угла — отношение противолежащего катета к гипотенузе:
+  $\sin A=\frac{BC}{AB}=\frac{7}{10}=0{,}7$.
+source:
+  kind: fipi
+  year: null
+  ref: "1349102ABB7E826C4346526E5D9FDB72"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

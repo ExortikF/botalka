@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b02f0cdee74c
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображены графики функций видов $f(x)=a\sqrt{x}$ и $g(x)=kx$ , пересекающиеся в точках $A$ и $B$ . Найдите абсциссу точки $B$ .
+  [[img:math_prof/img/xs3qstsrc510E2AA24D18AB774C9964CAE42F9A3F_1_1644585164.png]]
+image: math_prof/img/xs3qstsrc510E2AA24D18AB774C9964CAE42F9A3F_1_1644585164.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "B02F0CDEE74CBE694CD1552273D79EE6"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

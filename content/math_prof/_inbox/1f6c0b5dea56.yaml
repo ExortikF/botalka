@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1f6c0b5dea56
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Найдите величину угла $ACO,$ если его сторона $CA$ касается окружности с центром $O,$ отрезок $CO$ пересекает окружность в точке $B$ (см. рисунок), а дуга $AB$ окружности, заключённая внутри этого угла, равна $66°.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc5E6122FA349888304C37DFEB97C6E8BF_1_1642161518.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "1F6C0B5DEA56919B4ECDB3B7E0290192"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

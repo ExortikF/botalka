@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_db1de113cb5d
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Шар вписан в цилиндр. Площадь полной поверхности цилиндра равна 21. Найдите площадь поверхности шара.
+image: math_prof/img/xs3qstsrcdb1de113cb5d46e6b2f51e1d0b749689_6_1758622148.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "db1de113cb5d46e6b2f51e1d0b749689"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

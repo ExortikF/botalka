@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fe14e5a70ee4
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Во сколько раз увеличится объём конуса, если радиус его основания увеличится в 11 раз, а высота останется прежней?
+image: math_prof/img/xs3qstsrc9CF6BC3ABCA4B8EC48F5CE7CC17FECE5_1_1637923562.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "FE14E5A70EE4A767412CE1F9CE382C46"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

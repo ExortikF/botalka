@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_8b9438b63a9f
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x).$
+  На оси абсцисс отмечено девять точек: $x_{1}, x_{2}, x_{3}, x_{4}, x_{5}, x_{6}, x_{7}, x_{8}, x_{9}.$ Сколько из этих точек принадлежит промежуткам возрастания функции $f(x)$ ?
+  [[img:math_prof/img/xs3qstsrcBEBE29EA0FEAAC6D417484792D4EFBEC_1_1762358526.png]]
+image: math_prof/img/xs3qstsrcBEBE29EA0FEAAC6D417484792D4EFBEC_1_1762358526.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "8b9438b63a9f4d88820774e8af8a8bff"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

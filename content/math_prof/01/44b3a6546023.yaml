@@ -1,0 +1,27 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_44b3a6546023
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Отрезки $AC$ и $BD —$ диаметры окружности
+  с центром $O$ . Угол $AOD$ равен $16°$ . Найдите вписанный угол $ACB$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc1FF0838C507187FC4AC8764F62EB61F9_1_1509372825.png
+answer:
+  type: number
+  value: "82"
+solution: |
+  Углы $AOD$ и $AOB$ смежные, так как $BD$ — диаметр:
+  $\angle AOB=180°-16°=164°$.
+  Вписанный угол $ACB$ опирается на ту же дугу $AB$, что и центральный $AOB$,
+  поэтому вдвое меньше: $\frac{164°}{2}=82°$.
+source:
+  kind: fipi
+  year: null
+  ref: "44B3A65460239BBB4C9760611CB9E289"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: diameters
+status: live
+needs_review: true

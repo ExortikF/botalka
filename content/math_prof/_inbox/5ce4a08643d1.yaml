@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5ce4a08643d1
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=\log _{a}x$ . Найдите
+  значение $f(8)$ .
+  [[img:math_prof/img/xs3qstsrc89C957CD3CC792E8407031B4798BC7CA_1_1644584841.png]]
+image: math_prof/img/xs3qstsrc89C957CD3CC792E8407031B4798BC7CA_1_1644584841.png
+answer:
+  type: number
+  value: "3"
+solution: |
+  График проходит через точку $(2;1)$, поэтому $\log_{a}2=1$ и $a=2$.
+  Тогда $f(8)=\log_{2}8=3$.
+source:
+  kind: fipi
+  year: null
+  ref: "5CE4A08643D18D5E49C480AED3427124"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

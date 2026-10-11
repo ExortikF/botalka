@@ -31,7 +31,9 @@ SUBJECT_TITLES = {
 def _load_files() -> list[tuple[Path, dict]]:
     docs: list[tuple[Path, dict]] = []
     for path in sorted(CONTENT_DIR.rglob("*.yaml")):
-        if path.name.startswith("_"):
+        # Служебное начинается с подчёркивания: и файлы (_parsed.json рядом),
+        # и папки — например _inbox, куда парсер складывает черновики без ответов.
+        if any(part.startswith("_") for part in path.relative_to(CONTENT_DIR).parts):
             continue
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
         if isinstance(data, dict) and data.get("id"):
@@ -57,8 +59,9 @@ def _validate(path: Path, data: dict) -> list[str]:
     if not check_answer(answer_type, payload, str(payload.get("value", ""))):
         problems.append(f"{path.name}: эталонный ответ не проходит собственную проверку")
 
-    if data.get("status") == "live" and not data.get("solution"):
-        problems.append(f"{path.name}: live-задача без разбора")
+    # Разбор у live-задачи желателен, но не обязателен: задача с проверенным
+    # ответом полезнее отсутствующей. Ученику вместо разбора показывается
+    # честное «разбора пока нет» и кнопка его запросить.
 
     return problems
 

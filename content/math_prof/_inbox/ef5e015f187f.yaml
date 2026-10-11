@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ef5e015f187f
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Через среднюю линию основания треугольной призмы проведена плоскость, параллельная боковому ребру. Найдите объём этой призмы, если объём отсечённой треугольной призмы равен 7.
+image: math_prof/img/xs3qstsrc893D0810FF8F85A4484CD2711BA7C76C_1_1507731706.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "EF5E015F187F9ADB49E260CC55EA2546"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

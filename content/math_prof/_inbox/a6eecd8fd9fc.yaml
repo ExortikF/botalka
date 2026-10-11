@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a6eecd8fd9fc
+subject: math_prof
+task_type: 9
+difficulty: null
+statement: |
+  Локатор батискафа, равномерно погружающегося вертикально вниз, испускает ультразвуковые импульсы частотой 299 МГц. Скорость погружения батискафа $v$ (в м/с) вычисляется по формуле $v=с\cdot \frac{f-f_{0}}{f+f_{0}},$
+  где $c=1500м/​с —$ скорость звука в воде, [[img:math_prof/img/xs3qstsrcE72B0F568F7286DB42D1A27EF7AA70BB_1_1643794644.png]] $—$ частота испускаемых импульсов (в МГц), [[img:math_prof/img/xs3qstsrcE72B0F568F7286DB42D1A27EF7AA70BB_2_1643794644.png]] $—$ частота отражённого от дна сигнала (в МГц), регистрируемая приёмником. Определите частоту отражённого сигнала,
+  если скорость погружения батискафа равна 5 м/с. Ответ дайте в МГц.
+image: math_prof/img/xs3qstsrcE72B0F568F7286DB42D1A27EF7AA70BB_1_1643794644.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "A6EECD8FD9FCAD0248870BF404DB7103"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

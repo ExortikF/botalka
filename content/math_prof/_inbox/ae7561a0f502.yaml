@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ae7561a0f502
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x),$ определённой на интервале $(-12;12).$ Найдите количество точек максимума функции $f(x),$ принадлежащих отрезку $[-6;11].$
+  [[img:math_prof/img/xs3qstsrc6EE2E73C47EDA2974D97AB0DCC610D97_1_1701955114.png]]
+image: math_prof/img/xs3qstsrc6EE2E73C47EDA2974D97AB0DCC610D97_1_1701955114.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "AE7561A0F5028C3B4A8B301D33447DED"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

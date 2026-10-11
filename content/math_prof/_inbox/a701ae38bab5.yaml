@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a701ae38bab5
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $\frac{2\sin 70°}{\cos 35°\cdot \cos 55°}.$
+image: null
+answer:
+  type: number
+  value: "4"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "a701ae38bab54f04b2a3133d95c3d2c4"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_66bd7b0f86f0
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  В прямоугольном параллелепипеде $ABCDA_{1}B_{1}C_{1}D_{1}$ известно, что $BC=9, CD=3, CC_{1}=7.$ Найдите объём многогранника, вершинами которого являются точки A, B, C, D, C1.
+image: math_prof/img/xs3qstsrc82B811E56FA8AFD74D7BB8399E9E0A52_1_1669887347.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "66BD7B0F86F0AA954B65E25B3C05BCCC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -105,7 +105,7 @@ export default function Sidebar({
           )}
           <button
             className="flex h-8 w-8 items-center justify-center rounded-[10px]"
-            style={{ background: "var(--surface)", color: "var(--n-600)" }}
+            style={{ background: "var(--surface)", color: "var(--n-700)" }}
             onClick={onToggle}
             aria-label={collapsed ? "Развернуть меню" : "Свернуть меню"}
             title={collapsed ? "Развернуть меню" : "Свернуть меню"}
@@ -134,7 +134,7 @@ export default function Sidebar({
                     color: active
                       ? "var(--accent-700)"
                       : soon
-                        ? "var(--n-400)"
+                        ? "var(--n-700)"
                         : "var(--text)",
                     cursor: soon ? "default" : "pointer",
                     fontWeight: active ? 700 : 400,
@@ -143,7 +143,7 @@ export default function Sidebar({
                   <Icon size={18} className="shrink-0" />
                   {!collapsed && label}
                   {!collapsed && soon && (
-                    <span className="ml-auto text-[11px]">скоро</span>
+                    <span className="ml-auto text-[0.6875rem]">скоро</span>
                   )}
                 </Link>
               );
@@ -178,7 +178,7 @@ export default function Sidebar({
               className="rounded-full px-2 py-0.5 text-xs font-semibold"
               style={{
                 background: sound ? "var(--accent-100)" : "var(--divider)",
-                color: sound ? "var(--accent-700)" : "var(--n-600)",
+                color: sound ? "var(--accent-700)" : "var(--n-700)",
               }}
             >
               {sound ? "вкл" : "выкл"}
@@ -238,7 +238,7 @@ export default function Sidebar({
               {user.coins > 0 && (
                 <span
                   className="mr-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
-                  style={{ background: "#fdf3dd", color: "#c98a00" }}
+                  style={{ background: "var(--gold-bg)", color: "var(--gold)" }}
                 >
                   <Coins size={12} />
                   {user.coins}

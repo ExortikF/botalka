@@ -29,7 +29,7 @@ const RARITY: Record<
 > = {
   bronze: { label: "бронза", color: "#8a5a2b", bg: "#f6ebe0" },
   silver: { label: "серебро", color: "#5b6570", bg: "#eef1f4" },
-  gold: { label: "золото", color: "#8a6d0b", bg: "#fbf1cf" },
+  gold: { label: "золото", color: "var(--gold)", bg: "#fbf1cf" },
 };
 
 type PublicProfile = {

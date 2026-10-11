@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_bac3a9000281
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Угол $ACO$ равен $57°.$ Его сторона $CA$ касается окружности с центром в точке $O.$ Отрезок $CO$ пересекает окружность в точке $B$ (см. рисунок). Найдите градусную меру дуги $AB$ окружности, заключённой внутри этого угла. Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc5497613667B69A724485DBFC58ACAABE_1_1642161529.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "BAC3A9000281BE4743C42A98C50D16B8"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

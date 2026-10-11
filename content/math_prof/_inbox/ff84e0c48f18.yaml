@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ff84e0c48f18
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $\frac{3\sin 164°}{\sin 82°\cdot \sin 8°}.$
+image: null
+answer:
+  type: number
+  value: "6"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "ff84e0c48f184d5e86ad8bba36205d08"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

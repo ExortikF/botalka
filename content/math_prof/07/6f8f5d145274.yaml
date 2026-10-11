@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6f8f5d145274
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $4\sqrt{3}\cos ^{2}\frac{23π}{12}-4\sqrt{3}\sin ^{2}\frac{23π}{12}.$
+image: null
+answer:
+  type: number
+  value: "6"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "6F8F5D145274AE2B4C0D8412DE0CBB2F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_19c170e2ea9b
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  В прямоугольном параллелепипеде $ABCDA_{1}B_{1}C_{1}D_{1}$ известно, что $AB=8, BC=7, AA_{1}=6.$ Найдите объём многогранника, вершинами которого являются точки A, B, C, A1, B1, C1.
+image: math_prof/img/xs3qstsrcD2295821B2339E5C48183A316A76652E_1_1710237026.png
+answer:
+  type: number
+  value: "168"
+solution: |
+  Точки $A$, $B$, $C$, $A_{1}$, $B_{1}$, $C_{1}$ задают призму, которая
+  отсекается от параллелепипеда диагональным сечением, то есть ровно его
+  половину: $\frac{8\cdot 7\cdot 6}{2}=168$.
+source:
+  kind: fipi
+  year: null
+  ref: "19C170E2EA9BBBE34270C5D968160957"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4bf0b845ae91
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\frac{4\sin 41°\cdot \cos 41°}{\sin 82°}.$
+image: null
+answer:
+  type: number
+  value: "2"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "4bf0b845ae914085b124803b9eb41c2d"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

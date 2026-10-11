@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f0113de2e833
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Около конуса описана сфера (сфера содержит окружность основания конуса и его вершину). Центр сферы находится в центре основания конуса. Образующая конуса равна $18\sqrt{2}.$ Найдите радиус сферы.
+image: math_prof/img/xs3qstsrcB2091D6060C7A7064A8BAD5E2FF7C17D_1_1763039183.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "f0113de2e83342208890e48ec393193e"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

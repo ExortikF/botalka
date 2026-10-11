@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c434c810fbb4
+subject: math_prof
+task_type: 12
+difficulty: null
+statement: |
+  Найдите наименьшее значение функции [[img:math_prof/img/xs3qstsrc1FD90C6D40599999447A7EE037ACA4BE_7_1676296625.png]] на отрезке [[img:math_prof/img/xs3qstsrc1FD90C6D40599999447A7EE037ACA4BE_8_1676296625.png]]
+image: math_prof/img/xs3qstsrc1FD90C6D40599999447A7EE037ACA4BE_7_1676296625.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C434C810FBB49F954D05FCA4C1929C26"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

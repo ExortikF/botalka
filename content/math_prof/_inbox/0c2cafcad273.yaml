@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_0c2cafcad273
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $\frac{(3\sqrt{8})^{2}}{6}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "0C2CAFCAD273820344A1CD76EDB55696"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

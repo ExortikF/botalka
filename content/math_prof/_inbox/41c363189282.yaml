@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_41c363189282
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Дана правильная треугольная призма $ABCA_{1}B_{1}C_{1}$ , площадь основания которой равна 8, а боковое ребро равно 6. Найдите объём многогранника, вершинами которого являются точки $A$ , $C$ , $A_{1}$ , $B_{1}$ , $C_{1}$ .
+image: math_prof/img/xs3qstsrc44809E274C67A2094A0BFA19653530E8_1_1512575621.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "41C363189282A2FC4AD0800B808A148A"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

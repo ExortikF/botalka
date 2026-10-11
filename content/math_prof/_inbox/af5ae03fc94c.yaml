@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_af5ae03fc94c
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  Фабрика выпускает сумки. В среднем 6 сумок из 75 имеют скрытые дефекты. Найдите вероятность того, что купленная сумка окажется без дефектов.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "AF5AE03FC94C93A44802B79D0A8CE750"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_259956cced40
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $\sqrt{2}\sin \frac{7π}{8}\cdot \cos \frac{7π}{8}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "259956CCED40985B4660BB1E94F6C293"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

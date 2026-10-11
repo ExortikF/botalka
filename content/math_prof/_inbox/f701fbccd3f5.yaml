@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f701fbccd3f5
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  Цилиндр и конус имеют общие основание и высоту. Объём цилиндра равен 18. Найдите объём конуса.
+image: math_prof/img/xs3qstsrcEAFFB75209B289A8499EF516020A3482_1_1478533901.png
+answer:
+  type: number
+  value: "6"
+solution: |
+  У конуса и цилиндра с общими основанием и высотой объёмы относятся как $1:3$, поэтому $18:3=6$.
+source:
+  kind: fipi
+  year: null
+  ref: "F701FBCCD3F5A9D54FCCC07A539A53C1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: cylinder_and_cone
+status: live
+needs_review: true

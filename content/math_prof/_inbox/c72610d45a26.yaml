@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c72610d45a26
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Стороны параллелограмма равны 24 и 27. Высота, опущенная на меньшую из этих сторон, равна 18. Найдите высоту, опущенную на бо $�$ ьшую сторону параллелограмма.
+image: math_prof/img/xs3qstsrcB0292B4E3DB5AFE54C9960716F137EA9_1_1478531314.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C72610D45A26ADD24258110C73162842"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

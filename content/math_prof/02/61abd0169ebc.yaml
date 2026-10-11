@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_61abd0169ebc
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(1;1)$ и $\overrightarrow{b}(1;-1).$ Найдите длину вектора $14\overrightarrow{a}+2\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "20"
+solution: |
+  Складываем покоординатно: $(16; 12)$. Длина — корень из суммы квадратов координат: $20$.
+source:
+  kind: fipi
+  year: null
+  ref: "61abd0169ebc433d87b149a026de862e"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

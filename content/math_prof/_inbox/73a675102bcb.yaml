@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_73a675102bcb
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображены графики двух линейных функций, пересекающиеся в точке $A$ . Найдите абсциссу точки $A$ .
+  [[img:math_prof/img/xs3qstsrc331CD5B9C1CCA9304BEC5CFD69ABD799_1_1644585209.png]]
+image: math_prof/img/xs3qstsrc331CD5B9C1CCA9304BEC5CFD69ABD799_1_1644585209.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "73A675102BCBBE434D4F6EE9798A4684"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

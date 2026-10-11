@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_3842db036a26
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  На чемпионате по прыжкам в воду выступают 25 спортсменов, среди них
+  10 спортсменов из Испании и 6 спортсменов из Бразилии. Порядок выступлений определяется жеребьёвкой. Найдите вероятность того, что одиннадцатым будет выступать спортсмен из Испании.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "3842DB036A26A67B4D14B8D6DD5D17EC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

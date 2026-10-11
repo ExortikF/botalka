@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import AchievementToast from "./AchievementToast";
-import { getMe, type User } from "@/lib/api";
+import { getMe, USER_EVENT, type User } from "@/lib/api";
 
 const COLLAPSE_KEY = "botalka:sidebar-collapsed";
 
@@ -18,6 +18,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       .then(setUser)
       .catch(() => setUser(null));
   }, [pathname]);
+
+  // Баланс и косметика меняются без перехода по маршруту — слушаем событие,
+  // иначе в сайдбаре висит старое число до следующей навигации.
+  useEffect(() => {
+    const refresh = () => {
+      getMe()
+        .then(setUser)
+        .catch(() => {});
+    };
+    window.addEventListener(USER_EVENT, refresh);
+    return () => window.removeEventListener(USER_EVENT, refresh);
+  }, []);
 
   // Читаем после монтирования: на сервере localStorage нет, а разное значение
   // на сервере и клиенте — это ошибка гидратации.

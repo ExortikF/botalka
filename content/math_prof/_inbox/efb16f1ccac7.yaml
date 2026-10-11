@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_efb16f1ccac7
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $55°, AD$ — биссектриса, угол $CAD$ равен $29°.$ Найдите величину угла $ABD.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrcefb16f1ccac744f6a0b29b1a46f3db21_7_1759831037.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "efb16f1ccac744f6a0b29b1a46f3db21"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

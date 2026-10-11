@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Clock, Send, Users } from "lucide-react";
 import MathText from "../../../Math";
+import TaskBody from "../../../TaskBody";
 import { api } from "@/lib/api";
 import { playCorrect, playWrong } from "@/lib/sound";
 import type { SubmitResult, Tournament } from "../types";
@@ -157,9 +158,10 @@ export default function Contest({
               </span>
             </div>
 
-            <MathText
-              className="block text-lg leading-relaxed"
-              text={problem.statement}
+            <TaskBody
+              className="text-lg"
+              statement={problem.statement}
+              imageUrl={problem.image_url}
             />
 
             {problem.solved ? (

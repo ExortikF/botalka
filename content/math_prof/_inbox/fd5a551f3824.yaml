@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fd5a551f3824
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $\frac{3^{9,2}}{9^{2,6}}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "FD5A551F382489354EFB4D603C0B60A1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

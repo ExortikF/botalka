@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f75ae379b821
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  В группе туристов 300 человек. Их вертолётом доставляют в труднодоступный район, перевозя по 15 человек за рейс. Порядок, в котором вертолёт перевозит туристов, случаен. Найдите вероятность того, что турист В. полетит первым рейсом вертолёта.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "F75AE379B82195854C12E3C6F8066743"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

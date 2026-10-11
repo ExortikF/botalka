@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_852018171db3
+subject: math_prof
+task_type: null           # номер задания КИМ проставляется отдельно, см. fipi_classify.py
+difficulty: null
+statement: |
+  Площадь боковой поверхности треугольной призмы равна 24. Через среднюю линию основания призмы проведена плоскость, параллельная боковому ребру. Найдите площадь боковой поверхности отсечённой треугольной призмы.
+image: math_prof/img/xs3qstsrc34DCAED45B2B8BC74CF967AFB905352E_1_1509374209.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "852018171DB3977542DD29A5C05C860E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

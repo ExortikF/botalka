@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_dbce25aaa61e
+subject: math_prof
+task_type: 9
+difficulty: null
+statement: |
+  Автомобиль разгоняется на прямолинейном участке шоссе с постоянным ускорением $a=32000км/​ч^{2}​.$ Скорость $v$ (в км/ч) вычисляется по формуле $v=\sqrt{2la},$ где $l —$ пройденный автомобилем путь (в км). Найдите,
+  сколько километров проедет автомобиль к моменту, когда он разгонится до скорости 160 км/ч.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "dbce25aaa61e4c35b150dcb948f7e02c"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

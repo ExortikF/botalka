@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_52df5f5f3dcb
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Острый угол $B$ прямоугольного треугольника $ABC$ равен $9°$ . Найдите величину угла между высотой $CH$ и медианой $CM​,$ проведёнными из вершины прямого угла $C.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc1BD0CC8AB272A6E84D8FA19035E68529_1_1771582646.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "52df5f5f3dcb41168bfc95fee11298bb"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

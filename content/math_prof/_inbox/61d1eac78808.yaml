@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_61d1eac78808
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Объём куба равен 144. Найдите объём треугольной призмы, отсекаемой
+  от куба плоскостью, проходящей через середины двух рёбер, выходящих
+  из одной вершины, и параллельной третьему ребру, выходящему из этой же вершины.
+image: math_prof/img/xs3qstsrc623E0BB1F8298D3D46EE4B4CC513B912_1_1763039130.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "61d1eac788084aebb8bb99100a3b82f2"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

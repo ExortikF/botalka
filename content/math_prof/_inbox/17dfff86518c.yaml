@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_17dfff86518c
+subject: math_prof
+task_type: 6
+difficulty: null
+statement: |
+  При адиабатическом процессе для идеального газа выполняется закон $pV^{k}=6,4\cdot 10^{6}Па\cdot м^{5}​,$ где $p$ — давление в газе в паскалях, $V$ — объём
+  газа (в м3), $k=\frac{5}{3}$ . Найдите, какой объём V (в м3) будет занимать газ
+  при давлении $p$ , равном $2\cdot 10^{5}Па.$
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "17DFFF86518C8D2B416A247BF32BAA24"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

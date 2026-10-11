@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ed84914c0282
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Первая труба пропускает на 4 литра воды в минуту меньше, чем вторая. Сколько литров воды в минуту пропускает первая труба, если резервуар объёмом 285 литров она заполняет на 4 минуты дольше, чем вторая труба?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "ED84914C028290C240936410AE408EDB"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

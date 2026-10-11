@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6f35b51dd4bc
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x),$ определённой на интервале $(-20;4).$ Найдите количество точек экстремума функции $f(x),$ принадлежащих отрезку $[-16;1].$
+  [[img:math_prof/img/xs3qstsrc83542FF236DCAE8C4376491FE725DB3C_1_1709804829.png]]
+image: math_prof/img/xs3qstsrc83542FF236DCAE8C4376491FE725DB3C_1_1709804829.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "6F35B51DD4BC81A74F1AD4599CE81C0A"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

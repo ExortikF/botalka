@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_aff1430be9b9
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=a^{x}​.$ Найдите
+  значение $f(3).$
+  [[img:math_prof/img/xs3qstsrcF77FA4754CBE802D4899FD142340C017_1_1670410723.png]]
+image: math_prof/img/xs3qstsrcF77FA4754CBE802D4899FD142340C017_1_1670410723.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "AFF1430BE9B980964F4DF8976C8E6CC1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

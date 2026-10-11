@@ -77,7 +77,7 @@ CATALOG = [
     # а не как вставленный смайлик, и одинаково выглядит на всех системах.
     ("avatar_letters", ItemKind.AVATAR, "Обычная", "mono:#e9f8ff,#0088b0", 0, C),
     ("avatar_mint", ItemKind.AVATAR, "Мята", "mono:#e8f6ee,#1f9d55", 60, C),
-    ("avatar_sand", ItemKind.AVATAR, "Песок", "mono:#fdf3dd,#c98a00", 60, C),
+    ("avatar_sand", ItemKind.AVATAR, "Песок", "mono:#fdf3dd,#7a5f00", 60, C),
     ("avatar_rose", ItemKind.AVATAR, "Роза", "mono:#ffe9f0,#d6006c", 90, C),
     ("avatar_sky", ItemKind.AVATAR, "Небо", "grad:#60a5fa,#2563eb", 200, R),
     ("avatar_sunset", ItemKind.AVATAR, "Закат", "grad:#ff8a00,#d6006c", 260, R),

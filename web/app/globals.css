@@ -16,11 +16,23 @@
   --accent-300: #99e0ff;
   --accent-600: #1186ac;
   --accent-700: #006786;
+  --accent-800: #00546e;
 
   --accent-2: #d6006c;
   --accent-2-100: #fff1f4;
   --accent-2-200: #ffdee6;
   --accent-2-600: #d82071;
+  /* тёмная магента для текста на розовой подложке: #d6006c на #fff1f4 даёт 4.9:1
+     при 14px — впритык, этот берём с запасом */
+  --accent-2-700: #ab0056;
+
+  /* Зелёный «верно/лёгкое». Светлее #177f43 не брать: на белом уже 3.5:1. */
+  --success: #177f43;
+
+  /* Золото: монеты и достижения. Тёмное, потому что светлое (#c98a00) давало
+     2.7:1 на своей же подложке — подпись под цифрой не читалась. */
+  --gold: #7a5f00;
+  --gold-bg: #fdf3dd;
 
   --n-400: #bab6b6;
   --n-500: #9b9797;
@@ -53,7 +65,7 @@ h3,
 }
 
 .muted {
-  color: var(--n-600);
+  color: var(--n-700);
 }
 
 .card {
@@ -75,20 +87,20 @@ h3,
 }
 
 h1.page-title {
-  font-size: 29px;
+  font-size: 1.8125rem;
   font-weight: 800;
 }
 
 .page-subtitle {
-  color: var(--n-600);
-  font-size: 14.5px;
+  color: var(--n-700);
+  font-size: 0.90625rem;
   line-height: 1.5;
   margin-top: 8px;
   max-width: 40rem;
 }
 
 h2.section-title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   font-weight: 700;
 }
 
@@ -103,21 +115,21 @@ h2.section-title {
 .tile-value {
   font-family: var(--font-heading), system-ui, sans-serif;
   font-weight: 700;
-  font-size: 25px;
+  font-size: 1.5625rem;
   display: flex;
   align-items: baseline;
   gap: 5px;
 }
 
 .tile-unit {
-  color: var(--n-600);
-  font-size: 13px;
+  color: var(--n-700);
+  font-size: 0.8125rem;
   font-weight: 500;
 }
 
 .tile-label {
-  color: var(--n-600);
-  font-size: 12.5px;
+  color: var(--n-700);
+  font-size: 0.78125rem;
   line-height: 1.35;
   margin-top: 3px;
 }
@@ -142,8 +154,8 @@ h2.section-title {
 }
 
 .section-note {
-  color: var(--n-600);
-  font-size: 12.5px;
+  color: var(--n-700);
+  font-size: 0.78125rem;
 }
 
 /* Надпись-рубрика над блоком: «ДУЭЛИ», «НАВИГАТОР» */
@@ -152,7 +164,7 @@ h2.section-title {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--n-600);
+  color: var(--n-700);
 }
 
 .btn {
@@ -160,7 +172,7 @@ h2.section-title {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--accent);
+  background: var(--accent-700);
   color: #fff;
   border-radius: var(--radius-md);
   padding: 0.65rem 1.25rem;
@@ -169,7 +181,7 @@ h2.section-title {
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--accent-600);
+  background: var(--accent-800);
 }
 
 .btn:disabled {
@@ -192,6 +204,20 @@ h2.section-title {
 
 .btn-ghost:hover {
   border-color: var(--accent-300);
+}
+
+/* Призрачная кнопка внутри магентовой карточки (входящие вызовы). Обычная
+   .btn-ghost там выглядит белой заплаткой, да ещё и подсвечивается цианом на
+   ховере — а циан на этой карточке чужой. */
+.btn-ghost-2 {
+  background: transparent;
+  border-color: var(--accent-2-200);
+  color: var(--accent-2-700);
+}
+
+.btn-ghost-2:hover:not(:disabled) {
+  border-color: var(--accent-2);
+  background: var(--accent-2-200);
 }
 
 /* Магента — только для редких акцентов: вызов на дуэль, слабая тема */
@@ -220,17 +246,25 @@ h2.section-title {
   border-color: var(--accent);
 }
 
+/* Фокус с клавиатуры. Раньше показывалось системное кольцо браузера — оно
+   рисуется чужим цветом и мимо палитры. Правило то же, что у .input:focus. */
+:where(a, button, [role="button"], summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-700);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
 /* Капсульные фильтры из макета 1e */
 .pill {
   border-radius: 999px;
   padding: 9px 18px;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   font-weight: 700;
   transition: background 0.15s;
 }
 
 .pill-active {
-  background: var(--accent);
+  background: var(--accent-700);
   color: #fff;
 }
 

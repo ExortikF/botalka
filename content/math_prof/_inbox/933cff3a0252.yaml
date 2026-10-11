@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_933cff3a0252
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Острый угол $B$ прямоугольного треугольника $ABC$ равен $25°​.$ Найдите величину угла между высотой $CH$ и биссектрисой $CD,$ проведёнными из вершины прямого угла $C.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc933cff3a02524f7e9bec33c7a0222349_7_1759831254.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "933cff3a02524f7e9bec33c7a0222349"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

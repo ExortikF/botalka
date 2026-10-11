@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a9d4a23e0b4f
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку максимума функции $y=9\cdot \ln (x-4)-9x-7.$
+image: null
+answer:
+  type: number
+  value: "5"
+solution: |
+  Найдём производную: $y' = \frac{9 \left(5 - x\right)}{x - 4}$. Приравняем её к нулю: $x = 5$. Слева от точки функция возрастает, справа убывает — это точка максимума.
+source:
+  kind: fipi
+  year: null
+  ref: "A9D4A23E0B4F866B44D47F310B3C2CA4"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

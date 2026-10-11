@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4934980c89d6
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  В четырёхугольник $ABCD$ вписана окружность, $AB=14, CD=17.$ Найдите периметр четырёхугольника $ABCD.$
+image: math_prof/img/xs3qstsrcBC13BEABD8BAA90047C4A9EB9DF86235_1_1765457082.png
+answer:
+  type: number
+  value: "62"
+solution: |
+  Если в четырёхугольник вписана окружность, то суммы противоположных сторон
+  равны: $AB+CD=BC+AD=14+17=31$.
+  Периметр складывается из этих двух сумм: $2\cdot 31=62$.
+source:
+  kind: fipi
+  year: null
+  ref: "4934980c89d64c4ba8c499a4f8f56b13"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: circumscribed_quadrilateral
+status: live
+needs_review: true

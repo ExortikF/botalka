@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_164ebee2c79c
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  В треугольнике $ABC$ стороны $AC$ и $BC$ равны, угол $C$ равен $168°,$ угол $CBD$ внешний. Найдите величину угла $CBD.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc164ebee2c79c41a989df535a795492eb_7_1759831280.png
+answer:
+  type: number
+  value: "174"
+solution: |
+  Треугольник равнобедренный, поэтому углы при основании равны:
+  $\angle A=\angle B=\frac{180°-168°}{2}=6°$.
+  Угол $CBD$ — внешний при вершине $B$, он смежен с углом $B$:
+  $180°-6°=174°$.
+source:
+  kind: fipi
+  year: null
+  ref: "164ebee2c79c41a989df535a795492eb"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5921e7ba0c8c
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите [[img:math_prof/img/xs3qstsrc1251C016ADA3BC6F4C020CAB5B525C74_1_1580725519.png]] , если [[img:math_prof/img/xs3qstsrc1251C016ADA3BC6F4C020CAB5B525C74_2_1580725519.png]] и [[img:math_prof/img/xs3qstsrc1251C016ADA3BC6F4C020CAB5B525C74_3_1580725519.png]] .
+image: math_prof/img/xs3qstsrc1251C016ADA3BC6F4C020CAB5B525C74_1_1580725519.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "5921E7BA0C8CB20B42200E548686EAAC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

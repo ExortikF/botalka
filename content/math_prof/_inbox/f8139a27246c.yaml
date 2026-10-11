@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f8139a27246c
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $\log _{2}56-\log _{2}​7.$
+image: null
+answer:
+  type: number
+  value: "3"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "F8139A27246C928D445E2ED172AE0036"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

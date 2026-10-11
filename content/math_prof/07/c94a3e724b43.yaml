@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c94a3e724b43
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $5\sqrt{2}\cos ^{2}\frac{7π}{8}-5\sqrt{2}\sin ^{2}\frac{7π}{8}$ .
+image: null
+answer:
+  type: number
+  value: "5"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C94A3E724B4386164FED0398CA7DCA1D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

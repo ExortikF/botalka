@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_703d84a2bbfa
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку максимума функции $y=3+18x-x^{\frac{3}{2}}.$
+image: null
+answer:
+  type: number
+  value: "144"
+solution: |
+  Найдём производную: $y' = 18 - \frac{3 \sqrt{x}}{2}$. Приравняем её к нулю: $x = 144$. Слева от точки функция возрастает, справа убывает — это точка максимума.
+source:
+  kind: fipi
+  year: null
+  ref: "703d84a2bbfa42ddacd469dfdb0257e9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

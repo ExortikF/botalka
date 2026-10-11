@@ -182,7 +182,8 @@ export function avatarStyle(value: string | null | undefined): {
 } {
   if (!value || value === "initials" || value.startsWith("mono:")) {
     const [bg, fg] = (
-      value?.startsWith("mono:") ? value.slice(5) : "#e9f8ff,#0088b0"
+      // Буквы тёмным цианом: #0088b0 на #e9f8ff давал 3.8:1 при кегле 10px
+      value?.startsWith("mono:") ? value.slice(5) : "#e9f8ff,#006786"
     ).split(",");
     return {
       style: { background: bg, color: fg },

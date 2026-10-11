@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e32266b3ae16
+subject: math_prof
+task_type: 6
+difficulty: null
+statement: |
+  Теплоход проходит по течению реки до пункта назначения 180 км и после стоянки возвращается в пункт отправления. Найдите скорость теплохода
+  в неподвижной воде, если скорость течения равна 1 км/ч, стоянка длится
+  1 час, а в пункт отправления теплоход возвращается через 20 часов. Ответ дайте в км/ч.
+image: math_prof/img/xs3qstsrcF65F76DC46B88A4F4EC94D73AA75BC0B_1_1575987481.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "e32266b3ae1645ee9c2a0037b0a518c3"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

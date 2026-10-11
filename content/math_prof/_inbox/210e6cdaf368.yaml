@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_210e6cdaf368
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Моторная лодка прошла против течения реки 168 км и вернулась в пункт отправления, затратив на обратный путь на 2 часа меньше. Найдите скорость течения, если скорость лодки в неподвижной воде равна 13 км/ч. Ответ дайте в км/ч.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "210E6CDAF368A78C4463885444DD4D49"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

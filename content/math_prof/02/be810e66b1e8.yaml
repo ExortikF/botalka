@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_be810e66b1e8
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(2;2)$ и $\overrightarrow{b}(2;-2).$ Найдите длину вектора $7\overrightarrow{a}+\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "20"
+solution: |
+  Складываем покоординатно: $(16; 12)$. Длина — корень из суммы квадратов координат: $20$.
+source:
+  kind: fipi
+  year: null
+  ref: "be810e66b1e84ee1ac1ac86c68aada4a"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

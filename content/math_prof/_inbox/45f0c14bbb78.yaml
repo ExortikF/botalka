@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_45f0c14bbb78
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Первая труба пропускает на 6 литров воды в минуту меньше, чем вторая. Сколько литров воды в минуту пропускает вторая труба, если резервуар объёмом 112 литров она заполняет на 6 минут быстрее, чем первая труба?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "45F0C14BBB78BFC24F1395BDE6F98B6A"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fc7ff9a5fa10
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=\frac{k}{x}.$ Найдите значение $f(30).$
+  [[img:math_prof/img/xs3qstsrcFC7FF9A5FA10831A481E31E7D8E071DF_5_1721136384.png]]
+image: math_prof/img/xs3qstsrcFC7FF9A5FA10831A481E31E7D8E071DF_5_1721136384.png
+answer:
+  type: number
+  value: "0,1"
+solution: |
+  На графике отмечена точка $(3;1)$, поэтому $\frac{k}{3}=1$ и $k=3$.
+  Тогда $f(30)=\frac{3}{30}=0{,}1$.
+source:
+  kind: fipi
+  year: null
+  ref: "FC7FF9A5FA10831A481E31E7D8E071DF"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

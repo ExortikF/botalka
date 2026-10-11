@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_2f43041fc943
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $90°$ , $AB=5$ , $BC=4$ . Найдите $\cos A$ .
+image: math_prof/img/xs3qstsrc5C6AFE3F00A2A55840B947D3A51FA65B_1_1478531276.png
+answer:
+  type: number
+  value: "0,6"
+solution: |
+  По теореме Пифагора $AC=\sqrt{AB^{2}-BC^{2}}=\sqrt{25-16}=3$.
+  Косинус острого угла — прилежащий катет к гипотенузе:
+  $\cos A=\frac{3}{5}=0{,}6$.
+source:
+  kind: fipi
+  year: null
+  ref: "2F43041FC943874E40B60355953025E5"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

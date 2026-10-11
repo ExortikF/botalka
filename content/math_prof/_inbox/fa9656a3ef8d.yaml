@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fa9656a3ef8d
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $\tg α,$ если $\cos α=\frac{5\sqrt{26}}{26}$ и $α\in (0;\frac{π}{2}).$
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "fa9656a3ef8d4eb38b41e8b4b448d44e"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fcc3901c97a9
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  В четырёхугольник $ABCD,$ периметр которого равен 30, вписана окружность, $AB=9.$ Найдите длину стороны $CD.$
+image: math_prof/img/xs3qstsrc0E0989FD1850A5C54CC710B3FFA8FD88_1_1765457061.png
+answer:
+  type: number
+  value: "6"
+solution: |
+  Суммы противоположных сторон равны, и каждая из них — половина периметра: $30:2=15$. Значит искомая сторона равна $15-9=6$.
+source:
+  kind: fipi
+  year: null
+  ref: "fcc3901c97a94fd4925d2a728af7a7f9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: circumscribed_quadrilateral
+status: live
+needs_review: true

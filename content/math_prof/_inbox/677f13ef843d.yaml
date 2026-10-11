@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_677f13ef843d
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку минимума функции $y=10x-\ln (x-5)+3.$
+image: null
+answer:
+  type: number
+  value: "5,1"
+solution: |
+  Найдём производную: $y' = \frac{10 x - 51}{x - 5}$. Приравняем её к нулю: $x = \frac{51}{10}$. Слева от точки функция убывает, справа возрастает — это точка минимума.
+source:
+  kind: fipi
+  year: null
+  ref: "677F13EF843D95FB4E1A95BE17FAEE3F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

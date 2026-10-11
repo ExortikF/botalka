@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4ef816945991
+subject: math_prof
+task_type: 7
+difficulty: 2
+statement: |
+  Найдите значение выражения $6\log _{\sqrt[6]{13}}13.$
+image: null
+answer:
+  type: number
+  value: "36"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "4EF816945991A0F640724DB69452CFF2"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

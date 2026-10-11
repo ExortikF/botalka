@@ -9,7 +9,7 @@ import { playAchievement } from "@/lib/sound";
 const RARITY: Record<Achievement["rarity"], { label: string; color: string; bg: string }> = {
   bronze: { label: "бронза", color: "#8a5a2b", bg: "#f6ebe0" },
   silver: { label: "серебро", color: "#5b6570", bg: "#eef1f4" },
-  gold: { label: "золото", color: "#8a6d0b", bg: "#fbf1cf" },
+  gold: { label: "золото", color: "var(--gold)", bg: "#fbf1cf" },
 };
 
 const SHOW_MS = 6000;

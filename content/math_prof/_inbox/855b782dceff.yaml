@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_855b782dceff
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Конус вписан в шар. Радиус основания конуса равен радиусу шара. Объём конуса равен 12. Найдите объём шара.
+image: math_prof/img/xs3qstsrc855B782DCEFF87B4441BD91ADEA4B0C0_7_1764589549.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "855B782DCEFF87B4441BD91ADEA4B0C0"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

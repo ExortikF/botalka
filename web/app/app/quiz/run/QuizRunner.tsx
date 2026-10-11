@@ -2,9 +2,21 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Coins, Flag, Flame, Lightbulb, PenLine, TrendingUp, X } from "lucide-react";
+import {
+  Coins,
+  Flag,
+  Flame,
+  Highlighter,
+  Lightbulb,
+  PenLine,
+  TrendingUp,
+  X,
+} from "lucide-react";
 import MathText from "../../../Math";
+import TaskBody from "../../../TaskBody";
+import SolutionBlock from "../../SolutionBlock";
 import DrawingPad, { type Stroke } from "../../DrawingPad";
+import DrawOverlay from "../../DrawOverlay";
 import ReportButton from "../../ReportButton";
 import { playCorrect, playWrong } from "@/lib/sound";
 import { checkAchievements } from "@/lib/achievements";
@@ -18,8 +30,7 @@ import {
   type AnswerResult,
   type Quiz,
   type QuizPreset,
-  type QuizResult,
-} from "@/lib/api";
+  type QuizResult, notifyUserChanged } from "@/lib/api";
 
 type Phase = "loading" | "playing" | "finished" | "error";
 
@@ -64,10 +75,13 @@ export default function QuizRunner({
   const [combo, setCombo] = useState(0);
   const [flash, setFlash] = useState(0);
   const [sending, setSending] = useState(false);
-  const [draftOpen, setDraftOpen] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(true);
   // черновик общий на весь квиз: при переходе к следующей задаче он остаётся
   // черновик свой у каждого задания: ключ — id задачи
   const [drafts, setDrafts] = useState<Record<number, Stroke[]>>({});
+  /** Рисунки поверх страницы — тоже свои для каждой задачи. */
+  const [notes, setNotes] = useState<Record<number, Stroke[]>>({});
+  const [overlay, setOverlay] = useState(false);
 
   const startedAt = useRef(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
@@ -176,6 +190,7 @@ export default function QuizRunner({
     setResult(early ? await finishQuiz(quiz.id) : await getQuizResult(quiz.id));
     setPhase("finished");
     checkAchievements();
+    notifyUserChanged();
   }
 
   if (phase === "loading") return <p className="muted">Собираем квиз…</p>;
@@ -259,9 +274,10 @@ export default function QuizRunner({
             <span className="muted text-sm">{task.task_type_title}</span>
           </div>
 
-          <MathText
-            className="block text-lg leading-relaxed"
-            text={task.statement}
+          <TaskBody
+            className="text-lg"
+            statement={task.statement}
+            imageUrl={task.image_url}
           />
 
           {task.source && (
@@ -327,13 +343,22 @@ export default function QuizRunner({
                   onClick={() => setDraftOpen((v) => !v)}
                 >
                   <PenLine size={15} />
-                  {draftOpen ? "Убрать черновик" : "Черновик"}
+                  {draftOpen ? "Убрать лист" : "Лист в клетку"}
+                </button>
+
+                <button
+                  className="muted flex items-center gap-2 text-sm hover:underline"
+                  onClick={() => setOverlay(true)}
+                >
+                  <Highlighter size={15} />
+                  Рисовать поверх страницы
                 </button>
               </div>
             </>
           ) : (
             <Feedback
               result={slot.result}
+              taskId={task.id}
               onNext={() => {
                 if (!goNextUnanswered()) finish();
               }}
@@ -364,18 +389,41 @@ export default function QuizRunner({
                     ? "var(--accent-200)"
                     : "var(--accent-2-200)"
                   : "var(--surface)";
+                // Состояние клетки нельзя передавать одним фоном: две бледные
+                // заливки неразличимы при дальтонизме и не видны скринридеру.
+                const state = res
+                  ? res.is_correct
+                    ? { mark: "✓", word: "верно" }
+                    : { mark: "×", word: "ошибка" }
+                  : { mark: "", word: "не отвечено" };
                 return (
                   <button
                     key={t.id}
                     onClick={() => goTo(i)}
-                    className="rounded-lg py-2 text-sm font-medium transition"
+                    className="relative rounded-lg py-2 text-sm font-medium transition"
                     style={{
-                      background: current ? "var(--accent)" : bg,
+                      background: current ? "var(--accent-700)" : bg,
                       color: current ? "#fff" : "var(--text)",
                     }}
                     aria-current={current}
+                    aria-label={`Вопрос ${i + 1}, ${state.word}`}
                   >
                     {i + 1}
+                    {state.mark && (
+                      <span
+                        aria-hidden
+                        className="absolute top-0 right-1 text-[0.625rem] leading-none"
+                        style={{
+                          color: current
+                            ? "#fff"
+                            : res?.is_correct
+                              ? "var(--accent-700)"
+                              : "var(--accent-2)",
+                        }}
+                      >
+                        {state.mark}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -411,7 +459,17 @@ export default function QuizRunner({
             setDrafts((prev) => ({ ...prev, [task.id]: next }))
           }
           onClose={() => setDraftOpen(false)}
-          height={820}
+          height={1000}
+        />
+      )}
+
+      {overlay && (
+        <DrawOverlay
+          strokes={notes[task.id] ?? []}
+          onChange={(next) =>
+            setNotes((prev) => ({ ...prev, [task.id]: next }))
+          }
+          onClose={() => setOverlay(false)}
         />
       )}
     </div>
@@ -462,14 +520,18 @@ function Feedback({
   result,
   onNext,
   lastOne,
+  taskId,
 }: {
   result: AnswerResult;
   onNext: () => void;
   lastOne: boolean;
+  taskId: number;
 }) {
   return (
     <div className="space-y-4">
       <div
+        role="status"
+        aria-live="polite"
         className="rounded-xl p-4"
         style={{
           background: result.is_correct
@@ -486,28 +548,35 @@ function Feedback({
           {result.is_correct
             ? "Верно"
             : `Неверно. Правильный ответ: ${result.correct_answer}`}
-          {result.coins > 0 && (
+          {result.coins > 0 && result.is_correct && (
             <span
               className="coin-fly inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
-              style={{ background: "#fdf3dd", color: "#c98a00" }}
+              style={{ background: "var(--gold-bg)", color: "var(--gold)" }}
             >
               <Coins size={14} /> +{result.coins}
             </span>
           )}
         </p>
+        {/* На последнем ответе начисляются бонусы за пройденный квиз и серию.
+            Рядом со словом «Неверно» они читались как награда за ошибку —
+            поэтому у неверного ответа выносим их отдельной строкой с причиной. */}
+        {result.coins > 0 && !result.is_correct && (
+          <p className="mt-2">
+            <span
+              className="coin-fly inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm"
+              style={{ background: "var(--gold-bg)", color: "var(--gold)" }}
+            >
+              <Coins size={14} /> +{result.coins} за пройденный квиз
+            </span>
+          </p>
+        )}
         {result.is_correct && result.used_hint && (
           <p className="muted mt-1 text-sm">Решено с подсказкой</p>
         )}
       </div>
 
-      {!result.is_correct && result.solution && (
-        <div
-          className="rounded-xl border p-5 text-sm leading-relaxed"
-          style={{ borderColor: "var(--divider)" }}
-        >
-          <p className="eyebrow mb-2">Разбор</p>
-          <MathText text={result.solution} />
-        </div>
+      {!result.is_correct && (
+        <SolutionBlock solution={result.solution} taskId={taskId} />
       )}
 
       <button className="btn" onClick={onNext} autoFocus>
@@ -563,7 +632,7 @@ function Result({ result }: { result: QuizResult }) {
         <Tile
           value={`+${result.coins_earned}`}
           label="монет"
-          icon={<Coins size={15} style={{ color: "#c98a00" }} />}
+          icon={<Coins size={15} style={{ color: "var(--gold)" }} />}
           accent={result.coins_earned > 0}
         />
         <Tile value={formatTime(result.seconds_spent)} label="в работе" />

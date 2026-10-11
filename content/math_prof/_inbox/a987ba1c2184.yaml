@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a987ba1c2184
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Два угла вписанного в окружность четырёхугольника равны и . Найдите бо́льший из оставшихся углов. Ответ дайте в градусах.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "A987BA1C2184902C4B4029A158CD0C0E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

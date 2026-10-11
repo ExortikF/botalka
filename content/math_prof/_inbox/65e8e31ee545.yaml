@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_65e8e31ee545
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Цилиндр и конус имеют общие основание
+  и высоту. Высота цилиндра равна радиусу основания. Площадь боковой поверхности конуса равна $3\sqrt{2}.$ Найдите площадь боковой поверхности цилиндра.
+image: math_prof/img/xs3qstsrc65e8e31ee545446ebc043a63c56f1e71_6_1758622137.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "65e8e31ee545446ebc043a63c56f1e71"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

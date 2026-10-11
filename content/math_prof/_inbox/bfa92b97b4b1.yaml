@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_bfa92b97b4b1
+subject: math_prof
+task_type: 5
+difficulty: null
+statement: |
+  Помещение освещается тремя лампами. Вероятность перегорания каждой лампы в течение года равна 0,2. Лампы перегорают независимо друг от друга. Найдите вероятность того, что в течение года хотя бы одна лампа не перегорит.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "BFA92B97B4B1B4774F8D4F3440A6E7A4"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_90d0fb393f84
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x),$ определённой на интервале $(-5;14).$ Найдите количество точек минимума функции $f(x),$ принадлежащих отрезку $[-4;9].$
+  [[img:math_prof/img/xs3qstsrc411165268E82BDA04454EF31822B6606_1_1676461361.png]]
+image: math_prof/img/xs3qstsrc411165268E82BDA04454EF31822B6606_1_1676461361.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "90D0FB393F84A548474C9DB252749A4E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e23f6f76cdcd
+subject: math_prof
+task_type: 2
+difficulty: 3
+statement: |
+  Длины векторов $\overrightarrow{a}$ и $\overrightarrow{b}$ равны 3 и 7, а угол между ними равен $60°.$ Найдите скалярное произведение $\overrightarrow{a}\cdot \overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "10,5"
+solution: |
+  Скалярное произведение равно произведению длин на косинус угла: $3 \cdot 7 \cdot \cos 60° = \frac{21}{2}$.
+source:
+  kind: fipi
+  year: null
+  ref: "E23F6F76CDCDB4884E33C36FB47C428F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: формула + численная проверка
+status: live
+needs_review: false

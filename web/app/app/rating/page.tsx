@@ -45,10 +45,10 @@ function NickName({ row }: { row: LeaderRow }) {
     <span className="flex items-center gap-1.5">
       {CLANS_ENABLED && row.clan_tag && (
         <span
-          className="h shrink-0 rounded px-1.5 py-0.5 text-[11px]"
+          className="h shrink-0 rounded px-1.5 py-0.5 text-[0.6875rem]"
           style={{
             background: `${row.clan_color}1a`,
-            color: row.clan_color ?? "var(--n-600)",
+            color: row.clan_color ?? "var(--n-700)",
           }}
         >
           {row.clan_tag}
@@ -246,14 +246,14 @@ function Podium({ rows, board }: { rows: LeaderRow[]; board: string }) {
               rounded="rounded-full"
             />
           </span>
-          <span className="h muted block text-[13.5px]">
+          <span className="h muted block text-[0.84375rem]">
             #{row.place} {row.display_name}
             {row.is_you && " · ты"}
           </span>
           <span className="h mt-1 block" style={{ fontSize: font, fontWeight: 800 }}>
             {value(row)}
           </span>
-          <span className="muted block text-[11px]">{unit}</span>
+          <span className="muted block text-[0.6875rem]">{unit}</span>
         </Link>
       ))}
     </section>

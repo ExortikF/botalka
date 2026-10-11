@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ab1453b41ccb
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $(\sqrt{96}-\sqrt{24})\cdot \sqrt{6}$ .
+image: math_prof/img/xs3qstsrc9615A0E43B0694D34CB20E570C8006D8_3_1669729464.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "AB1453B41CCBA7FE42FCE42847021BE0"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

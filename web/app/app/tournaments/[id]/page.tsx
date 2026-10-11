@@ -66,7 +66,7 @@ export default function TournamentPage({
         <div className="relative">
           <span className="flex flex-wrap items-center gap-2.5">
             <span
-              className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider"
+              className="rounded-full px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-wider"
               style={{ background: "rgba(255,255,255,.22)" }}
             >
               {data.state}
@@ -83,7 +83,7 @@ export default function TournamentPage({
             {data.title}
           </h1>
           {data.description && (
-            <p className="mt-2 max-w-[620px] text-[14.5px] leading-relaxed opacity-90">
+            <p className="mt-2 max-w-[620px] text-[0.90625rem] leading-relaxed opacity-90">
               {data.description}
             </p>
           )}
@@ -163,7 +163,7 @@ export default function TournamentPage({
                 </span>
                 {prize.coins > 0 && (
                   <span className="flex items-center gap-1">
-                    <Coins size={14} style={{ color: "#c98a00" }} />
+                    <Coins size={14} style={{ color: "var(--gold)" }} />
                     {prize.coins}
                   </span>
                 )}

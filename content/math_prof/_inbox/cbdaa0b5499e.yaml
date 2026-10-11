@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_cbdaa0b5499e
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  В чемпионате по гимнастике участвуют 30 спортсменок: 8 из Литвы,
+  13 из Латвии, остальные $—$ из Эстонии. Порядок, в котором выступают спортсменки, определяется жребием. Найдите вероятность того,
+  что спортсменка, выступающая первой, окажется из Эстонии.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "cbdaa0b5499e4552afa0ccbe0e2672fe"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

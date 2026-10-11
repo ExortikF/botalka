@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d25536ebb88f
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Заказ на изготовление 209 деталей первый рабочий выполняет на 8 часов быстрее, чем второй. Сколько деталей за час изготавливает второй рабочий, если известно, что первый за час изготавливает на 8 деталей больше?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D25536EBB88F9B1844048D2C1EB6EB4F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

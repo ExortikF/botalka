@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_bf7036087648
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=kx+b.$ Найдите
+  значение $f(5).$
+  [[img:math_prof/img/xs3qstsrc0897FCFDC04BA8F14E29758CD4D59EA0_1_1644585000.png]]
+image: math_prof/img/xs3qstsrc0897FCFDC04BA8F14E29758CD4D59EA0_1_1644585000.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "BF703608764887A64AF33914B7788678"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

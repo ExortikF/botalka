@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_72bafe4b32a8
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=\frac{k}{x}$ . Найдите
+  значение $f(10)$ .
+  [[img:math_prof/img/xs3qstsrc0ED9D6178B9BBE5D478ECAB799B5611A_1_1644584884.png]]
+image: math_prof/img/xs3qstsrc0ED9D6178B9BBE5D478ECAB799B5611A_1_1644584884.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "72BAFE4B32A8BE914E900B24794C1715"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

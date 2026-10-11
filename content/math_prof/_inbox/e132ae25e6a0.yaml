@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e132ae25e6a0
+subject: math_prof
+task_type: 6
+difficulty: null
+statement: |
+  Аня и Таня, работая вместе, пропалывают грядку за 24 минуты, а одна Таня — за 36 минут. За сколько минут пропалывает эту грядку одна Аня?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "E132AE25E6A083B64B120D93A6508921"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

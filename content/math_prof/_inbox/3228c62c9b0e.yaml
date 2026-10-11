@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_3228c62c9b0e
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $(64^{9})^{3}:(16^{5})^{8}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "3228C62C9B0EA5754A97E33324539E63"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

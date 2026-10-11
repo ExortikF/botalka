@@ -165,8 +165,12 @@ async def dev_login(
         },
         guest,
     )
-    if payload.is_admin and not user.is_admin:
-        user.is_admin = True
+    # Флаг выставляется по запросу, а не «только вверх». Раньше здесь стояло
+    # `if payload.is_admin and not user.is_admin`, и снять права было нечем:
+    # один заход админом по tg_id ученика — и «Войти учеником» навсегда
+    # отдавал аккаунт с админкой и эксклюзивом в магазине.
+    if user.is_admin != payload.is_admin:
+        user.is_admin = payload.is_admin
         await session.commit()
         await session.refresh(user)
     return user

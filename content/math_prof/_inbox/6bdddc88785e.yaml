@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6bdddc88785e
+subject: math_prof
+task_type: null           # номер задания КИМ проставляется отдельно, см. fipi_classify.py
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x)$ , определённой на интервале $(-9;3)$ . В какой точке отрезка $[-7;-5]$
+  функция $f(x)$ принимает наибольшее значение?
+  [[img:math_prof/img/xs3qstsrc735CEB0D647483E449742692A81C4F92_1_1512574621.png]]
+image: math_prof/img/xs3qstsrc735CEB0D647483E449742692A81C4F92_1_1512574621.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "6BDDDC88785EA97E4BFE1E42917B9E18"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

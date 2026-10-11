@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e390a93746a3
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=a^{x}$ . Найдите
+  значение $f(-4)$ .
+  [[img:math_prof/img/xs3qstsrcED91A63501369094425BD584C0E318EC_1_1644584806.png]]
+image: math_prof/img/xs3qstsrcED91A63501369094425BD584C0E318EC_1_1644584806.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "E390A93746A3ABC340E0E4510F8E44D1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

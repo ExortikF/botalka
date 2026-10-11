@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d3a95acb30f2
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(5;-7)$ и $\overrightarrow{b}(14;1).$ Найдите скалярное произведение $\overrightarrow{a}\cdot \overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "63"
+solution: |
+  Координаты векторов: $(5; -7)$ и $(14; 1)$. Скалярное произведение — сумма произведений одноимённых координат: $63$.
+source:
+  kind: fipi
+  year: null
+  ref: "D3A95ACB30F2A6EC42F4FE648778A69E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

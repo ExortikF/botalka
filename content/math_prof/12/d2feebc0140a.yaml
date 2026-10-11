@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d2feebc0140a
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку минимума функции $y=9x-\ln (x-2)^{9}-8$ .
+image: null
+answer:
+  type: number
+  value: "3"
+solution: |
+  Найдём производную: $y' = \frac{9 \left(x - 3\right)}{x - 2}$. Приравняем её к нулю: $x = 3$. Слева от точки функция убывает, справа возрастает — это точка минимума.
+source:
+  kind: fipi
+  year: null
+  ref: "D2FEEBC0140AAF84494DD373D1A02BA8"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

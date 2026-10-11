@@ -1,0 +1,25 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6ea9fec6638b
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a^{x}​.$ Найдите значение $f(4).$
+  [[img:math_prof/img/xs3qstsrc6EA9FEC6638BAE5C488CA5E77843141D_5_1721136101.png]]
+image: math_prof/img/xs3qstsrc6EA9FEC6638BAE5C488CA5E77843141D_5_1721136101.png
+answer:
+  type: number
+  value: "16"
+solution: |
+  График проходит через точку $(1;2)$, поэтому $a=2$.
+  Тогда $f(4)=2^{4}=16$.
+source:
+  kind: fipi
+  year: null
+  ref: "6EA9FEC6638BAE5C488CA5E77843141D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

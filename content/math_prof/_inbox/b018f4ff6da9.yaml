@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b018f4ff6da9
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  В четырёхугольник $ABCD$ вписана окружность, $AB=10, BC=6, CD=15.$ Найдите длину четвёртой стороны четырёхугольника.
+image: math_prof/img/xs3qstsrc1C9194A2EE15B02E4D4BABB2E5105AAD_1_1770375386.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "b018f4ff6da94c1e979ec4ca2985c2bd"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

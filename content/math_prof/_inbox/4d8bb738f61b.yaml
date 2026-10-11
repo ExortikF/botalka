@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4d8bb738f61b
+subject: math_prof
+task_type: 12
+difficulty: null
+statement: |
+  Найдите точку минимума функции $y=2x^{\frac{3}{2}}-18x+21.$
+image: math_prof/img/xs3qstsrcBC7A434396D5BA09438CCA9E47C3DC4E_3_1669729412.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "4d8bb738f61b407e9b5b09733a15d737"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

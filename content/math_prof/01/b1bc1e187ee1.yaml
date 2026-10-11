@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b1bc1e187ee1
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Отрезки $AC$ и $BD —$ диаметры окружности с центром $O$ . Угол $ACB$ равен $61°$ . Найдите угол $AOD$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc0E4F98C3F275983C453A3E437353C731_1_1509372816.png
+answer:
+  type: number
+  value: "58"
+solution: |
+  Вписанный угол $ACB$ опирается на дугу $AB$, центральный вдвое больше: $\angle AOB=2\cdot 61°=122°$. Углы $AOB$ и $AOD$ смежные, потому что $BD$ — диаметр: $180°-122°=58°$.
+source:
+  kind: fipi
+  year: null
+  ref: "B1BC1E187EE1A5684FB5EB9B466D4F4B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: diameters
+status: live
+needs_review: true

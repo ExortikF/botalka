@@ -15,3 +15,10 @@ build/
 .ruff_cache/
 .idea/
 .vscode/
+
+# Сырые выгрузки из открытого банка ФИПИ: промежуточный кэш парсера,
+# воспроизводится командой tools/fipi_fetch.py. В репозитории не нужен.
+content/_raw/
+
+# Артефакты сборки
+web/tsconfig.tsbuildinfo

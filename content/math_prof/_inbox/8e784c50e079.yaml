@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_8e784c50e079
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Две стороны треугольника равны 15 и 18. Высота, опущенная на бо $�$ ьшую из этих сторон, равна 10. Найдите длину высоты, опущенной на меньшую из этих сторон треугольника.
+image: math_prof/img/xs3qstsrcD9100563E83CA33F4DDD507732552795_1_1676644686.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "8E784C50E079957C43F197CA829728DC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

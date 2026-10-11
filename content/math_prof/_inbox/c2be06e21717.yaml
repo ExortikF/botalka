@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c2be06e21717
+subject: math_prof
+task_type: 2
+difficulty: null
+statement: |
+  На координатной плоскости изображены векторы $\overrightarrow{a}$ и $\overrightarrow{b},$ координатами которых являются целые числа. Найдите скалярное произведение $\overrightarrow{a}\cdot \overrightarrow{b}​.$
+  [[img:math_prof/img/xs3qstsrcC2BE06E217178B834447C3762E2F8633_2_1710757488.png]]
+image: math_prof/img/xs3qstsrcC2BE06E217178B834447C3762E2F8633_2_1710757488.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C2BE06E217178B834447C3762E2F8633"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

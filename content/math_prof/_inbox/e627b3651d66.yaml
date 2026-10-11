@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e627b3651d66
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Имеется два сплава. Первый сплав содержит 60 % меди, второй $—$ 10 % меди. Масса второго сплава больше массы первого на 90 кг. Из этих двух сплавов получили третий сплав, содержащий 20 % меди. Найдите массу третьего сплава. Ответ дайте в килограммах.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "e627b3651d66492d82afffcd2054b4bc"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

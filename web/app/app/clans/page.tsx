@@ -171,7 +171,7 @@ export default function ClansPage() {
 
                   <span className="shrink-0 text-right">
                     <span className="h block">{row.average_week}</span>
-                    <span className="muted block text-[11px]">
+                    <span className="muted block text-[0.6875rem]">
                       в среднем
                     </span>
                   </span>

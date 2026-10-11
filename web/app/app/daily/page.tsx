@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CalendarDays, Check, Clock, Coins, Timer, Trophy } from "lucide-react";
 import MathText from "../../Math";
-import { api } from "@/lib/api";
+import TaskBody from "../../TaskBody";
+import { api, notifyUserChanged } from "@/lib/api";
 import { checkAchievements } from "@/lib/achievements";
 import { playCorrect, playWrong } from "@/lib/sound";
 import { plural } from "@/lib/exam";
@@ -120,6 +121,7 @@ export default function DailyPage() {
       if (res.is_correct) {
         playCorrect();
         checkAchievements();
+        notifyUserChanged();
         load();
       } else {
         playWrong();
@@ -187,7 +189,7 @@ export default function DailyPage() {
             )}
             <span
               className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs"
-              style={{ background: "#fdf3dd", color: "#c98a00" }}
+              style={{ background: "var(--gold-bg)", color: "var(--gold)" }}
             >
               <Coins size={13} /> {daily.reward} за решение
             </span>
@@ -196,9 +198,10 @@ export default function DailyPage() {
 
         {started || done ? (
           <>
-            <MathText
-              className="block text-lg leading-relaxed"
-              text={daily.statement}
+            <TaskBody
+              className="text-lg"
+              statement={daily.statement}
+              imageUrl={daily.image_url}
             />
             {daily.source && (
               <p className="muted text-xs">Источник: {daily.source}</p>

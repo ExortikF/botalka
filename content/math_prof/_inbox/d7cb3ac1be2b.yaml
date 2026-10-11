@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d7cb3ac1be2b
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображены график функции [[img:math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_1_1575628006.gif]] и касательная к нему
+  в точке с абсциссой [[img:math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_2_1575628006.gif]] . Найдите значение производной функции [[img:math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_3_1575628006.gif]]
+  в точке [[img:math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_2_1575628006.gif]] .
+  [[img:math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_4_1575628006.gif]]
+image: math_prof/img/xs3qstsrc85FE1322A83196A643E12FE685C87D11_1_1575628006.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D7CB3AC1BE2B8F1646C55857E5A39784"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

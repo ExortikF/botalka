@@ -35,6 +35,7 @@ class DuelState(str, enum.Enum):
     WAITING = "waiting"      # вызов создан, соперник ещё не прошёл
     FINISHED = "finished"    # прошли оба
     EXPIRED = "expired"
+    DECLINED = "declined"    # адресный вызов, от которого отказались
 
 
 class Duel(Base):

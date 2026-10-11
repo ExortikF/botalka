@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_19026e6cbf83
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  Перед началом футбольного матча судья бросает монетку, чтобы определить, какая из команд начнёт игру с мячом. Команда «Биолог» играет три матча
+  с разными командами. Найдите вероятность того, что в этих матчах команда «Биолог» начнёт игру с мячом все три раза.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "19026E6CBF83B21449100B2B6C3D88EC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

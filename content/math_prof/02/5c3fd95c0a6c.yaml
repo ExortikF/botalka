@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5c3fd95c0a6c
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(14;-2)$ и $\overrightarrow{b}(5;-8).$ Найдите скалярное произведение $\overrightarrow{a}\cdot \overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "86"
+solution: |
+  Координаты векторов: $(14; -2)$ и $(5; -8)$. Скалярное произведение — сумма произведений одноимённых координат: $86$.
+source:
+  kind: fipi
+  year: null
+  ref: "5C3FD95C0A6CBE5A492722FBDF46C4DC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

@@ -15,6 +15,8 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: "/api/:path*", destination: `${BACKEND_ORIGIN}/api/:path*` },
+      // картинки к задачам лежат рядом с их YAML и раздаются бэкендом
+      { source: "/content/:path*", destination: `${BACKEND_ORIGIN}/content/:path*` },
       { source: "/health", destination: `${BACKEND_ORIGIN}/health` },
     ];
   },

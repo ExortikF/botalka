@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_8485f5879e7b
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x)$ , определённой на интервале $(-4;8)$ . Найдите точку экстремума функции $f(x)$ , принадлежащую отрезку $[1;6]$ .
+  [[img:math_prof/img/xs3qstsrcF6F2604C63B1B85A4856B33CBDC2DBE0_1_1517307796.png]]
+image: math_prof/img/xs3qstsrcF6F2604C63B1B85A4856B33CBDC2DBE0_1_1517307796.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "8485F5879E7BB7474545593301A54E3B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

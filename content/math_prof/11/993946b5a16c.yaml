@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_993946b5a16c
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=ax^{2}+bx+c.$ Найдите значение $f(-2).$
+  [[img:math_prof/img/xs3qstsrc993946b5a16c450fa390910c31325536_6_1777470347.png]]
+image: math_prof/img/xs3qstsrc993946b5a16c450fa390910c31325536_6_1777470347.png
+answer:
+  type: number
+  value: "18"
+solution: |
+  Парабола пересекает ось абсцисс в точках $1$ и $4$, поэтому
+  $f(x)=a(x-1)(x-4)$. При $x=0$ значение равно $4$: $4a=4$, откуда $a=1$.
+  Значит $f(x)=(x-1)(x-4)$ и $f(-2)=(-3)\cdot(-6)=18$.
+source:
+  kind: fipi
+  year: null
+  ref: "993946b5a16c450fa390910c31325536"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

@@ -130,6 +130,15 @@ export type PublicConfig = { dev_login: boolean; bot_username: string };
 export const getConfig = () => api<PublicConfig>("/api/config");
 
 /** Вход без Telegram. Доступен, только если на бэкенде включён DEV_LOGIN. */
+/** Монеты и косметика меняются на любой странице, а рисует их общий сайдбар.
+ *  Он перечитывает профиль по смене маршрута — этого мало: покупка и награда
+ *  за квиз происходят без перехода. Кто меняет баланс, тот и шлёт событие. */
+export const USER_EVENT = "botalka:user";
+
+export function notifyUserChanged(): void {
+  window.dispatchEvent(new Event(USER_EVENT));
+}
+
 export const devLogin = (isAdmin = false) =>
   api<User>("/api/auth/dev-login", {
     method: "POST",
@@ -199,7 +208,7 @@ export type DuelSide = {
 
 export type Duel = {
   code: string;
-  state: "waiting" | "finished" | "expired";
+  state: "waiting" | "finished" | "expired" | "declined";
   total: number;
   challenger: DuelSide;
   opponent: DuelSide | null;
@@ -239,3 +248,7 @@ export const getDuel = (code: string) => api<Duel>(`/api/duels/${code}`);
 export const playDuel = (code: string) =>
   api<Quiz>(`/api/duels/${code}/play`, { method: "POST" });
 export const getMyDuels = () => api<DuelListItem[]>("/api/duels");
+
+/** Отказаться от адресного вызова. Можно, пока не начал играть. */
+export const declineDuel = (code: string) =>
+  api<{ ok: boolean }>(`/api/duels/${code}/decline`, { method: "POST" });

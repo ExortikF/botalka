@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_58108bcf0b25
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\log _{2}6,4+\log _{2}5.$
+image: null
+answer:
+  type: number
+  value: "5"
+solution: |
+  Упростим выражение: $\log _{2}6,4+\log _{2}5 = \log_{2}{32} = 5$.
+source:
+  kind: fipi
+  year: null
+  ref: "58108bcf0b25414a9f72f80cc81ae7dc"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_910fa3197baa
+subject: math_prof
+task_type: 2
+difficulty: 3
+statement: |
+  Даны векторы $\overrightarrow{a}(3;4)$ и $\overrightarrow{b}(4;-3).$ Найдите длину вектора $4\overrightarrow{a}+3\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "25"
+solution: |
+  Складываем покоординатно: $(24; 7)$. Длина — корень из суммы квадратов координат: $25$.
+source:
+  kind: fipi
+  year: null
+  ref: "910fa3197baa47bda94b9963d478d74e"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

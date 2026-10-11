@@ -1,0 +1,28 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_0fa92e1181e2
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Отрезки $AC$ и $BD —$ диаметры окружности
+  с центром $O.$ Угол $ACB$ равен $41°.$ Найдите
+  величину угла $AOD.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc38145AE420079F9D4C19246517C7086D_1_1642161503.png
+answer:
+  type: number
+  value: "98"
+solution: |
+  Угол $ACB$ вписанный, он опирается на дугу $AB$, поэтому центральный угол
+  $AOB$ вдвое больше: $AOB=2\cdot 41°=82°$.
+  Точки $B$, $O$, $D$ лежат на одной прямой — $BD$ диаметр, — значит углы
+  $AOB$ и $AOD$ смежные: $AOD=180°-82°=98°$.
+source:
+  kind: fipi
+  year: null
+  ref: "0FA92E1181E2AEA047756DC69817536B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

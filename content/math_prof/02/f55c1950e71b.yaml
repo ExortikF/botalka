@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f55c1950e71b
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(1;5)$ и $\overrightarrow{b}(5;-1).$ Найдите длину вектора $5\overrightarrow{a}+\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "26"
+solution: |
+  Складываем покоординатно: $(10; 24)$. Длина — корень из суммы квадратов координат: $26$.
+source:
+  kind: fipi
+  year: null
+  ref: "f55c1950e71b4679a403fe4ce16652c1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

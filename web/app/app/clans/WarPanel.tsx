@@ -65,7 +65,7 @@ export default function WarPanel({
 
       <div className="flex flex-wrap items-center gap-4">
         <span className="flex items-center gap-2">
-          <Coins size={16} style={{ color: "#c98a00" }} />
+          <Coins size={16} style={{ color: "var(--gold)" }} />
           <span className="h text-xl">{clan.coins}</span>
           <span className="muted text-sm">в казне</span>
         </span>
@@ -204,7 +204,7 @@ export default function WarPanel({
                       ? "var(--accent)"
                       : war.winner === "они"
                         ? "var(--accent-2)"
-                        : "var(--n-600)",
+                        : "var(--n-700)",
                 }}
               >
                 {war.winner === "мы"

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d45a06ae7e50
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  В треугольнике $ABC$ стороны $AC$ и $BC$ равны. Внешний угол при вершине $B$ равен $107°.$ Найдите угол $C.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc6B6F4ABA258E9A024AE1B655645E8EF5_1_1698840043.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D45A06AE7E50A8004C39BD3DEA0390F9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

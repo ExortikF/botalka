@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_165d7fbc4951
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\log _{3}162-\log _{3}2.$
+image: null
+answer:
+  type: number
+  value: "4"
+solution: |
+  Упростим выражение: $\log _{3}162-\log _{3}2 = \log_{3}{81} = 4$.
+source:
+  kind: fipi
+  year: null
+  ref: "165d7fbc49514ced960360f3b312b9a2"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

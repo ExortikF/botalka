@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_62acdee9fbe5
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  В прямоугольном параллелепипеде $ABCDA_{1}B_{1}C_{1}D_{1}$ известно, что $AB=7$ , $BC=6$ , $AA_{1}=5$ . Найдите объём многогранника, вершинами которого являются точки $A$ , $B$ , $C$ , $B_{1}$ .
+image: math_prof/img/xs3qstsrc32B91B819D79832B41CB8BCB41BA70DE_1_1517314381.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "62ACDEE9FBE581CC4147D0D475256962"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

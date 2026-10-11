@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_464aef73b0cd
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $4\sqrt{2}-8\sqrt{2}\sin ^{2}\frac{7π}{8}$ .
+image: null
+answer:
+  type: number
+  value: "4"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "464AEF73B0CDB58C45484446A6FA9A64"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

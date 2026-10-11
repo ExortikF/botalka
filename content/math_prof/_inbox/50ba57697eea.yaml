@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_50ba57697eea
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $(4^{15})^{5}:4^{73}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "50BA57697EEABEE34899B2C83933CD2F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

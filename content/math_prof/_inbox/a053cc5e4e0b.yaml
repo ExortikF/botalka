@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a053cc5e4e0b
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображены графики функций $f(x)=\frac{k}{x}$ и $g(x)=ax+b,$ пересекающиеся в точках $A$ и $B.$ Найдите абсциссу точки $B.$
+  [[img:math_prof/img/xs3qstsrca053cc5e4e0b407da96a6eb7aff94500_6_1758622333.png]]
+image: math_prof/img/xs3qstsrca053cc5e4e0b407da96a6eb7aff94500_6_1758622333.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "a053cc5e4e0b407da96a6eb7aff94500"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

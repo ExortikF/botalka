@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e2fcb129282f
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a\sqrt{x}.$ Найдите значение $f(49).$
+  [[img:math_prof/img/xs3qstsrc9BE24FB850DEAACD4A8C2F2EC7FD7DA3_1_1766415866.png]]
+image: math_prof/img/xs3qstsrc9BE24FB850DEAACD4A8C2F2EC7FD7DA3_1_1766415866.png
+answer:
+  type: number
+  value: "21"
+solution: |
+  График проходит через точку $(1;3)$, значит $a=3$, а по второй точке
+  $f(4)=6$ — сходится.
+  Тогда $f(49)=3\cdot 7=21$.
+source:
+  kind: fipi
+  year: null
+  ref: "e2fcb129282f4b4b96a0e6ec08633df3"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

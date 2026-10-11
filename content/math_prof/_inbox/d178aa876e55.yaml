@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d178aa876e55
+subject: math_prof
+task_type: null           # номер задания КИМ проставляется отдельно, см. fipi_classify.py
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x)$ — производной функции $f(x),$ определённой на интервале $(-5;5).$ Найдите точку максимума функции $f(x).$
+  [[img:math_prof/img/xs3qstsrcD178AA876E55A9504AB1831D0E79117B_3_1714986728.png]]
+image: math_prof/img/xs3qstsrcD178AA876E55A9504AB1831D0E79117B_3_1714986728.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D178AA876E55A9504AB1831D0E79117B"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

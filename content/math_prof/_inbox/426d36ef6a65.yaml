@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_426d36ef6a65
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Через среднюю линию основания треугольной призмы проведена плоскость, параллельная боковому ребру. Найдите объём этой призмы, если объём отсечённой треугольной призмы равен 24.
+image: math_prof/img/xs3qstsrcEEA4D10AA041AC0742262296FB3C9CC2_1_1763039121.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "426d36ef6a6545249d4ab76f01a2dad1"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

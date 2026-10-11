@@ -16,8 +16,8 @@ type Suggestion = {
 };
 
 const STATUS = {
-  pending: { label: "на проверке", color: "var(--n-600)", icon: Clock },
-  approved: { label: "взяли в банк", color: "var(--accent)", icon: Check },
+  pending: { label: "на проверке", color: "var(--n-700)", icon: Clock },
+  approved: { label: "взяли в банк", color: "var(--accent-700)", icon: Check },
   rejected: { label: "не подошла", color: "var(--accent-2)", icon: X },
 };
 
@@ -154,7 +154,7 @@ export default function SuggestPage() {
             {busy ? "Отправляем…" : "Отправить на проверку"}
           </button>
           {sent && !error && (
-            <span className="text-sm" style={{ color: "var(--accent)" }}>
+            <span className="text-sm" style={{ color: "var(--accent-700)" }}>
               Отправлено — задача ушла на проверку
             </span>
           )}

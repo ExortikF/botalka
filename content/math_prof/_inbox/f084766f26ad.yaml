@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f084766f26ad
+subject: math_prof
+task_type: null           # номер задания КИМ проставляется отдельно, см. fipi_classify.py
+difficulty: null
+statement: |
+  На рисунке изображён график $y=f'(x) —$ производной функции $f(x),$ определённой на интервале $(-6;5).$ В какой точке отрезка $[-5;-2]$
+  функция $f(x)$ принимает наименьшее значение?
+  [[img:math_prof/img/xs3qstsrc2246DC46AB6C9B82441A04726D57D11C_1_1676461088.png]]
+image: math_prof/img/xs3qstsrc2246DC46AB6C9B82441A04726D57D11C_1_1676461088.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "F084766F26AD809F497B230B356C6019"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

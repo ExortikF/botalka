@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_09dee915266d
+subject: math_prof
+task_type: 1
+difficulty: 3
+statement: |
+  В треугольнике $ABC$ угол $C$ равен $90°$ , $AB=10$ , $BC=\sqrt{19}$ . Найдите $\cos A$ .
+image: math_prof/img/xs3qstsrcB3F8CC4C3D5CA7194B8FC7EA12D13DAB_1_1478531278.png
+answer:
+  type: number
+  value: "0,9"
+solution: |
+  Треугольник прямоугольный, поэтому по теореме Пифагора
+  $AC=\sqrt{AB^{2}-BC^{2}}=\sqrt{100-19}=9$.
+  Косинус острого угла — отношение прилежащего катета к гипотенузе:
+  $\cos A=\frac{AC}{AB}=\frac{9}{10}=0{,}9$.
+source:
+  kind: fipi
+  year: null
+  ref: "09DEE915266DAB9A4B7D1903883E736A"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

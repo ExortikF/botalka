@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_8668f8d795aa
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку максимума функции $y=\ln (x+3)^{7}-7x-9$ .
+image: null
+answer:
+  type: number
+  value: "-2"
+solution: |
+  Найдём производную: $y' = \frac{7 \left(- x - 2\right)}{x + 3}$. Приравняем её к нулю: $x = -2$. Слева от точки функция возрастает, справа убывает — это точка максимума.
+source:
+  kind: fipi
+  year: null
+  ref: "8668F8D795AABE5A46C735E9C452DE9E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

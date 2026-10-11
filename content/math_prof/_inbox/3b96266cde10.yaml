@@ -1,0 +1,27 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_3b96266cde10
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=\frac{k}{x}.$ Найдите
+  значение $f(10).$
+  [[img:math_prof/img/xs3qstsrc0003A017079FB82144E978D0154CA82C_1_1766415926.png]]
+image: math_prof/img/xs3qstsrc0003A017079FB82144E978D0154CA82C_1_1766415926.png
+answer:
+  type: number
+  value: "0,5"
+solution: |
+  По графику видно, что при $x=5$ значение равно $1$, поэтому
+  $\frac{k}{5}=1$ и $k=5$.
+  Тогда $f(10)=\frac{5}{10}=0{,}5$.
+source:
+  kind: fipi
+  year: null
+  ref: "3b96266cde104c3f9ae4e06d45502b78"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

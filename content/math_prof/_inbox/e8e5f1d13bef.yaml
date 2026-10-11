@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_e8e5f1d13bef
+subject: math_prof
+task_type: 6
+difficulty: null
+statement: |
+  Один мастер может выполнить заказ за 42 часа, а другой — за 21 час. За сколько часов выполнят этот заказ оба мастера, работая вместе?
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "E8E5F1D13BEFAE934A119FA5394020E7"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

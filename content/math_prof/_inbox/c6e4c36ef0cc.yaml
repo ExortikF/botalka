@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c6e4c36ef0cc
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  В соревнованиях по толканию ядра участвуют спортсмены из четырёх стран: 18 из Эстонии, 11 из Латвии, 15 из Литвы и 6 из Польши. Порядок,
+  в котором выступают спортсмены, определяется жребием. Найдите вероятность того, что спортсмен, выступающий первым, окажется из Литвы.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "c6e4c36ef0cc4dae9154aaf07c0dbbc4"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_cb418cd6a7eb
+subject: math_prof
+task_type: 7
+difficulty: null
+statement: |
+  Найдите значение выражения $(2^{16})^{5}:2^{74}$ .
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "CB418CD6A7EB80EB4FA4A70EF4CA7506"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

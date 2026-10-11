@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_56f56a1f1a30
+subject: math_prof
+task_type: 12
+difficulty: null
+statement: |
+  Найдите наименьшее значение функции $y=x\sqrt{x}-9x+25$ на отрезке $[1;50].$
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "56F56A1F1A30BFCA4C3EFE8FCB9617AA"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

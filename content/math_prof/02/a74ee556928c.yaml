@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_a74ee556928c
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(2;0)$ и $\overrightarrow{b}(1;4).$ Найдите длину вектора $\overrightarrow{a}+3\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "13"
+solution: |
+  Складываем покоординатно: $(5; 12)$. Длина — корень из суммы квадратов координат: $13$.
+source:
+  kind: fipi
+  year: null
+  ref: "A74EE556928C89CE4A7CA846AD5ADBC9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

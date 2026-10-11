@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_1b1ee1af5bcc
+subject: math_prof
+task_type: 12
+difficulty: 3
+statement: |
+  Найдите точку минимума функции $y=3x-3\cdot \ln (x-7)-8.$
+image: null
+answer:
+  type: number
+  value: "8"
+solution: |
+  Найдём производную: $y' = \frac{3 \left(x - 8\right)}{x - 7}$. Приравняем её к нулю: $x = 8$. Слева от точки функция убывает, справа возрастает — это точка минимума.
+source:
+  kind: fipi
+  year: null
+  ref: "1B1EE1AF5BCCA6444D63681289EC7A95"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: производная + сканирование
+status: live
+needs_review: false

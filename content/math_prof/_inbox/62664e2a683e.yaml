@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_62664e2a683e
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график функции $y=f(x).$ На оси абсцисс отмечено семь точек: $x_{1}, x_{2}, x_{3}, x_{4}, x_{5}, x_{6}, x_{7}.$ Найдите количество отмеченных точек, в которых производная функции $f(x)$ положительна.
+  [[img:math_prof/img/xs3qstsrcA3D836C4A8919EDF46D602A740AF1CBF_1_1762358511.png]]
+image: math_prof/img/xs3qstsrcA3D836C4A8919EDF46D602A740AF1CBF_1_1762358511.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "62664e2a683e404fae0570f451b3ca54"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

@@ -10,10 +10,17 @@ import { plural } from "@/lib/exam";
 
 type Friend = { id: number; display_name: string };
 
+/** Чем закончилась дуэль, если счёта нет. Отказ важно показать словом: иначе
+ *  вызвавший видит «не завершена» и ждёт ответа, которого не будет. */
+const STATE_LABEL: Record<string, string> = {
+  declined: "отклонена",
+  expired: "истёк срок",
+};
+
 const OUTCOME: Record<string, { label: string; color: string }> = {
-  win: { label: "победа", color: "var(--accent)" },
+  win: { label: "победа", color: "var(--accent-700)" },
   loss: { label: "поражение", color: "var(--accent-2)" },
-  draw: { label: "ничья", color: "var(--n-600)" },
+  draw: { label: "ничья", color: "var(--n-700)" },
 };
 
 export default function DuelsPage() {
@@ -90,7 +97,7 @@ export default function DuelsPage() {
         <div className="tile text-center">
           <p
             className="tile-value justify-center"
-            style={{ color: "var(--accent-2)" }}
+            style={{ color: "var(--accent)" }}
           >
             {winStreak}
           </p>
@@ -101,7 +108,7 @@ export default function DuelsPage() {
       <section
         className="relative overflow-hidden text-center text-white"
         style={{
-          background: "var(--accent)",
+          background: "var(--accent-700)",
           borderRadius: "var(--radius-lg)",
           padding: "38px 30px",
         }}
@@ -135,14 +142,14 @@ export default function DuelsPage() {
           </span>
           <div className="mt-[22px] flex items-center justify-center gap-[22px]">
             <span
-              className="h flex h-14 w-14 items-center justify-center rounded-full text-[17px]"
+              className="h flex h-14 w-14 items-center justify-center rounded-full text-[1.0625rem]"
               style={{ background: "rgba(255,255,255,.22)" }}
             >
               {you}
             </span>
             <Swords size={26} />
             <span
-              className="flex h-14 w-14 items-center justify-center rounded-full text-[22px]"
+              className="flex h-14 w-14 items-center justify-center rounded-full text-[1.375rem]"
               style={{ background: "rgba(255,255,255,.22)" }}
             >
               ?
@@ -171,7 +178,7 @@ export default function DuelsPage() {
           <h2 className="section-title">Дуэль с другом</h2>
           <span
             className="rounded-full px-2.5 py-1 text-xs font-semibold"
-            style={{ background: "var(--surface)", color: "var(--n-600)" }}
+            style={{ background: "var(--surface)", color: "var(--n-700)" }}
           >
             без рейтинга
           </span>
@@ -306,7 +313,9 @@ export default function DuelsPage() {
                           {duel.your_score} : {duel.their_score}
                         </span>
                       ) : (
-                        <span className="muted text-sm">не завершена</span>
+                        <span className="muted text-sm">
+                          {STATE_LABEL[duel.state] ?? "не завершена"}
+                        </span>
                       )}
                       {outcome && (
                         <span

@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ed896ec71d4d
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a^{x}​.$ Найдите значение $f(-2).$
+  [[img:math_prof/img/xs3qstsrcED896EC71D4DA79941FD0AB32E7D5B4E_5_1721136274.png]]
+image: math_prof/img/xs3qstsrcED896EC71D4DA79941FD0AB32E7D5B4E_5_1721136274.png
+answer:
+  type: number
+  value: "16"
+solution: |
+  График убывает и проходит через точку $(-1;4)$, поэтому $a^{-1}=4$ и
+  $a=\frac{1}{4}$.
+  Тогда $f(-2)=\left(\frac{1}{4}\right)^{-2}=4^{2}=16$.
+source:
+  kind: fipi
+  year: null
+  ref: "ED896EC71D4DA79941FD0AB32E7D5B4E"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

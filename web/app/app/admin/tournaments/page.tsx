@@ -137,7 +137,7 @@ export default function AdminTournamentsPage() {
                   <span className="flex flex-wrap items-center gap-2">
                     <b>{row.title}</b>
                     <span
-                      className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                      className="rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold"
                       style={{
                         background:
                           row.status === "published"
@@ -146,7 +146,7 @@ export default function AdminTournamentsPage() {
                         color:
                           row.status === "published"
                             ? "var(--accent-700)"
-                            : "var(--n-600)",
+                            : "var(--n-700)",
                       }}
                     >
                       {STATUS_LABEL[row.status] ?? row.status}

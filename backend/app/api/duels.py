@@ -224,6 +224,9 @@ async def play_duel(code: str, session: DbSession, user: PlayerUser) -> QuizOut:
         await session.commit()
         raise HTTPException(status.HTTP_410_GONE, "срок вызова истёк")
 
+    if duel.state is DuelState.DECLINED:
+        raise HTTPException(status.HTTP_410_GONE, "от вызова отказались")
+
     is_challenger = user.id == duel.challenger_id
     if not is_challenger:
         if duel.opponent_id not in (None, user.id):
@@ -261,6 +264,28 @@ async def play_duel(code: str, session: DbSession, user: PlayerUser) -> QuizOut:
         tasks.append(task)
 
     return QuizOut(id=quiz.id, mode=quiz.mode.value, tasks=[_to_task_out(t) for t in tasks])
+
+
+@router.post("/{code}/decline")
+async def decline_duel(code: str, session: DbSession, user: PlayerUser) -> dict:
+    """Отказаться от адресного вызова.
+
+    Отказаться может только тот, кого позвали, и только пока он не начал играть:
+    после первого ответа дуэль уже идёт, и «отказ» был бы способом слиться из
+    проигранного матча.
+    """
+    duel = await _load(session, code)
+
+    if duel.opponent_id != user.id:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "это не твой вызов")
+    if duel.opponent_quiz_id is not None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "ты уже начал эту дуэль")
+    if duel.state is not DuelState.WAITING:
+        raise HTTPException(status.HTTP_409_CONFLICT, "вызов уже неактуален")
+
+    duel.state = DuelState.DECLINED
+    await session.commit()
+    return {"ok": True}
 
 
 class DuelListItem(BaseModel):

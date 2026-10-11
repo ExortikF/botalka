@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d908713e92e0
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Отрезки $AC$ и $BD —$ диаметры окружности
+  с центром $O.$ Угол $AOD$ равен $114°.$ Найдите величину вписанного угла $ACB.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc1E28D20E7E8B80F54AF4212CC9137B56_1_1642161463.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D908713E92E09C22457E3BB4131620BB"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

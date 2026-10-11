@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_44ecc1d58a5b
+subject: math_prof
+task_type: 10
+difficulty: null
+statement: |
+  Два велосипедиста одновременно отправились в 70-километровый пробег. Первый ехал со скоростью, на 4 км/ч большей, чем скорость второго,
+  и прибыл к финишу на 2 часа раньше второго. Найдите скорость велосипедиста, пришедшего к финишу вторым. Ответ дайте в км/ч.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "44ecc1d58a5b492b93fcf798e0ed06e4"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

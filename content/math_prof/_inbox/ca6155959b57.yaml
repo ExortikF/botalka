@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ca6155959b57
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $4^{\frac{1}{5}}\cdot 16^{\frac{9}{10}}$ .
+image: null
+answer:
+  type: number
+  value: "16"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "CA6155959B579B054BF567D4F58EF839"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

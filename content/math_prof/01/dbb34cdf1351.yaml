@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_dbb34cdf1351
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  Отрезки $AC$ и $BD —$ диаметры окружности
+  с центром $O$ . Угол $AOD$ равен $130°$ . Найдите вписанный угол $ACB$ . Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc8033F7C460D7A73F44BAF88790AF39F2_1_1507730941.png
+answer:
+  type: number
+  value: "25"
+solution: |
+  Углы $AOD$ и $AOB$ смежные, так как $BD$ — диаметр: $\angle AOB=180°-130°=50°$. Вписанный угол вдвое меньше центрального, опирающегося на ту же дугу: $50°:2=25°$.
+source:
+  kind: fipi
+  year: null
+  ref: "DBB34CDF13518D6E4103C9AF3F44ED94"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: diameters
+status: live
+needs_review: true

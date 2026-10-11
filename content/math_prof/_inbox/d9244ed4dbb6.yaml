@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_d9244ed4dbb6
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=\log _{a}x.$ Найдите
+  значение $f(32).$
+  [[img:math_prof/img/xs3qstsrc4AE183026F55894C42D606A2F3F046F1_1_1646402960.png]]
+image: math_prof/img/xs3qstsrc4AE183026F55894C42D606A2F3F046F1_1_1646402960.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "D9244ED4DBB6ABFE45018480AE510B74"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

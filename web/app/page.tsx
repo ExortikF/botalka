@@ -78,7 +78,7 @@ export default function Landing() {
         <section
           className="relative overflow-hidden px-8 py-14 text-white sm:px-12"
           style={{
-            background: "var(--accent)",
+            background: "var(--accent-700)",
             borderRadius: "var(--radius-lg)",
           }}
         >

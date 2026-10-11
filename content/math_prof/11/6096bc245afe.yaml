@@ -1,0 +1,26 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_6096bc245afe
+subject: math_prof
+task_type: 11
+difficulty: 3
+statement: |
+  На рисунке изображён график функции вида $f(x)=a^{x}.$ Найдите
+  значение $f(2).$
+  [[img:math_prof/img/xs3qstsrc796EAA113F99B7254D217982503EF2A1_1_1646402938.png]]
+image: math_prof/img/xs3qstsrc796EAA113F99B7254D217982503EF2A1_1_1646402938.png
+answer:
+  type: number
+  value: "25"
+solution: |
+  График проходит через точку $(1;5)$, поэтому $a=5$.
+  Тогда $f(2)=5^{2}=25$.
+source:
+  kind: fipi
+  year: null
+  ref: "6096BC245AFE9DCB41179E05429A8333"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

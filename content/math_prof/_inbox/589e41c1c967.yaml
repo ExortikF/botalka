@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_589e41c1c967
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Площадь треугольника [[img:math_prof/img/xs3qstsrc217A3F466DD6BC074E14549C4A04AE56_1_1575539254.gif]] равна 24, [[img:math_prof/img/xs3qstsrc217A3F466DD6BC074E14549C4A04AE56_2_1575539254.gif]] — средняя линия, параллельная стороне [[img:math_prof/img/xs3qstsrc217A3F466DD6BC074E14549C4A04AE56_3_1575539254.gif]] . Найдите площадь трапеции [[img:math_prof/img/xs3qstsrc217A3F466DD6BC074E14549C4A04AE56_4_1575539254.gif]] .
+image: math_prof/img/xs3qstsrc217A3F466DD6BC074E14549C4A04AE56_1_1575539254.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "589E41C1C967946D41A6A0B1EA0D194D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

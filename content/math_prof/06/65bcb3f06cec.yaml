@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_65bcb3f06cec
+subject: math_prof
+task_type: 6
+difficulty: 1
+statement: |
+  Найдите корень уравнения $\sqrt[3]{x+3}=3$ .
+image: null
+answer:
+  type: number
+  value: "24"
+solution: |
+  $\sqrt[3]{x+3} = 3$. Возведём обе части в степень, которая уберёт корень. Получаем $x = 24$. Проверка: подставим найденное значение в исходное уравнение — обе части совпадают.
+source:
+  kind: fipi
+  year: null
+  ref: "65BCB3F06CECA1464EC03AA7CAAC1695"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: решено + подстановка
+status: live
+needs_review: false

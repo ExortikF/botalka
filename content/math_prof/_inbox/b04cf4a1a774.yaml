@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_b04cf4a1a774
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Шар, объём которого равен 24, вписан в цилиндр. Найдите объём цилиндра.
+image: math_prof/img/xs3qstsrcB4E60CBBF0BBB25849BFC389570C7ACF_1_1669887367.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "B04CF4A1A774AFDE40063392C0AC7954"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

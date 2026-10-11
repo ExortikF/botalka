@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Check, Coins, Lock } from "lucide-react";
-import { api, getMe, type User } from "@/lib/api";
+import { api, getMe, type User, notifyUserChanged } from "@/lib/api";
 import {
   auroraClass,
   cardBackground,
@@ -26,12 +26,14 @@ type Item = {
 
 type Shop = { coins: number; items: Item[] };
 
+/* Значения — hex, а не токены: цвет ниже склеивается с альфой (`${color}33`).
+   Все проверены на контраст к белому, минимум 4.5:1 — подписи мелкие (11px). */
 const RARITY: Record<Item["rarity"], { label: string; color: string }> = {
   common: { label: "обычная", color: "#5b6570" },
-  rare: { label: "редкая", color: "#0088b0" },
+  rare: { label: "редкая", color: "#006786" },
   epic: { label: "эпическая", color: "#7c3aed" },
-  legendary: { label: "легендарная", color: "#b8860b" },
-  mythic: { label: "только для админов", color: "#00a37a" },
+  legendary: { label: "легендарная", color: "#7a5f00" },
+  mythic: { label: "только для админов", color: "#007a5c" },
 };
 
 const KIND_ORDER = [
@@ -74,6 +76,7 @@ export default function ShopPage() {
       setShop(
         await api<Shop>(`/api/shop/${item.code}/${action}`, { method: "POST" }),
       );
+      notifyUserChanged();
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -104,8 +107,8 @@ export default function ShopPage() {
         <span
           className="h flex items-center gap-[7px] rounded-full"
           style={{
-            background: "#fdf3dd",
-            color: "#c98a00",
+            background: "var(--gold-bg)",
+            color: "var(--gold)",
             padding: "9px 18px",
             fontSize: 17,
           }}

@@ -1,0 +1,28 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_8003b1dbefd8
+subject: math_prof
+task_type: 8
+difficulty: 3
+statement: |
+  На рисунке изображены график функции $y=f(x)$ и касательная к нему
+  в точке с абсциссой $x_{0}.$ Найдите значение производной функции $f(x)$
+  в точке $x_{0}.$
+  [[img:math_prof/img/xs3qstsrcF184B03BC6F8A810477429208FAA81DA_1_1638185262.png]]
+image: math_prof/img/xs3qstsrcF184B03BC6F8A810477429208FAA81DA_1_1638185262.png
+answer:
+  type: number
+  value: "-0,25"
+solution: |
+  Производная в точке касания равна угловому коэффициенту касательной.
+  На касательной отмечены точки $(-3;5)$ и $(5;3)$, поэтому
+  $f'(x_{0})=\frac{3-5}{5-(-3)}=\frac{-2}{8}=-0{,}25$.
+source:
+  kind: fipi
+  year: null
+  ref: "8003B1DBEFD8863441DE56B41FAB08B9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор посчитаны вручную, см. content/*/\_manual.yaml
+status: live
+needs_review: true

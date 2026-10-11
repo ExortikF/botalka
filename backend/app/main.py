@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import redis.asyncio as aioredis
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 
 from app.api import (
@@ -53,6 +55,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Картинки к задачам (чертежи, графики) лежат рядом с их YAML в /content и
+# монтируются в контейнер только на чтение. В проде эту же папку раздаёт nginx —
+# здесь отдаём сами, чтобы всё работало из одного docker compose up.
+CONTENT_DIR = Path("/content")
+if CONTENT_DIR.is_dir():
+    app.mount("/content", StaticFiles(directory=CONTENT_DIR), name="content")
 
 app.include_router(auth.router)
 app.include_router(quiz.router)

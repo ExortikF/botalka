@@ -60,6 +60,10 @@ def rank_color(rating: int) -> str:
 router = APIRouter(prefix="/api", tags=["profile"])
 
 TZ = ZoneInfo("Europe/Moscow")
+
+# Сколько вызовов отдаём в профиль. Больше — не нужно: на экране они всё равно
+# сворачиваются, а полное число приходит отдельным полем.
+INCOMING_DUELS_LIMIT = 20
 ACTIVITY_DAYS = 30
 
 
@@ -147,6 +151,7 @@ class ProfileOut(BaseModel):
     coins_week: int
     cosmetics: dict
     incoming_duels: list[dict]
+    incoming_duels_total: int
     duels_played: int
     duels_won: int
     duel_win_streak: int
@@ -360,7 +365,10 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         key=lambda topic: topic.accuracy,
     )[:3]
 
-    today = max(days) if days else date.today()
+    # Сетка всегда заканчивается сегодняшним днём по Москве. Раньше она
+    # заканчивалась последним активным днём, и если человек пропустил день-два,
+    # вчера и сегодня в ней просто отсутствовали.
+    today = datetime.now(TZ).date()
     counts: dict[date, int] = {}
     for day in days:
         counts[day] = counts.get(day, 0) + 1
@@ -420,17 +428,21 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
     ) or 0
 
     # входящие вызовы: тебя позвали, ты ещё не играл
+    incoming_filter = (
+        Duel.kind == DuelKind.LINK,
+        Duel.state == DuelState.WAITING,
+        Duel.opponent_id == user.id,
+        Duel.opponent_quiz_id.is_(None),
+    )
+    # общее число нужно отдельно: список ограничен, а в шапке блока показываем,
+    # сколько вызовов на самом деле
+    incoming_total = (
+        await session.scalar(select(func.count(Duel.id)).where(*incoming_filter))
+    ) or 0
+
     incoming = []
     for duel in await session.scalars(
-        select(Duel)
-        .where(
-            Duel.kind == DuelKind.LINK,
-            Duel.state == DuelState.WAITING,
-            Duel.opponent_id == user.id,
-            Duel.opponent_quiz_id.is_(None),
-        )
-        .order_by(Duel.id.desc())
-        .limit(5)
+        select(Duel).where(*incoming_filter).order_by(Duel.id.desc()).limit(INCOMING_DUELS_LIMIT)
     ):
         challenger = await session.get(User, duel.challenger_id)
         incoming.append(
@@ -462,6 +474,7 @@ async def profile(session: DbSession, user: PlayerUser) -> ProfileOut:
         coins_week=coins_week,
         cosmetics=(await cosmetics_of(session, user.id)).model_dump(),
         incoming_duels=incoming,
+        incoming_duels_total=incoming_total,
         duels_played=len(online),
         duels_won=duels_won,
         duel_win_streak=win_streak,
@@ -693,7 +706,11 @@ class StatsYearOut(BaseModel):
     quizzes: int
     mocks: int
     duels: int
-    forecast_secondary: int      # прогноз тестового балла по текущей точности
+    # последние 7 дней против предыдущих семи — «сколько я реально работаю»
+    week_solved: int
+    week_prev_solved: int
+    week_minutes: int
+    week_days: int
     months: list[MonthRow]
     hours: list[HourRow]
     by_type: list[TypeRow]
@@ -702,7 +719,6 @@ class StatsYearOut(BaseModel):
 @router.get("/stats/year", response_model=StatsYearOut)
 async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
     """Всё, что накопилось за год: помесячно, по часам и по номерам заданий."""
-    from app.core.scoring import secondary_score
     from app.models import MockAttempt
 
     year_ago = datetime.now(TZ) - timedelta(days=365)
@@ -750,8 +766,12 @@ async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
 
     best = max(per_day.items(), key=lambda kv: kv[1], default=None)
 
-    # прогноз: считаем, что на экзамене будет та же точность на 12 заданиях части 1
-    forecast_primary = round(12 * accuracy / 100)
+    # Неделя считается по попыткам, а не по дням календаря: важен объём работы.
+    now = datetime.now(TZ)
+    week_from = now - timedelta(days=7)
+    prev_from = now - timedelta(days=14)
+    week = [a for a in attempts if a.created_at.astimezone(TZ) >= week_from]
+    week_prev = [a for a in attempts if prev_from <= a.created_at.astimezone(TZ) < week_from]
 
     return StatsYearOut(
         days_total=len(per_day),
@@ -785,7 +805,10 @@ async def stats_year(session: DbSession, user: PlayerUser) -> StatsYearOut:
             )
         )
         or 0,
-        forecast_secondary=secondary_score(forecast_primary),
+        week_solved=len(week),
+        week_prev_solved=len(week_prev),
+        week_minutes=round(sum(a.time_spent_ms for a in week) / 60000),
+        week_days=len({a.created_at.astimezone(TZ).date() for a in week}),
         months=[
             MonthRow(
                 month=key,

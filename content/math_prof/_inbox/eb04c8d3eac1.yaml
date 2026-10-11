@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_eb04c8d3eac1
+subject: math_prof
+task_type: 5
+difficulty: null
+statement: |
+  Стрелок стреляет по одному разу в каждую из четырёх мишеней. Вероятность попадания в мишень при каждом отдельном выстреле равна 0,8. Найдите вероятность того, что стрелок попадёт в первую мишень
+  и не попадёт в три последние.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "EB04C8D3EAC1B6BA49081F755952C596"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

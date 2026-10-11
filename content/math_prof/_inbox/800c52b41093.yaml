@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_800c52b41093
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  Цилиндр и конус имеют общие основание и высоту. Объём цилиндра равен 6. Найдите объём конуса.
+image: math_prof/img/xs3qstsrc5BF86854055A90134664B8AB946AA964_1_1478533894.png
+answer:
+  type: number
+  value: "2"
+solution: |
+  У конуса и цилиндра с общими основанием и высотой объёмы относятся как $1:3$, поэтому $6:3=2$.
+source:
+  kind: fipi
+  year: null
+  ref: "800C52B4109384B14F6A2BE825BC9DDE"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: cylinder_and_cone
+status: live
+needs_review: true

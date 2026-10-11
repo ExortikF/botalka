@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c5da22c80cae
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $\frac{4\sin 154°}{\sin 77°\cdot \sin 13°}.$
+image: null
+answer:
+  type: number
+  value: "8"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "c5da22c80cae40a3aee3da8c6c271b9c"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

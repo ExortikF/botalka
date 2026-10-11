@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_ba00162ad7ef
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  Перед началом футбольного матча судья бросает монетку, чтобы определить, какая из команд начнёт игру с мячом. Команда «Изумруд» играет два матча
+  с разными командами. Найдите вероятность того, что в этих матчах команда «Изумруд» начнёт игру с мячом не больше одного раза.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "BA00162AD7EFB6C44660DC65A6B9E423"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

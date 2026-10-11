@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_de207c82a3c7
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Центральный угол на $29°$ больше острого вписанного угла, опирающегося на ту же дугу окружности. Найдите величину вписанного угла. Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrc96F382A7C29C9B5345A6CCD5E8FE549A_1_1642422752.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "DE207C82A3C7B9F243E9A1BC2C738735"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

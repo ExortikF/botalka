@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_2c456c255b9d
+subject: math_prof
+task_type: 2
+difficulty: 3
+statement: |
+  Даны векторы $\overrightarrow{a}(1;2)$ и $\overrightarrow{b}(2;-1).$ Найдите длину вектора $8\overrightarrow{a}+4\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "20"
+solution: |
+  Складываем покоординатно: $(16; 12)$. Длина — корень из суммы квадратов координат: $20$.
+source:
+  kind: fipi
+  year: null
+  ref: "2c456c255b9d4d03ad827b77746662bd"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

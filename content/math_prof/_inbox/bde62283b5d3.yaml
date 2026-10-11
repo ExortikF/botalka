@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_bde62283b5d3
+subject: math_prof
+task_type: 2
+difficulty: 3
+statement: |
+  Даны векторы $\overrightarrow{a}(1;2)$ и $\overrightarrow{b}(2;-1).$ Найдите длину вектора $6\overrightarrow{a}+3\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "15"
+solution: |
+  Складываем покоординатно: $(12; 9)$. Длина — корень из суммы квадратов координат: $15$.
+source:
+  kind: fipi
+  year: null
+  ref: "bde62283b5d34865bddc94295e462312"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

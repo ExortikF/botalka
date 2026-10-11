@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Coins, Flame, Lock, Swords, X } from "lucide-react";
-import { api } from "@/lib/api";
+import { ChevronDown, Coins, Flame, Lock, Swords, X } from "lucide-react";
+import { api, declineDuel } from "@/lib/api";
 import { plural } from "@/lib/exam";
 import {
   auroraClass,
@@ -41,6 +41,7 @@ type Profile = {
     name_plate: string | null;
   };
   incoming_duels: { code: string; from: string; rounds: number }[];
+  incoming_duels_total: number;
   duels_played: number;
   duels_won: number;
   duel_win_streak: number;
@@ -92,7 +93,7 @@ const RARITY: Record<
 > = {
   bronze: { label: "бронза", color: "#8a5a2b", bg: "#f6ebe0" },
   silver: { label: "серебро", color: "#5b6570", bg: "#eef1f4" },
-  gold: { label: "золото", color: "#8a6d0b", bg: "#fbf1cf" },
+  gold: { label: "золото", color: "var(--gold)", bg: "#fbf1cf" },
 };
 
 type DayStats = {
@@ -225,39 +226,10 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      {profile.incoming_duels.length > 0 && (
-        <section
-          className="card space-y-3 p-6"
-          style={{
-            background: "var(--accent-2-100)",
-            borderColor: "var(--accent-2-200)",
-          }}
-        >
-          <h2 className="section-title flex items-center gap-2">
-            <Swords size={18} style={{ color: "var(--accent-2)" }} />
-            {profile.incoming_duels.length === 1
-              ? "Тебя вызвали на дуэль"
-              : `Тебя вызвали на дуэль: ${profile.incoming_duels.length}`}
-          </h2>
-          {profile.incoming_duels.map((duel) => (
-            <div
-              key={duel.code}
-              className="flex flex-wrap items-center justify-between gap-3"
-            >
-              <span>
-                <b>{duel.from}</b> — {duel.rounds}{" "}
-                {plural(duel.rounds, "раунд", "раунда", "раундов")}
-              </span>
-              <Link
-                className="btn btn-accent2 text-sm"
-                href={`/app/duels/${duel.code}`}
-              >
-                Принять вызов
-              </Link>
-            </div>
-          ))}
-        </section>
-      )}
+      <IncomingDuels
+        duels={profile.incoming_duels}
+        total={profile.incoming_duels_total}
+      />
 
       <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <Metric
@@ -277,7 +249,7 @@ export default function ProfilePage() {
               ? `монет · +${profile.coins_week} за неделю`
               : "монет"
           }
-          icon={<Coins size={15} style={{ color: "#c98a00" }} />}
+          icon={<Coins size={15} style={{ color: "var(--gold)" }} />}
         />
         <Metric value={`${profile.accuracy}%`} label="верных ответов" />
         <Metric
@@ -404,6 +376,125 @@ export default function ProfilePage() {
   );
 }
 
+/** Сколько вызовов показываем сразу. Остальные прячем за раскрывашкой:
+ *  вызвать могут хоть тридцать раз, и блок не должен занимать весь экран. */
+const INCOMING_VISIBLE = 3;
+
+function IncomingDuels({
+  duels,
+  total,
+}: {
+  duels: { code: string; from: string; rounds: number }[];
+  total: number;
+}) {
+  const [items, setItems] = useState(duels);
+  const [expanded, setExpanded] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => setItems(duels), [duels]);
+
+  if (items.length === 0) return null;
+
+  const hidden = Math.max(0, items.length - INCOMING_VISIBLE);
+  const visible = expanded ? items : items.slice(0, INCOMING_VISIBLE);
+  // Сервер отдаёт список обрезанным, а общее число — отдельно. Разницу берём от
+  // исходного списка, а не от текущего: иначе отказ уменьшает список, но не
+  // счётчик в шапке — и число не сходится с тем, что на экране.
+  const notShown = Math.max(0, total - duels.length);
+
+  async function decline(code: string) {
+    setBusy(code);
+    setError(null);
+    try {
+      await declineDuel(code);
+      setItems((rest) => rest.filter((duel) => duel.code !== code));
+    } catch {
+      setError("Не получилось отказаться — попробуй ещё раз");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  return (
+    <section
+      className="card space-y-3 p-6"
+      style={{
+        background: "var(--accent-2-100)",
+        borderColor: "var(--accent-2-200)",
+      }}
+    >
+      <h2 className="section-title flex items-center gap-2">
+        <Swords size={18} style={{ color: "var(--accent-2)" }} />
+        {items.length === 1
+          ? "Тебя вызвали на дуэль"
+          : `Тебя вызвали на дуэль: ${items.length + notShown}`}
+      </h2>
+
+      {visible.map((duel) => (
+        <div
+          key={duel.code}
+          className="flex flex-wrap items-center justify-between gap-3"
+        >
+          <span>
+            <b>{duel.from}</b> — {duel.rounds}{" "}
+            {plural(duel.rounds, "раунд", "раунда", "раундов")}
+          </span>
+          <span className="flex items-center gap-2">
+            <button
+              className="btn-ghost btn-ghost-2 text-sm"
+              onClick={() => decline(duel.code)}
+              disabled={busy === duel.code}
+              aria-label={`Отказаться от дуэли с ${duel.from}`}
+            >
+              {busy === duel.code ? "Отказываюсь…" : "Отказаться"}
+            </button>
+            <Link
+              className="btn btn-accent2 text-sm"
+              href={`/app/duels/${duel.code}`}
+            >
+              Принять вызов
+            </Link>
+          </span>
+        </div>
+      ))}
+
+      {hidden > 0 && (
+        <button
+          className="btn-ghost btn-ghost-2 flex w-full items-center justify-center gap-1.5 text-sm"
+          onClick={() => setExpanded((open) => !open)}
+          aria-expanded={expanded}
+        >
+          {expanded
+            ? "Свернуть"
+            : `Ещё ${hidden} ${plural(hidden, "вызов", "вызова", "вызовов")}`}
+          <ChevronDown
+            size={15}
+            style={{
+              transform: expanded ? "rotate(180deg)" : undefined,
+              transition: "transform .15s",
+            }}
+          />
+        </button>
+      )}
+
+      {notShown > 0 && expanded && (
+        <p className="muted text-xs">
+          Показаны последние {items.length}. Ещё {notShown}{" "}
+          {plural(notShown, "вызов", "вызова", "вызовов")} появятся, когда
+          разберёшь эти.
+        </p>
+      )}
+
+      {error && (
+        <p className="text-sm" style={{ color: "var(--accent-2)" }} role="status">
+          {error}
+        </p>
+      )}
+    </section>
+  );
+}
+
 function Ring({
   done,
   total,
@@ -447,7 +538,7 @@ function Ring({
       </svg>
       <span className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="h text-3xl">{value}</span>
-        <span className="muted text-[11px]">
+        <span className="muted text-[0.6875rem]">
           {total === 0 ? "ошибок" : "осталось"}
         </span>
       </span>
@@ -656,7 +747,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
         <p className="flex items-center gap-2 font-medium">
           {a.title}
           <span
-            className="rounded-full px-2 py-0.5 text-[11px]"
+            className="rounded-full px-2 py-0.5 text-[0.6875rem]"
             style={{ background: rarity.bg, color: rarity.color }}
           >
             {rarity.label}

@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_3aacbc00e123
+subject: math_prof
+task_type: 2
+difficulty: 2
+statement: |
+  Даны векторы $\overrightarrow{a}(31;0)$ и $\overrightarrow{b}(1;-1).$ Найдите длину вектора $\overrightarrow{a}-24\overrightarrow{b}.$
+image: null
+answer:
+  type: number
+  value: "25"
+solution: |
+  Складываем покоординатно: $(7; 24)$. Длина — корень из суммы квадратов координат: $25$.
+source:
+  kind: fipi
+  year: null
+  ref: "3AACBC00E123A409485F61E3F05A1B5D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: координаты + проверка счётом
+status: live
+needs_review: false

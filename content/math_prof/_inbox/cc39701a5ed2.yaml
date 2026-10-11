@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_cc39701a5ed2
+subject: math_prof
+task_type: 4
+difficulty: null
+statement: |
+  На конференцию приехали учёные из трёх стран: 7 из Сербии, 3 из России
+  и 2 из Дании. Каждый из них делает на конференции один доклад. Порядок докладов определяется жеребьёвкой. Найдите вероятность того, что десятым окажется доклад учёного из России.
+image: null
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "CC39701A5ED2B73141844587AAA271DC"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: false

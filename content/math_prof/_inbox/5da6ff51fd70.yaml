@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5da6ff51fd70
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Найдите объём многогранника, вершинами которого являются вершины $A, B, C, D, A_{1}$ прямоугольного параллелепипеда $ABCDA_{1}B_{1}C_{1}D_{1},$ у которого $AB=3, AD=9, AA_{1}=4.$
+image: math_prof/img/xs3qstsrcD2512EFEE9C38E0C4B20BA27C6542C56_1_1698841332.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "5DA6FF51FD70BE324BFF67FB5FADDA8D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

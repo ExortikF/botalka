@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_9ac89f670245
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Две стороны треугольника равны 21 и 28. Высота, опущенная на бо́льшую из этих сторон, равна 15. Найдите высоту, опущенную на меньшую из этих сторон треугольника.
+image: math_prof/img/xs3qstsrc2AD041B118CABDA84D119FF52C258CD5_1_1478531342.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "9AC89F670245BAD44DDD09E94832546F"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

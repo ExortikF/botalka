@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_5e2b724a1bbc
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображены графики функций видов $f(x)=ax^{2}+bx+c$ и $g(x)=kx$ , пересекающиеся в точках $A$ и $B$ . Найдите абсциссу точки $B$ .
+  [[img:math_prof/img/xs3qstsrc023C3A198DEDA0C44A14B09CE3A3B425_1_1644585075.png]]
+image: math_prof/img/xs3qstsrc023C3A198DEDA0C44A14B09CE3A3B425_1_1644585075.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "5E2B724A1BBCB88A4EB80A887A368753"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

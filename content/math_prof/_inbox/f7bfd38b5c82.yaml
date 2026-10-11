@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_f7bfd38b5c82
+subject: math_prof
+task_type: 1
+difficulty: null
+statement: |
+  Острый угол $B$ прямоугольного треугольника $ABC$ равен $70°​.$ Найдите величину угла между биссектрисой $CD$ и медианой $CM​,$ проведёнными из вершины прямого угла $C.$ Ответ дайте в градусах.
+image: math_prof/img/xs3qstsrcf7bfd38b5c824e21bb90b6cf41220758_7_1759831186.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "f7bfd38b5c824e21bb90b6cf41220758"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

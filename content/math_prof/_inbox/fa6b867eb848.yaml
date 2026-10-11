@@ -1,0 +1,24 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_fa6b867eb848
+subject: math_prof
+task_type: 3
+difficulty: 3
+statement: |
+  Цилиндр и конус имеют общие основание
+  и высоту. Объём конуса равен 9. Найдите объём цилиндра.
+image: math_prof/img/xs3qstsrcAD7A847EF1148B484129FC8C7E840D87_1_1603180922.png
+answer:
+  type: number
+  value: "27"
+solution: |
+  Объём цилиндра втрое больше объёма конуса с тем же основанием и высотой: $9\cdot 3=27$.
+source:
+  kind: fipi
+  year: null
+  ref: "FA6B867EB848AA754AD0B822A985F949"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: cylinder_and_cone
+status: live
+needs_review: true

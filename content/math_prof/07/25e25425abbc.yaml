@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_25e25425abbc
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\log _{2}6,4+\log _{2}10.$
+image: null
+answer:
+  type: number
+  value: "6"
+solution: |
+  Упростим выражение: $\log _{2}6,4+\log _{2}10 = \log_{2}{64} = 6$.
+source:
+  kind: fipi
+  year: null
+  ref: "25E25425ABBCABCF48680E6C14007FB9"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

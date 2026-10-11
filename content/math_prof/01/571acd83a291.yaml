@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_571acd83a291
+subject: math_prof
+task_type: 1
+difficulty: 2
+statement: |
+  В четырёхугольник $ABCD$ вписана окружность, $AB=9, CD=17.$ Найдите периметр четырёхугольника $ABCD.$
+image: math_prof/img/xs3qstsrc3D0E62804E2FB53E43B47F0C3B58D0D6_1_1765457048.png
+answer:
+  type: number
+  value: "52"
+solution: |
+  Суммы противоположных сторон равны: $9+17=26$. Периметр складывается из двух таких сумм: $2\cdot 26=52$.
+source:
+  kind: fipi
+  year: null
+  ref: "571acd83a29146c9a285d4b9796e5f89"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: школьное свойство: circumscribed_quadrilateral
+status: live
+needs_review: true

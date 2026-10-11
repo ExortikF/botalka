@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Clock, PenLine } from "lucide-react";
+import { Clock, Highlighter, PenLine } from "lucide-react";
 import MathText from "../../Math";
+import TaskBody from "../../TaskBody";
 import DrawingPad, { type Stroke } from "../DrawingPad";
+import DrawOverlay from "../DrawOverlay";
 import ReportButton from "../ReportButton";
 import { checkAchievements } from "@/lib/achievements";
 import { api } from "@/lib/api";
@@ -75,6 +77,8 @@ export default function MockRunner({
   const [draftOpen, setDraftOpen] = useState(false);
   // черновик свой у каждого задания: ключ — id задачи
   const [drafts, setDrafts] = useState<Record<number, Stroke[]>>({});
+  const [notes, setNotes] = useState<Record<number, Stroke[]>>({});
+  const [overlay, setOverlay] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -194,9 +198,10 @@ export default function MockRunner({
             <span className="muted text-sm">{task.title}</span>
           </div>
 
-          <MathText
-            className="block text-lg leading-relaxed"
-            text={task.statement}
+          <TaskBody
+            className="text-lg"
+            statement={task.statement}
+            imageUrl={task.image_url}
           />
           {task.source && (
             <p className="muted text-xs">Источник: {task.source}</p>
@@ -231,7 +236,14 @@ export default function MockRunner({
               onClick={() => setDraftOpen((v) => !v)}
             >
               <PenLine size={15} />
-              {draftOpen ? "Убрать черновик" : "Черновик"}
+              {draftOpen ? "Убрать лист" : "Лист в клетку"}
+            </button>
+            <button
+              className="muted flex items-center gap-2 text-sm hover:underline"
+              onClick={() => setOverlay(true)}
+            >
+              <Highlighter size={15} />
+              Рисовать поверх
             </button>
           </div>
 
@@ -295,7 +307,15 @@ export default function MockRunner({
             setDrafts((prev) => ({ ...prev, [task.id]: next }))
           }
           onClose={() => setDraftOpen(false)}
-          height={820}
+          height={1000}
+        />
+      )}
+
+      {overlay && (
+        <DrawOverlay
+          strokes={notes[task.id] ?? []}
+          onChange={(next) => setNotes((prev) => ({ ...prev, [task.id]: next }))}
+          onClose={() => setOverlay(false)}
         />
       )}
     </div>

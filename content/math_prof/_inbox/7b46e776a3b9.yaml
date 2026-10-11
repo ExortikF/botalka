@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_7b46e776a3b9
+subject: math_prof
+task_type: 5
+difficulty: null
+statement: |
+  Вероятность того, что в случайный момент времени температура тела здорового человека окажется ниже чем [[img:math_prof/img/xs3qstsrc29783D26966181B24AFBB56A1103BCA4_1_1576248544.gif]] , равна 0,91. Найдите вероятность того, что в случайный момент времени у здорового человека температура окажется [[img:math_prof/img/xs3qstsrc29783D26966181B24AFBB56A1103BCA4_1_1576248544.gif]] или выше.
+image: math_prof/img/xs3qstsrc29783D26966181B24AFBB56A1103BCA4_1_1576248544.gif
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "7B46E776A3B9A9A84A7EDAB1586000FD"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

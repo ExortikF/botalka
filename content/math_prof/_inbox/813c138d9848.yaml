@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_813c138d9848
+subject: math_prof
+task_type: 8
+difficulty: null
+statement: |
+  На рисунке изображён график функции $y=f(x).$ На оси абсцисс отмечено десять точек: $x_{1}, x_{2}, x_{3}, x_{4}, x_{5}, x_{6}, x_{7}, x_{8}, x_{9}, x_{10}.$ Найдите количество отмеченных точек, в которых производная функции $f(x)$ отрицательна.
+  [[img:math_prof/img/xs3qstsrc3C53C2FAEA3890EA422CD18CF84EE896_1_1762358482.png]]
+image: math_prof/img/xs3qstsrc3C53C2FAEA3890EA422CD18CF84EE896_1_1762358482.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "813C138D984895774CDFACDADEBB1789"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

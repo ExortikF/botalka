@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_922a7299f46c
+subject: math_prof
+task_type: 7
+difficulty: 1
+statement: |
+  Найдите значение выражения $\sqrt{2}-2\sqrt{2}\sin ^{2}\frac{15π}{8}$ .
+image: null
+answer:
+  type: number
+  value: "1"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "922A7299F46CACE249B862D245B00CDE"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false

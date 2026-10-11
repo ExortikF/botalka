@@ -1,0 +1,23 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_cafc19ca030c
+subject: math_prof
+task_type: 11
+difficulty: null
+statement: |
+  На рисунке изображён график функции вида $f(x)=kx+b$ . Найдите
+  значение $f(4)$ .
+  [[img:math_prof/img/xs3qstsrc48D52CFC27E1B74F490C8077CDD33CDE_1_1644584996.png]]
+image: math_prof/img/xs3qstsrc48D52CFC27E1B74F490C8077CDD33CDE_1_1644584996.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "CAFC19CA030C9C714F7B850929B4F59D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

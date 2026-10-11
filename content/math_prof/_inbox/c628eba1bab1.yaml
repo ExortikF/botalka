@@ -1,0 +1,21 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_c628eba1bab1
+subject: math_prof
+task_type: 3
+difficulty: null
+statement: |
+  Найдите объём многогранника, вершинами которого являются вершины $A$ , $B$ , $C$ , $C_{1}$ правильной треугольной призмы $ABCA_{1}B_{1}C_{1}$ , площадь основания которой равна 7, а боковое ребро равно 9.
+image: math_prof/img/xs3qstsrc71D8E252CFB6864F459687D5F38A68F1_1_1512575066.png
+answer:
+  type: number
+  value: null
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "C628EBA1BAB18E8F42BCC557220B1DB7"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+status: draft
+needs_review: true

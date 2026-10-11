@@ -1,0 +1,22 @@
+# Черновик из открытого банка ФИПИ. Ответа в банке нет — его проставляет
+# решатель, и только после двойной проверки задача переводится в live.
+id: fipi_4bc2e60c7146
+subject: math_prof
+task_type: 7
+difficulty: 3
+statement: |
+  Найдите значение выражения $6\sqrt{3}\cos ^{2}\frac{11π}{12}-3\sqrt{3}.$
+image: null
+answer:
+  type: number
+  value: "4,5"
+solution: null
+source:
+  kind: fipi
+  year: null
+  ref: "4BC2E60C71468BAB4F8A0A86E5158C5D"
+  label: "Открытый банк ФИПИ"
+  url: "https://ege.fipi.ru/bank/"
+# ответ и разбор получены автоматически: символьно + численно
+status: live
+needs_review: false
